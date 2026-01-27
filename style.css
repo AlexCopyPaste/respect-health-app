@@ -1,58 +1,331 @@
-/* --- תוספות למסך הבית והתפריט --- */
+:root {
+    --bg-color: #f2f2f7; /* צבע רקע אפור בהיר (כמו באייפון) */
+    --card-bg: #ffffff;
+    --text-color: #000000;
+    --text-secondary: #8e8e93;
+    --primary-color: #007aff; /* כחול iOS */
+    --danger-color: #ff3b30;
+    --border-color: #c6c6c8;
+    --header-bg: rgba(255, 255, 255, 0.9);
+}
 
-/* הסתרת אלמנטים */
-.hidden {
+[data-theme="dark"] {
+    --bg-color: #000000;
+    --card-bg: #1c1c1e;
+    --text-color: #ffffff;
+    --text-secondary: #98989f;
+    --primary-color: #0a84ff;
+    --border-color: #38383a;
+    --header-bg: rgba(28, 28, 30, 0.9);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    overflow-x: hidden; /* מונע גלילה רוחבית */
+}
+
+/* קונטיינר ראשי */
+.app-container {
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+    background-color: var(--bg-color);
+}
+
+/* ===========================
+   עיצוב מסכים (Screens)
+=========================== */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    transition: transform 0.3s ease-in-out, opacity 0.3s;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.screen.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 10;
+    position: relative; /* כדי לאפשר גלילה */
+}
+
+.screen.hidden {
     display: none;
 }
 
-/* רשת הכפתורים הראשיים */
+/* ===========================
+   מסך ראשי וגריד אייקונים
+=========================== */
+.main-header {
+    padding: 40px 20px 20px;
+    text-align: center;
+}
+
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* שתי עמודות */
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.menu-card {
-    background: var(--card-bg);
+    grid-template-columns: repeat(2, 1fr); /* 2 עמודות */
+    gap: 25px;
     padding: 20px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    justify-items: center;
+}
+
+.app-icon-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
-    border: 1px solid var(--border-color);
+    transition: transform 0.1s;
 }
 
-.menu-card:active {
-    transform: scale(0.95); /* אפקט לחיצה */
+.app-icon-wrapper:active {
+    transform: scale(0.95);
 }
 
-.menu-icon {
-    font-size: 3em;
-    margin-bottom: 10px;
+.app-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    margin-bottom: 8px;
+    color: white;
 }
 
-.menu-title {
-    font-weight: bold;
-    font-size: 1.1em;
-    color: var(--text-color);
+/* צבעי רקע לאייקונים (Gradients) */
+.icon-heart { background: linear-gradient(135deg, #ff3b30, #ff9500); }
+.icon-weight { background: linear-gradient(135deg, #5856d6, #af52de); }
+.icon-walk { background: linear-gradient(135deg, #34c759, #30b0c7); }
+.icon-meds { background: linear-gradient(135deg, #ff9500, #ffcc00); }
+.icon-settings { background: linear-gradient(135deg, #8e8e93, #636366); }
+
+/* אייקונים מוגדלים למסכי פלייסהולדר */
+.app-icon.large {
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+    margin: 0 auto 20px;
 }
 
-/* כפתור חזרה לתפריט */
+/* ===========================
+   הדר וניווט פנימי
+=========================== */
+.screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--header-bg);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border-color);
+}
+
 .back-btn {
     background: none;
     border: none;
-    font-size: 1.1em;
-    color: var(--accent-color);
+    color: var(--primary-color);
+    font-size: 17px;
+    font-weight: 600;
     cursor: pointer;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    padding: 0;
 }
 
-.back-btn:hover {
-    text-decoration: underline;
+.content-scroll {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* ===========================
+   טפסים וכרטיסים
+=========================== */
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.form-group { margin-bottom: 15px; }
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.row { display: flex; gap: 15px; }
+.row .form-group { flex: 1; }
+
+.btn-primary {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ===========================
+   רשימת הגדרות (iOS Style)
+=========================== */
+.settings-list {
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.settings-item:last-child { border-bottom: none; }
+.settings-item:active { background-color: var(--bg-color); }
+
+.settings-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+}
+
+.arrow { color: var(--text-secondary); font-weight: bold; }
+
+/* ===========================
+   בורר מצב לילה מיוחד (Rectangular Slider)
+=========================== */
+.toggle-container {
+    position: relative;
+    width: 60px;
+    height: 30px;
+}
+
+.toggle-container input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider-rect {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #e0e0e0;
+    transition: .4s;
+    border-radius: 4px; /* פינות מעט עגולות אבל מלבני */
+    border: 2px solid #ccc;
+    display: flex;
+    overflow: hidden;
+}
+
+/* החלק השחור והלבן */
+.slider-rect:before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 50%;
+    left: 0;
+    bottom: 0;
+    background-color: white;
+    transition: .4s;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+.slider-rect:after {
+    content: "🌙"; /* אייקון לילה בצד */
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+input:checked + .slider-rect {
+    background-color: #333;
+    border-color: #555;
+}
+
+input:checked + .slider-rect:before {
+    transform: translateX(100%); /* החלק הלבן זז ימינה */
+    background-color: #000; /* הופך לשחור */
+    border-left: 1px solid #555;
+}
+
+/* ===========================
+   היסטוריה
+=========================== */
+.entry-card {
+    background: var(--card-bg);
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+.entry-date {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.entry-data {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.btn-small {
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    background: var(--bg-color);
+    color: var(--primary-color);
+}
+
+.placeholder-content {
+    text-align: center;
+    padding-top: 50px;
+    color: var(--text-secondary);
 }

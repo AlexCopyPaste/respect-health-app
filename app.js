@@ -1,21 +1,21 @@
 // ==========================================
-// 1. הגדרות משתנים ובחירת אלמנטים
+// 1. הגדרות ומשתנים
 // ==========================================
 const form = document.getElementById('healthForm');
 const entriesList = document.getElementById('entriesList');
 const dateInput = document.getElementById('date');
 const exportBtn = document.getElementById('exportBtn');
-const themeToggle = document.getElementById('themeToggle');
 const editIdInput = document.getElementById('editId');
 const submitBtn = document.getElementById('submitBtn');
+const themeSwitch = document.getElementById('themeSwitch'); // הבורר החדש
 
-// הגדרת תאריך ושעה נוכחיים כברירת מחדל בטופס
+// הגדרת תאריך ושעה נוכחיים כברירת מחדל
 const now = new Date();
 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 dateInput.value = now.toISOString().slice(0, 16);
 
 // ==========================================
-// 2. אתחול האפליקציה (בעת טעינת הדף)
+// 2. אתחול האפליקציה
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     loadEntries();
@@ -23,43 +23,56 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// 3. ניהול תצוגה ומעבר בין מסכים (חדש!)
+// 3. ניווט בין מסכים (תוקן: פותח דפים נפרדים)
 // ==========================================
-
-// פונקציה להצגת מסך פנימי (כמו מדדי לחץ דם)
 function showSection(sectionId) {
-    // הסתרת התפריט הראשי
-    document.getElementById('mainMenu').classList.add('hidden');
-    // הצגת הסקציה המבוקשת
-    document.getElementById(sectionId).classList.remove('hidden');
-    // גלילה למעלה
+    // הסתר את כל המסכים
+    document.querySelectorAll('.screen').forEach(el => {
+        el.classList.remove('active');
+        el.classList.add('hidden');
+    });
+
+    // הצג את המסך הרצוי
+    const targetScreen = document.getElementById(sectionId);
+    if (targetScreen) {
+        targetScreen.classList.remove('hidden');
+        // טיימר קטן כדי לאפשר אנימציה
+        setTimeout(() => {
+            targetScreen.classList.add('active');
+        }, 10);
+    }
+    
+    // גלילה לראש העמוד
     window.scrollTo(0, 0);
 }
 
-// פונקציה לחזרה למסך הבית
 function showHome() {
-    // הסתרת כל הסקציות הפנימיות
-    document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
-    // הצגת התפריט הראשי
-    document.getElementById('mainMenu').classList.remove('hidden');
+    // הסתר את כל המסכים הפנימיים
+    document.querySelectorAll('.screen').forEach(el => {
+        if (el.id !== 'mainMenu') {
+            el.classList.remove('active');
+            setTimeout(() => el.classList.add('hidden'), 300); // מחכה לסיום האנימציה
+        }
+    });
+
+    // הצג את התפריט הראשי
+    const menu = document.getElementById('mainMenu');
+    menu.classList.remove('hidden');
+    menu.classList.add('active');
     
-    // אם היינו באמצע עריכה - נבטל אותה וננקה את הטופס
     resetForm();
 }
 
 // ==========================================
-// 4. ניהול מצב לילה (Dark Mode)
+// 4. ניהול מצב לילה (לוגיקה חדשה לבורר)
 // ==========================================
-themeToggle.addEventListener('click', () => {
-    const isDark = document.body.getAttribute('data-theme') === 'dark';
-    if (isDark) {
-        document.body.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-        themeToggle.querySelector('.icon').textContent = '🌙';
-    } else {
+themeSwitch.addEventListener('change', (e) => {
+    if (e.target.checked) {
         document.body.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
-        themeToggle.querySelector('.icon').textContent = '☀️';
+    } else {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
     }
 });
 
@@ -67,83 +80,82 @@ function loadTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.setAttribute('data-theme', 'dark');
-        themeToggle.querySelector('.icon').textContent = '☀️';
+        themeSwitch.checked = true;
+    } else {
+        themeSwitch.checked = false;
     }
 }
 
 // ==========================================
-// 5. לוגיקה של הטופס (שמירה ועדכון)
+// 5. צור קשר בוואטסאף (הוספת הפונקציה)
+// ==========================================
+window.contactSupport = function() {
+    const phone = "9720547565000";
+    const message = encodeURIComponent("אני משתמש באפליקציה שלך ורוצה לומר לך ש...");
+    const url = `https://wa.me/${phone}?text=${message}`;
+    window.open(url, '_blank');
+}
+
+// ==========================================
+// 6. שמירה ועיבוד נתונים (לוגיקה קיימת)
 // ==========================================
 form.addEventListener('submit', function(e) {
-    e.preventDefault(); // מניעת רענון דף
+    e.preventDefault();
 
     const isEdit = editIdInput.value !== '';
     const entryId = isEdit ? parseInt(editIdInput.value) : Date.now();
 
-    // יצירת אובייקט עם הנתונים
     const entryData = {
         id: entryId,
         date: document.getElementById('date').value,
         systolic: document.getElementById('systolic').value,
         diastolic: document.getElementById('diastolic').value,
         pulse: document.getElementById('pulse').value,
-        weight: document.getElementById('weight').value,
+        // weight: document.getElementById('weight').value, // הוסר זמנית מהטופס הזה
         notes: document.getElementById('notes').value
     };
 
-    // שמירה או עדכון ב-LocalStorage
     saveOrUpdateEntry(entryData, isEdit);
-
-    // ניקוי הטופס והצגה מחדש
     resetForm();
     loadEntries();
+    
+    // הודעת אישור קטנה
+    alert('הנתונים נשמרו בהצלחה!');
 });
 
 function saveOrUpdateEntry(entry, isUpdate) {
     let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
     
     if (isUpdate) {
-        // מציאת האינדקס של הרשומה הקיימת והחלפתה
         const index = entries.findIndex(e => e.id === entry.id);
-        if (index !== -1) {
-            entries[index] = entry;
-        }
+        if (index !== -1) entries[index] = entry;
     } else {
-        // הוספה לראש הרשימה
         entries.unshift(entry);
     }
     
     localStorage.setItem('respectHealthData', JSON.stringify(entries));
 }
 
-// ==========================================
-// 6. הצגת נתונים, עריכה ומחיקה
-// ==========================================
 function loadEntries() {
     let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
-    entriesList.innerHTML = ''; // ניקוי הרשימה הקיימת
+    entriesList.innerHTML = '';
 
     entries.forEach(entry => {
         const div = document.createElement('div');
         div.className = 'entry-card';
         
-        // יצירת מחרוזת תצוגה
         let content = `<div class="entry-date">${new Date(entry.date).toLocaleString('he-IL')}</div>`;
         content += `<div class="entry-data">`;
-        if (entry.systolic || entry.diastolic) content += `לחץ דם: ${entry.systolic}/${entry.diastolic} | `;
-        if (entry.pulse) content += `דופק: ${entry.pulse} | `;
-        if (entry.weight) content += `משקל: ${entry.weight}`;
+        if (entry.systolic) content += `לחץ דם: ${entry.systolic}/${entry.diastolic} | `;
+        if (entry.pulse) content += `דופק: ${entry.pulse}`;
         content += `</div>`;
         
-        if (entry.notes) {
-            content += `<div class="entry-notes">"${entry.notes}"</div>`;
-        }
+        if (entry.notes) content += `<div style="font-size:0.9em; margin-top:5px; color:#888;">"${entry.notes}"</div>`;
 
-        // כפתורי פעולה (עריכה ומחיקה)
         content += `
-            <div style="position: absolute; left: 10px; top: 10px;">
-                <button onclick="editEntry(${entry.id})" class="btn-small" style="background: #f39c12; margin-left: 5px;" title="ערוך">✏️</button>
-                <button onclick="deleteEntry(${entry.id})" class="btn-small" style="background: #e74c3c;" title="מחק">🗑️</button>
+            <div style="position: absolute; left: 15px; top: 15px;">
+                <button onclick="editEntry(${entry.id})" class="btn-small">✏️</button>
+                <button onclick="deleteEntry(${entry.id})" class="btn-small" style="color:red;">🗑️</button>
             </div>
         `;
 
@@ -152,82 +164,52 @@ function loadEntries() {
     });
 }
 
-// פונקציית מחיקה (גלובלית כדי שתהיה נגישה מה-HTML)
 window.deleteEntry = function(id) {
-    if(confirm('למחוק את הרישום הזה?')) {
+    if(confirm('למחוק?')) {
         let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
         entries = entries.filter(entry => entry.id !== id);
         localStorage.setItem('respectHealthData', JSON.stringify(entries));
         loadEntries();
-        
-        // אם מחקנו בזמן עריכה - ננקה את הטופס
-        if (editIdInput.value == id) {
-            resetForm();
-        }
     }
 }
 
-// פונקציית עריכה (גלובלית)
 window.editEntry = function(id) {
     let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
     const entry = entries.find(e => e.id === id);
     
     if (entry) {
-        // מילוי הטופס בנתונים הקיימים
         document.getElementById('date').value = entry.date;
         document.getElementById('systolic').value = entry.systolic;
         document.getElementById('diastolic').value = entry.diastolic;
         document.getElementById('pulse').value = entry.pulse;
-        document.getElementById('weight').value = entry.weight;
         document.getElementById('notes').value = entry.notes;
         
-        // סימון שאנחנו במצב עריכה
         editIdInput.value = entry.id;
-        submitBtn.textContent = 'עדכן מדידה';
-        submitBtn.style.backgroundColor = '#f39c12'; // צבע כתום לעריכה
-        
-        // גלילה לראש הטופס
+        submitBtn.textContent = 'עדכן';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
-// פונקציית עזר לניקוי הטופס
 function resetForm() {
     form.reset();
     editIdInput.value = '';
     submitBtn.textContent = 'שמור מדידה';
-    submitBtn.style.backgroundColor = ''; // חזרה לצבע המקורי
-    
-    // החזרת התאריך הנוכחי
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     dateInput.value = now.toISOString().slice(0, 16);
 }
 
-// ==========================================
-// 7. ייצוא לאקסל (CSV)
-// ==========================================
 exportBtn.addEventListener('click', function() {
     let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
-    if(entries.length === 0) {
-        alert("אין נתונים לייצוא");
-        return;
-    }
+    if(entries.length === 0) { alert("אין נתונים"); return; }
 
-    let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // הוספת BOM לעברית
-    csvContent += "תאריך,לחץ דם גבוה,לחץ דם נמוך,דופק,משקל,הערות\n";
-
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFFתאריך,לחץ דם,דופק,הערות\n";
     entries.forEach(e => {
-        // ניקוי פסיקים מהערות כדי לא לשבור את ה-CSV
-        const safeNotes = e.notes ? e.notes.replace(/,/g, ' ') : '';
-        csvContent += `${e.date},${e.systolic},${e.diastolic},${e.pulse},${e.weight},"${safeNotes}"\n`;
+        csvContent += `${e.date},${e.systolic}/${e.diastolic},${e.pulse},"${e.notes}"\n`;
     });
 
-    const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "respect_health_data.csv");
-    document.body.appendChild(link);
+    link.href = encodeURI(csvContent);
+    link.download = "health_data.csv";
     link.click();
-    document.body.removeChild(link);
 });
