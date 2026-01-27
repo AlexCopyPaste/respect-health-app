@@ -14,6 +14,10 @@
 <body>
 
     <div class="container">
+        <button id="themeToggle" class="theme-toggle" title="שנה מצב תצוגה">
+            <span class="icon">🌙</span>
+        </button>
+
         <header>
             <h1>Respect Health</h1>
             <p>הבריאות שלך, בידיים שלך.</p>
@@ -22,6 +26,8 @@
         <div class="card form-card">
             <h2>הוספת מדידה חדשה</h2>
             <form id="healthForm">
+                <input type="hidden" id="editId">
+
                 <div class="form-group">
                     <label>תאריך ושעה:</label>
                     <input type="datetime-local" id="date" required>
@@ -54,7 +60,7 @@
                     <textarea id="notes" rows="2" placeholder="איך הרגשת?"></textarea>
                 </div>
 
-                <button type="submit" class="btn-primary">שמור מדידה</button>
+                <button type="submit" id="submitBtn" class="btn-primary">שמור מדידה</button>
             </form>
         </div>
 

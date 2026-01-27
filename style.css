@@ -1,9 +1,23 @@
 :root {
+    /* צבעים למצב יום (ברירת מחדל) */
     --primary-color: #2c3e50;
     --accent-color: #3498db;
     --bg-color: #f4f7f6;
     --card-bg: #ffffff;
     --text-color: #333;
+    --border-color: #ddd;
+    --input-bg: #fff;
+}
+
+/* הגדרות למצב לילה */
+[data-theme="dark"] {
+    --primary-color: #34495e;
+    --accent-color: #5dade2;
+    --bg-color: #1a1a1a;
+    --card-bg: #2d2d2d;
+    --text-color: #e0e0e0;
+    --border-color: #444;
+    --input-bg: #333;
 }
 
 body {
@@ -13,16 +27,42 @@ body {
     margin: 0;
     padding: 20px;
     direction: rtl;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
     max-width: 600px;
     margin: 0 auto;
+    position: relative; /* עבור כפתור מצב הלילה */
+}
+
+/* כפתור מצב לילה */
+.theme-toggle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
 }
 
 header {
     text-align: center;
     margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 .card {
@@ -31,6 +71,7 @@ header {
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-bottom: 20px;
+    transition: background-color 0.3s;
 }
 
 .form-group {
@@ -47,10 +88,12 @@ label {
 input, textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    font-size: 16px; /* מונע זום אוטומטי באייפון */
+    font-size: 16px;
     box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--text-color);
 }
 
 .row {
@@ -72,63 +115,20 @@ input, textarea {
     font-size: 18px;
     cursor: pointer;
     font-weight: bold;
+    transition: background-color 0.2s;
 }
 
 .btn-primary:active {
-    background-color: #1a252f;
+    opacity: 0.9;
 }
 
 /* עיצוב כרטיסי היסטוריה */
 .entry-card {
-    background: white;
+    background: var(--card-bg);
     border-right: 5px solid var(--accent-color);
     padding: 15px;
+    padding-left: 50px; /* מקום לכפתורים */
     margin-bottom: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    position: relative;
-}
-
-.entry-date {
-    font-size: 0.85em;
-    color: #777;
-    margin-bottom: 5px;
-}
-
-.entry-data {
-    font-weight: bold;
-    font-size: 1.1em;
-}
-
-.entry-notes {
-    font-size: 0.9em;
-    color: #555;
-    margin-top: 5px;
-    font-style: italic;
-}
-
-.delete-btn {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    background: none;
-    border: none;
-    color: #e74c3c;
-    cursor: pointer;
-    font-size: 1.2em;
-}
-
-.history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.btn-small {
-    background: #27ae60;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
+    position: relative
