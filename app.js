@@ -1,4 +1,6 @@
-// 1. בחירת אלמנטים מה-HTML
+// ==========================================
+// 1. הגדרות משתנים ובחירת אלמנטים
+// ==========================================
 const form = document.getElementById('healthForm');
 const entriesList = document.getElementById('entriesList');
 const dateInput = document.getElementById('date');
@@ -12,13 +14,42 @@ const now = new Date();
 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 dateInput.value = now.toISOString().slice(0, 16);
 
-// 2. טעינת נתונים והגדרות בעת עליית האתר
+// ==========================================
+// 2. אתחול האפליקציה (בעת טעינת הדף)
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     loadEntries();
     loadTheme();
 });
 
-// 3. ניהול מצב לילה (Dark Mode)
+// ==========================================
+// 3. ניהול תצוגה ומעבר בין מסכים (חדש!)
+// ==========================================
+
+// פונקציה להצגת מסך פנימי (כמו מדדי לחץ דם)
+function showSection(sectionId) {
+    // הסתרת התפריט הראשי
+    document.getElementById('mainMenu').classList.add('hidden');
+    // הצגת הסקציה המבוקשת
+    document.getElementById(sectionId).classList.remove('hidden');
+    // גלילה למעלה
+    window.scrollTo(0, 0);
+}
+
+// פונקציה לחזרה למסך הבית
+function showHome() {
+    // הסתרת כל הסקציות הפנימיות
+    document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+    // הצגת התפריט הראשי
+    document.getElementById('mainMenu').classList.remove('hidden');
+    
+    // אם היינו באמצע עריכה - נבטל אותה וננקה את הטופס
+    resetForm();
+}
+
+// ==========================================
+// 4. ניהול מצב לילה (Dark Mode)
+// ==========================================
 themeToggle.addEventListener('click', () => {
     const isDark = document.body.getAttribute('data-theme') === 'dark';
     if (isDark) {
@@ -40,7 +71,9 @@ function loadTheme() {
     }
 }
 
-// 4. פונקציה לשמירת טופס (יצירה או עדכון)
+// ==========================================
+// 5. לוגיקה של הטופס (שמירה ועדכון)
+// ==========================================
 form.addEventListener('submit', function(e) {
     e.preventDefault(); // מניעת רענון דף
 
@@ -66,7 +99,6 @@ form.addEventListener('submit', function(e) {
     loadEntries();
 });
 
-// 5. פונקציית שמירה/עדכון בלוגיקה
 function saveOrUpdateEntry(entry, isUpdate) {
     let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
     
@@ -84,7 +116,9 @@ function saveOrUpdateEntry(entry, isUpdate) {
     localStorage.setItem('respectHealthData', JSON.stringify(entries));
 }
 
-// 6. פונקציית טעינה והצגה של הנתונים
+// ==========================================
+// 6. הצגת נתונים, עריכה ומחיקה
+// ==========================================
 function loadEntries() {
     let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
     entriesList.innerHTML = ''; // ניקוי הרשימה הקיימת
@@ -108,8 +142,8 @@ function loadEntries() {
         // כפתורי פעולה (עריכה ומחיקה)
         content += `
             <div style="position: absolute; left: 10px; top: 10px;">
-                <button onclick="editEntry(${entry.id})" class="btn-small" style="background: #f39c12; margin-left: 5px;">✏️</button>
-                <button onclick="deleteEntry(${entry.id})" class="btn-small" style="background: #e74c3c;">🗑️</button>
+                <button onclick="editEntry(${entry.id})" class="btn-small" style="background: #f39c12; margin-left: 5px;" title="ערוך">✏️</button>
+                <button onclick="deleteEntry(${entry.id})" class="btn-small" style="background: #e74c3c;" title="מחק">🗑️</button>
             </div>
         `;
 
@@ -118,7 +152,7 @@ function loadEntries() {
     });
 }
 
-// 7. פונקציית מחיקה
+// פונקציית מחיקה (גלובלית כדי שתהיה נגישה מה-HTML)
 window.deleteEntry = function(id) {
     if(confirm('למחוק את הרישום הזה?')) {
         let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
@@ -133,7 +167,7 @@ window.deleteEntry = function(id) {
     }
 }
 
-// 8. פונקציית עריכה (מעלה נתונים לטופס)
+// פונקציית עריכה (גלובלית)
 window.editEntry = function(id) {
     let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
     const entry = entries.find(e => e.id === id);
@@ -152,7 +186,7 @@ window.editEntry = function(id) {
         submitBtn.textContent = 'עדכן מדידה';
         submitBtn.style.backgroundColor = '#f39c12'; // צבע כתום לעריכה
         
-        // גלילה לראש העמוד
+        // גלילה לראש הטופס
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
@@ -170,7 +204,9 @@ function resetForm() {
     dateInput.value = now.toISOString().slice(0, 16);
 }
 
-// 9. פונקציית ייצוא ל-CSV (אקסל)
+// ==========================================
+// 7. ייצוא לאקסל (CSV)
+// ==========================================
 exportBtn.addEventListener('click', function() {
     let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
     if(entries.length === 0) {

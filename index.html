@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Respect Health Tracker</title>
-    
+    <title>Respect Health</title>
     <link rel="stylesheet" href="style.css">
-    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
     <link rel="apple-touch-icon" href="icon-192.png"> 
@@ -23,55 +21,80 @@
             <p>הבריאות שלך, בידיים שלך.</p>
         </header>
 
-        <div class="card form-card">
-            <h2>הוספת מדידה חדשה</h2>
-            <form id="healthForm">
-                <input type="hidden" id="editId">
-
-                <div class="form-group">
-                    <label>תאריך ושעה:</label>
-                    <input type="datetime-local" id="date" required>
-                </div>
-                
-                <div class="row">
-                    <div class="form-group">
-                        <label>לחץ דם (גבוה):</label>
-                        <input type="number" id="systolic" placeholder="120">
-                    </div>
-                    <div class="form-group">
-                        <label>לחץ דם (נמוך):</label>
-                        <input type="number" id="diastolic" placeholder="80">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group">
-                        <label>דופק:</label>
-                        <input type="number" id="pulse" placeholder="70">
-                    </div>
-                    <div class="form-group">
-                        <label>משקל (ק"ג):</label>
-                        <input type="number" step="0.1" id="weight" placeholder="75.5">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>הערות:</label>
-                    <textarea id="notes" rows="2" placeholder="איך הרגשת?"></textarea>
-                </div>
-
-                <button type="submit" id="submitBtn" class="btn-primary">שמור מדידה</button>
-            </form>
-        </div>
-
-        <div class="history-section">
-            <div class="history-header">
-                <h2>היסטוריה</h2>
-                <button id="exportBtn" class="btn-small">ייצוא לאקסל (CSV)</button>
+        <div id="mainMenu" class="dashboard-grid">
+            <div class="menu-card" onclick="showSection('bpSection')">
+                <div class="menu-icon">❤️</div>
+                <div class="menu-title">לחץ דם ודופק</div>
             </div>
-            <div id="entriesList">
-                </div>
+            
+            <div class="menu-card" onclick="alert('בקרוב: מעקב משקל נפרד')">
+                <div class="menu-icon">⚖️</div>
+                <div class="menu-title">משקל</div>
+            </div>
+
+            <div class="menu-card" onclick="alert('בקרוב: מעקב הליכה')">
+                <div class="menu-icon">👟</div>
+                <div class="menu-title">הליכה</div>
+            </div>
+
+            <div class="menu-card" onclick="alert('בקרוב: מעקב תרופות')">
+                <div class="menu-icon">💊</div>
+                <div class="menu-title">תרופות</div>
+            </div>
         </div>
+
+        <div id="bpSection" class="content-section hidden">
+            <button onclick="showHome()" class="back-btn">➡️ חזרה לתפריט</button>
+            
+            <div class="card form-card">
+                <h2>מדידת לחץ דם</h2>
+                <form id="healthForm">
+                    <input type="hidden" id="editId">
+                    <div class="form-group">
+                        <label>תאריך ושעה:</label>
+                        <input type="datetime-local" id="date" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group">
+                            <label>לחץ דם (גבוה):</label>
+                            <input type="number" id="systolic" placeholder="120">
+                        </div>
+                        <div class="form-group">
+                            <label>לחץ דם (נמוך):</label>
+                            <input type="number" id="diastolic" placeholder="80">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label>דופק:</label>
+                            <input type="number" id="pulse" placeholder="70">
+                        </div>
+                        <div class="form-group">
+                            <label>משקל (ק"ג):</label>
+                            <input type="number" step="0.1" id="weight" placeholder="75.5">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>הערות:</label>
+                        <textarea id="notes" rows="2" placeholder="איך הרגשת?"></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-primary">שמור מדידה</button>
+                </form>
+            </div>
+
+            <div class="history-section">
+                <div class="history-header">
+                    <h2>היסטוריה</h2>
+                    <button id="exportBtn" class="btn-small">ייצוא (CSV)</button>
+                </div>
+                <div id="entriesList"></div>
+            </div>
+        </div>
+
     </div>
 
     <script src="app.js"></script>
