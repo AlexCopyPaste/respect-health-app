@@ -329,7 +329,6 @@ function loadData(type) {
         // נתונים בצד ימין (תחילת השורה ב-RTL)
         let content = `<div class="history-right">`;
         
-        // נתונים
         if(type === 'bp') content += `<div class="history-data-row"><span>❤️${item.pulse}</span><span>⬆️${item.sys}</span><span>⬇️${item.dia}</span></div>`;
         else if(type === 'sugar') content += `<div class="history-data-row"><span>🩸${item.val}</span></div>`;
         else if(type === 'weight') content += `<div class="history-data-row"><span>📟${item.val}</span></div>`;
@@ -338,7 +337,6 @@ function loadData(type) {
         else if(type === 'meds') content += `<div class="history-data-row"><span>💊${item.name}</span></div>`;
         else if(type === 'cycle') content += `<div class="history-data-row"><span>🥀${item.notes}</span></div>`;
         
-        // תאריך
         content += `<div class="history-date-full">${dStr}</div>`;
         content += `</div>`; // סגירת צד ימין
 

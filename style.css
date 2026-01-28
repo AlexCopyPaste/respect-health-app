@@ -31,35 +31,32 @@ body {
     user-select: none;
 }
 
-/* כותרת ראשית סימטרית ונקייה */
+/* כותרת ראשית נקייה עם אייקון בצד שמאל */
 .main-header { 
     display: flex; 
-    justify-content: space-between; 
     align-items: center; 
     padding: 20px; 
     background: var(--bg-color); 
+    gap: 15px;
 }
 
-/* אייקון תמונה עגול בצד שמאל */
-.header-side-img img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    border: 2px solid white;
+/* הלוגו בצד שמאל */
+.header-logo {
+    display: flex;
+    align-items: center;
+}
+.header-logo img {
+    width: 60px; /* גודל האייקון שלך */
+    height: auto;
+    object-fit: contain;
 }
 
-/* אייקון וקטורי בצד ימין */
-.header-side-icon svg {
-    width: 50px;
-    height: 50px;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+.header-content { 
+    text-align: center; /* כותרת במרכז או מימין לפי העדפה */
+    flex: 1; /* תופס את שאר המקום */
 }
-
-.header-content { text-align: center; flex-grow: 1; }
-.header-content h1 { margin: 0; font-size: 22px; font-weight: 800; color: var(--text-color); text-shadow: none; }
-.header-content p { margin: 5px 0 0; color: #666; font-size: 14px; text-shadow: none; }
+.header-content h1 { margin: 0; font-size: 24px; }
+.header-content p { margin: 5px 0 0; color: #666; font-size: 13px; }
 
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 15px; }
 .app-btn {
@@ -70,7 +67,6 @@ body {
 .app-btn:active { transform: scale(0.98); }
 .icon-svg svg { width: 45px; height: 45px; margin-bottom: 5px; }
 
-/* צבעי אייקונים */
 .color-red { color: #ff3b30; }
 .color-blue { color: #007aff; }
 .color-purple { color: #af52de; }
@@ -80,7 +76,7 @@ body {
 .color-teal { color: #00c7be; }
 .color-gray { color: #8e8e93; }
 
-/* שדות טקסט */
+/* שדות טקסט - יישור לימין חזק */
 input, select {
     width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
     font-size: 18px; 
@@ -115,21 +111,28 @@ input, select {
 label { display: block; margin-bottom: 5px; font-size: 14px; color: #888; }
 .btn-ios { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 10px; }
 
-/* היסטוריה - מתוקנת (נתונים בימין, כפתורים בשמאל) */
+/* היסטוריה - מתוקנת (נתונים בימין, כפתורים משמאל) */
 .history-item { 
-    background: var(--card-bg); padding: 10px; border-radius: 10px; margin-bottom: 8px; 
+    background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 10px; 
     display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid #f0f0f0; 
     white-space: nowrap; 
 }
 
-.history-right { display: flex; align-items: center; gap: 10px; overflow: hidden; }
-.history-date-full { font-size: 12px; color: #999; min-width: 80px; }
-.history-data-row { display: flex; gap: 8px; font-size: 15px; font-weight: 500; }
+/* צד ימין (התחלה) - נתונים ותאריך */
+.history-right { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    overflow: hidden; 
+}
+.history-data-row { display: flex; gap: 10px; font-size: 16px; font-weight: 500; }
+.history-date-full { font-size: 12px; color: #999; margin-left: 5px; }
 
-.history-actions { display: flex; gap: 10px; }
-.action-icon { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.7; padding: 0; }
-.action-icon:hover { opacity: 1; }
+/* צד שמאל (סוף) - כפתורים */
+.history-actions { display: flex; gap: 15px; }
+.action-icon { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; padding: 0; }
+.action-icon:hover { opacity: 1; color: var(--primary); }
 
 .screen { display: none; } .screen.active { display: block; animation: fade 0.3s; } .screen.hidden { display: none; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
