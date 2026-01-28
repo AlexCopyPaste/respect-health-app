@@ -1,21 +1,16 @@
 :root {
     --bg-color: #f2f2f7;
     --card-bg: #ffffff;
-    --text-color: #1c1c1e;
+    --text-color: #000000;
     --primary: #007aff;
-    --danger: #ff3b30;
-    --warning: #ffcc00;
-    --success: #34c759;
-    --shadow-light: -5px -5px 10px #ffffff;
-    --shadow-dark: 5px 5px 10px #d1d9e6;
+    --border-radius: 16px;
 }
 
+/* מצב לילה */
 [data-theme="dark"] {
-    --bg-color: #1c1c1e;
-    --card-bg: #2c2c2e;
+    --bg-color: #000000;
+    --card-bg: #1c1c1e;
     --text-color: #ffffff;
-    --shadow-light: -3px -3px 8px #3a3a3c;
-    --shadow-dark: 5px 5px 10px #000000;
 }
 
 body {
@@ -23,154 +18,170 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
-    overflow-x: hidden;
     direction: rtl;
+    user-select: none; /* מונע סימון טקסט כמו באפליקציה */
 }
 
-/* מסכים */
-.screen {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+/* הדר ראשי */
+.main-header {
+    text-align: center;
+    padding: 40px 20px 20px;
     background: var(--bg-color);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
 }
-.screen.active { transform: translateX(0); }
-.screen.hidden { display: none; }
+.app-logo { font-size: 50px; display: block; margin-bottom: 10px; }
+.main-header h1 { margin: 0; font-size: 28px; }
 
-/* הדר */
-.main-header { padding: 40px 20px 20px; text-align: center; }
-.screen-header {
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--card-bg);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-/* גריד כפתורים תלת-ממדי */
+/* גריד כפתורים - 3 בשורה */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(3, 1fr); /* 3 עמודות */
+    gap: 15px;
     padding: 20px;
 }
 
 .app-btn {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 15px 5px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.1s;
     display: flex;
     flex-direction: column;
     align-items: center;
-    cursor: pointer;
-    transition: transform 0.1s;
+    justify-content: center;
+    height: 110px; /* גובה אחיד */
 }
-.app-btn:active { transform: scale(0.95); }
+.app-btn:active { transform: scale(0.95); background: #f0f0f0; }
 
-.icon-3d {
-    width: 70px; height: 70px;
-    border-radius: 18px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 32px;
-    color: white;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.2), inset 0 2px 5px rgba(255,255,255,0.3);
-    margin-bottom: 10px;
+.icon-large { font-size: 45px; margin-bottom: 8px; }
+.app-btn span { font-size: 14px; font-weight: 600; }
+
+/* צבעי טקסט לאייקונים */
+.red-text { color: #ff3b30; }
+.blue-text { color: #007aff; }
+.purple-text { color: #af52de; }
+.orange-text { color: #ff9500; }
+.pink-text { color: #ff2d55; }
+.gray-text { color: #8e8e93; }
+
+/* הדר פנימי */
+.screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--card-bg);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
 }
-
-/* צבעי כפתורים */
-.red-gradient { background: linear-gradient(145deg, #ff3b30, #d6352b); }
-.blue-gradient { background: linear-gradient(145deg, #5ac8fa, #007aff); }
-.purple-gradient { background: linear-gradient(145deg, #af52de, #5856d6); }
-.orange-gradient { background: linear-gradient(145deg, #ffcc00, #ff9500); }
-.pink-gradient { background: linear-gradient(145deg, #ff2d55, #d62446); }
-.gray-gradient { background: linear-gradient(145deg, #8e8e93, #636366); }
+.header-title { display: flex; align-items: center; gap: 10px; }
+.header-icon { font-size: 30px; }
+.home-btn {
+    background: none; border: none; font-size: 28px; cursor: pointer;
+}
 
 /* טפסים */
-.content-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; }
+.content-scroll { padding: 20px; padding-bottom: 80px; }
 .card {
     background: var(--card-bg);
     padding: 20px;
-    border-radius: 20px;
-    box-shadow: var(--shadow-dark), var(--shadow-light);
-    margin-bottom: 25px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
 }
-
-input, select, textarea {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; font-size: 14px; color: #888; }
+input, select {
+    width: 100%; padding: 12px;
+    border: 1px solid #ddd; border-radius: 10px;
+    font-size: 18px; text-align: right;
+    box-sizing: border-box;
     background: var(--bg-color);
     color: var(--text-color);
-    font-size: 16px;
-    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1), inset -2px -2px 5px rgba(255,255,255,0.5);
-    transition: background-color 0.3s;
-    box-sizing: border-box;
 }
 
-/* ולידציה - צבעי רקע דינמיים */
-.bg-success { background-color: rgba(52, 199, 89, 0.2) !important; color: #000; }
-.bg-warning { background-color: rgba(255, 204, 0, 0.3) !important; color: #000; }
-.bg-danger { background-color: rgba(255, 59, 48, 0.3) !important; color: #000; }
-
-.feedback-text { display: block; margin-top: 5px; font-weight: bold; }
-
-/* כפתור שליחה */
+/* כפתור ראשי */
 .btn-ios {
-    width: 100%;
-    padding: 15px;
-    margin-top: 20px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,122,255,0.3);
-    cursor: pointer;
+    width: 100%; padding: 15px;
+    background: var(--primary); color: white;
+    border: none; border-radius: 12px;
+    font-size: 18px; font-weight: bold;
+    margin-top: 10px;
 }
-.btn-ios:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
 
-/* רשימות היסטוריה */
+/* גרפים */
+.chart-container {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    height: 250px;
+}
+
+/* רשימת היסטוריה - שורה אחת */
 .history-item {
     background: var(--card-bg);
     padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    border-right: 4px solid var(--primary);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    display: flex; justify-content: space-between; align-items: center;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* פיזור לרוחב */
+    border-bottom: 1px solid #eee;
 }
 
-/* כפתור ייצוא צף */
+.history-data {
+    display: flex;
+    gap: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    align-items: center;
+}
+
+.history-date {
+    font-size: 12px; color: #999; margin-left: 10px;
+    min-width: 40px;
+}
+
+.delete-icon {
+    background: none; border: none; font-size: 20px; cursor: pointer;
+    opacity: 0.5; padding: 0 10px;
+}
+.delete-icon:hover { opacity: 1; color: red; }
+
+/* מסכים */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn 0.3s; }
+.screen.hidden { display: none; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* כפתור אקסל צף */
 .floating-export-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: #27ae60;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 30px;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 100;
-    display: flex; align-items: center; gap: 8px;
-    cursor: pointer;
+    position: fixed; bottom: 20px; left: 20px;
+    background: #27ae60; color: white;
+    border: none; padding: 10px 20px; border-radius: 30px;
+    font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 90;
 }
 .floating-export-btn.hidden { display: none; }
 
-/* תחזית מחזור */
-.prediction-card {
-    background: linear-gradient(135deg, #ff2d55, #ff6b8b);
-    color: white;
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(255, 45, 85, 0.4);
+/* מודל מחיקה מותאם אישית */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
 }
-
-.checkbox-group { display: flex; gap: 15px; margin-top: 5px; }
+.modal-overlay.hidden { display: none; }
+.modal-box {
+    background: var(--card-bg); padding: 25px;
+    border-radius: 20px; width: 80%; max-width: 300px;
+    text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.modal-actions {
+    display: flex; gap: 10px; margin-top: 20px;
+}
+.modal-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 16px; }
+.modal-btn.cancel { background: #eee; color: #333; }
+.modal-btn.delete { background: #ff3b30; color: white; }
