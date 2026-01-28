@@ -15,12 +15,20 @@
         
         <div id="mainMenu" class="screen active">
             <header class="main-header">
-                <div class="header-overlay">
-                    <div class="header-content">
-                        <h1>Respect Your Health</h1>
-                        <p>הבריאות שלך בידיים שלך</p>
-                    </div>
+                
+                <div class="header-side-icon color-red">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </div>
+
+                <div class="header-content">
+                    <h1>Respect Your Health</h1>
+                    <p>הבריאות שלך בידיים שלך</p>
+                </div>
+
+                <div class="header-side-img">
+                    <img src="header_icon.avif" alt="סמל בריאות" onerror="this.src='header_icon.png'">
+                </div>
+
             </header>
 
             <div class="dashboard-grid">
@@ -132,6 +140,7 @@
                     <button onclick="showHome()" class="home-btn">🏠</button>
                 </div>
             </div>
+            
             <div id="sugarChartSection" class="chart-wrapper hidden">
                 <div class="chart-controls">
                     <button onclick="updateChartFilter('sugar', 7)">שבוע</button>
@@ -140,12 +149,14 @@
                 </div>
                 <div class="chart-container"><canvas id="sugarChart"></canvas></div>
             </div>
+
             <div class="color-legend">
                 <span class="legend-item"><span class="dot bg-low"></span>נמוך</span>
                 <span class="legend-item"><span class="dot bg-normal"></span>תקין</span>
                 <span class="legend-item"><span class="dot bg-borderline"></span>גבולי</span>
                 <span class="legend-item"><span class="dot bg-high"></span>גבוה</span>
             </div>
+
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="sugarForm">
@@ -173,6 +184,7 @@
                     <button onclick="showHome()" class="home-btn">🏠</button>
                 </div>
             </div>
+
             <div id="weightChartSection" class="chart-wrapper hidden">
                 <div class="chart-controls">
                     <button onclick="updateChartFilter('weight', 30)">חודש</button>
@@ -181,6 +193,7 @@
                 </div>
                 <div class="chart-container"><canvas id="weightChart"></canvas></div>
             </div>
+
             <div class="color-legend">
                  <span class="legend-item"><span class="dot bg-normal"></span>תקין</span>
                  <span class="legend-item"><span class="dot bg-borderline"></span>עודף</span>
