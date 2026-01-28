@@ -3,15 +3,29 @@
     --card-bg: #ffffff;
     --text-color: #000000;
     --primary: #007aff;
-    --border-radius: 16px;
+    
+    /* צבעי רמזור */
+    --color-normal: #ffffff;
+    --color-low: #ffcccc;       /* אדום בהיר מאוד */
+    --color-borderline: #ffe6f2; /* ורוד כהה/בהיר */
+    --color-high: #ff9999;       /* אדום חזק יותר */
 }
 
-/* מצב לילה */
 [data-theme="dark"] {
     --bg-color: #000000;
     --card-bg: #1c1c1e;
     --text-color: #ffffff;
+    
+    /* התאמה לכהה */
+    --color-normal: #2c2c2e;
+    --color-low: #4d0000;
+    --color-borderline: #4d0026;
+    --color-high: #800000;
 }
+
+/* גופן גדול */
+body.large-font { font-size: 120%; }
+body.large-font input, body.large-font select, body.large-font button { font-size: 20px; }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -19,169 +33,134 @@ body {
     color: var(--text-color);
     margin: 0;
     direction: rtl;
-    user-select: none; /* מונע סימון טקסט כמו באפליקציה */
+    user-select: none;
 }
 
-/* הדר ראשי */
-.main-header {
-    text-align: center;
-    padding: 40px 20px 20px;
-    background: var(--bg-color);
-}
-.app-logo { font-size: 50px; display: block; margin-bottom: 10px; }
-.main-header h1 { margin: 0; font-size: 28px; }
+.main-header { text-align: center; padding: 30px 20px; background: var(--bg-color); }
+.app-logo { font-size: 40px; }
 
-/* גריד כפתורים - 3 בשורה */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 עמודות */
-    gap: 15px;
-    padding: 20px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px; padding: 15px;
 }
 
 .app-btn {
     background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 15px 5px;
+    border-radius: 16px;
+    padding: 10px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     cursor: pointer;
-    transition: transform 0.1s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 110px; /* גובה אחיד */
+    height: 100px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-.app-btn:active { transform: scale(0.95); background: #f0f0f0; }
+.app-btn:active { background: #e5e5ea; transform: scale(0.98); }
+.icon-large { font-size: 40px; margin-bottom: 5px; }
 
-.icon-large { font-size: 45px; margin-bottom: 8px; }
-.app-btn span { font-size: 14px; font-weight: 600; }
-
-/* צבעי טקסט לאייקונים */
-.red-text { color: #ff3b30; }
-.blue-text { color: #007aff; }
-.purple-text { color: #af52de; }
-.orange-text { color: #ff9500; }
-.pink-text { color: #ff2d55; }
-.gray-text { color: #8e8e93; }
-
-/* הדר פנימי */
 .screen-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background: var(--card-bg);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px; background: var(--card-bg);
     position: sticky; top: 0; z-index: 100;
     border-bottom: 1px solid rgba(0,0,0,0.1);
 }
-.header-title { display: flex; align-items: center; gap: 10px; }
-.header-icon { font-size: 30px; }
-.home-btn {
-    background: none; border: none; font-size: 28px; cursor: pointer;
+.header-title { display: flex; align-items: center; gap: 10px; font-size: 20px; }
+.home-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
+
+/* מקרא צבעים */
+.color-legend {
+    display: flex; justify-content: space-around; padding: 10px; font-size: 12px;
 }
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #ccc; }
+
+/* צבעי רקע לשדות */
+.bg-normal { background-color: var(--color-normal) !important; }
+.bg-danger-low { background-color: var(--color-low) !important; }
+.bg-borderline { background-color: var(--color-borderline) !important; }
+.bg-danger-high { background-color: var(--color-high) !important; }
 
 /* טפסים */
-.content-scroll { padding: 20px; padding-bottom: 80px; }
-.card {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: var(--border-radius);
-    margin-bottom: 20px;
-}
+.content-scroll { padding: 15px; padding-bottom: 80px; }
+.card { background: var(--card-bg); padding: 15px; border-radius: 16px; margin-bottom: 20px; }
 .form-group { margin-bottom: 15px; }
 label { display: block; margin-bottom: 5px; font-size: 14px; color: #888; }
-input, select {
+
+/* יישור לימין לכל שדות התאריך והטקסט */
+input[type="datetime-local"], input[type="date"], input[type="time"], input[type="text"], input[type="tel"], select {
     width: 100%; padding: 12px;
     border: 1px solid #ddd; border-radius: 10px;
-    font-size: 18px; text-align: right;
+    font-size: 18px; 
+    text-align: right; /* בקשתך */
+    background: var(--card-bg); color: var(--text-color);
     box-sizing: border-box;
-    background: var(--bg-color);
-    color: var(--text-color);
 }
 
-/* כפתור ראשי */
 .btn-ios {
     width: 100%; padding: 15px;
     background: var(--primary); color: white;
     border: none; border-radius: 12px;
-    font-size: 18px; font-weight: bold;
-    margin-top: 10px;
+    font-size: 18px; font-weight: bold; margin-top: 10px;
 }
+.info-btn { background: none; border: none; color: var(--primary); cursor: pointer; }
 
-/* גרפים */
-.chart-container {
-    background: var(--card-bg);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    margin-bottom: 20px;
-    height: 250px;
+/* הגדרות iOS */
+.settings-group { background: var(--card-bg); border-radius: 12px; overflow: hidden; }
+.settings-item {
+    padding: 15px; border-bottom: 1px solid #eee;
+    display: flex; justify-content: space-between; align-items: center;
 }
+.settings-item:last-child { border-bottom: none; }
 
-/* רשימת היסטוריה - שורה אחת */
+/* מתג (Toggle) */
+.toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; transition: .4s; border-radius: 34px;
+}
+.slider:before {
+    position: absolute; content: "";
+    height: 24px; width: 24px; left: 2px; bottom: 2px;
+    background-color: white; transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--primary); }
+input:checked + .slider:before { transform: translateX(22px); }
+
+/* היסטוריה */
 .history-item {
-    background: var(--card-bg);
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* פיזור לרוחב */
-    border-bottom: 1px solid #eee;
+    background: var(--card-bg); padding: 12px;
+    border-radius: 10px; margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #f0f0f0;
 }
-
-.history-data {
-    display: flex;
-    gap: 15px;
-    font-size: 16px;
-    font-weight: 500;
-    align-items: center;
-}
-
-.history-date {
-    font-size: 12px; color: #999; margin-left: 10px;
-    min-width: 40px;
-}
-
-.delete-icon {
-    background: none; border: none; font-size: 20px; cursor: pointer;
-    opacity: 0.5; padding: 0 10px;
-}
-.delete-icon:hover { opacity: 1; color: red; }
+.history-info { display: flex; flex-direction: column; gap: 2px; }
+.history-date { font-size: 12px; color: #999; }
+.delete-icon { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; }
 
 /* מסכים */
 .screen { display: none; }
-.screen.active { display: block; animation: fadeIn 0.3s; }
+.screen.active { display: block; animation: fade 0.3s; }
 .screen.hidden { display: none; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
-/* כפתור אקסל צף */
 .floating-export-btn {
     position: fixed; bottom: 20px; left: 20px;
     background: #27ae60; color: white;
     border: none; padding: 10px 20px; border-radius: 30px;
-    font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    z-index: 90;
+    font-weight: bold; z-index: 90;
 }
 .floating-export-btn.hidden { display: none; }
 
-/* מודל מחיקה מותאם אישית */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.4); z-index: 200;
     display: flex; align-items: center; justify-content: center;
-    z-index: 200;
 }
 .modal-overlay.hidden { display: none; }
-.modal-box {
-    background: var(--card-bg); padding: 25px;
-    border-radius: 20px; width: 80%; max-width: 300px;
-    text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-.modal-actions {
-    display: flex; gap: 10px; margin-top: 20px;
-}
-.modal-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 16px; }
-.modal-btn.cancel { background: #eee; color: #333; }
+.modal-box { background: var(--card-bg); padding: 20px; border-radius: 15px; width: 80%; text-align: center; }
+.modal-actions { display: flex; gap: 10px; margin-top: 15px; }
+.modal-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-size: 16px; }
 .modal-btn.delete { background: #ff3b30; color: white; }
+.chart-container { height: 200px; margin-bottom: 10px; }
