@@ -5,7 +5,7 @@ let charts = {};
 let pendingDelete = null;
 let currentSection = null;
 let settings = { largeFont: false, historyLimit: false, showExport: false };
-let chartInstances = {}; // לשמירת הגרפים
+let chartInstances = {}; 
 
 document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
@@ -115,21 +115,17 @@ function saveCycle() {
     afterSave('cycle');
 }
 
-// לוגיקה לשמירה חדשה או עדכון קיים
 function handleSave(type, dataObj, editIndexId) {
     const key = 'respect_' + type;
     let list = JSON.parse(localStorage.getItem(key)) || [];
     const editIdx = document.getElementById(editIndexId).value;
 
     if (editIdx !== "") {
-        // עדכון קיים
         list[editIdx] = dataObj;
-        document.getElementById(editIndexId).value = ""; // איפוס
-        // שינוי חזרה של כפתור השמירה (אופציונלי)
+        document.getElementById(editIndexId).value = "";
         const btn = document.getElementById(type + 'SubmitBtn');
         if(btn) btn.textContent = "שמור";
     } else {
-        // חדש
         list.unshift(dataObj);
     }
     localStorage.setItem(key, JSON.stringify(list));
@@ -137,7 +133,7 @@ function handleSave(type, dataObj, editIndexId) {
 
 function afterSave(type) {
     updateDates();
-    document.querySelectorAll('input').forEach(i => i.className = ''); // ניקוי צבעים
+    document.querySelectorAll('input').forEach(i => i.className = '');
     loadData(type);
 }
 
@@ -150,7 +146,7 @@ function checkRequired(formId) {
 }
 
 // ====================
-// עריכה (Edit)
+// עריכה
 // ====================
 window.editItem = function(type, index) {
     const key = 'respect_' + type;
@@ -158,10 +154,8 @@ window.editItem = function(type, index) {
     const item = list[index];
     if(!item) return;
 
-    // גלילה למעלה
     document.querySelector('.content-scroll').scrollTop = 0;
 
-    // מילוי טופס לפי סוג
     if(type === 'bp') {
         document.getElementById('bpDate').value = item.date;
         document.getElementById('systolic').value = item.sys;
@@ -206,9 +200,7 @@ window.editItem = function(type, index) {
     }
     else if(type === 'meds') {
         document.getElementById('medName').value = item.name;
-        // איפוס צ'ק בוקסים
         document.querySelectorAll('.med-time').forEach(cb => cb.checked = false);
-        // סימון מחדש
         if(item.times) {
             item.times.split(', ').forEach(t => {
                 const cb = document.querySelector(`.med-time[value="${t}"]`);
@@ -235,13 +227,10 @@ window.validateBP = function() {
     const sys = parseFloat(document.getElementById('systolic').value);
     const dia = parseFloat(document.getElementById('diastolic').value);
     const pul = parseFloat(document.getElementById('pulse').value);
-    
     const sysEl = document.getElementById('systolic');
     if(sys < 90) setClass(sysEl, 'bg-low'); else if(sys > 140) setClass(sysEl, 'bg-high'); else if(sys >= 130) setClass(sysEl, 'bg-borderline'); else setClass(sysEl, 'bg-normal');
-
     const diaEl = document.getElementById('diastolic');
     if(dia < 60) setClass(diaEl, 'bg-low'); else if(dia > 90) setClass(diaEl, 'bg-high'); else if(dia >= 85) setClass(diaEl, 'bg-borderline'); else setClass(diaEl, 'bg-normal');
-
     const pulEl = document.getElementById('pulse');
     if(pul < 50) setClass(pulEl, 'bg-low'); else if(pul > 100) setClass(pulEl, 'bg-high'); else setClass(pulEl, 'bg-normal');
 }
@@ -252,7 +241,6 @@ window.validateSugar = function() {
     const el = document.getElementById('glucoseLevel');
     const highLimit = (mode === 'fasting') ? 126 : 200;
     const borderLimit = (mode === 'fasting') ? 100 : 140;
-
     if(val < 70) setClass(el, 'bg-low'); else if(val >= highLimit) setClass(el, 'bg-high'); else if(val >= borderLimit) setClass(el, 'bg-borderline'); else setClass(el, 'bg-normal');
 }
 
@@ -268,13 +256,10 @@ window.validateWeight = function() {
 window.openSection = function(name) {
     document.getElementById('mainMenu').classList.remove('active');
     setTimeout(() => document.getElementById('mainMenu').classList.add('hidden'), 200);
-    
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    
     const target = document.getElementById(name + 'Section');
     target.classList.remove('hidden');
     target.classList.add('active');
-    
     currentSection = name;
     loadData(name);
     updateExportBtn();
@@ -286,8 +271,6 @@ window.showHome = function() {
     menu.classList.remove('hidden');
     menu.classList.add('active');
     document.getElementById('exportCsvBtn').classList.add('hidden');
-    
-    // איפוס גרפים פתוחים
     document.querySelectorAll('.chart-wrapper').forEach(cw => cw.classList.add('hidden'));
 }
 
@@ -306,7 +289,6 @@ function loadData(type) {
         const div = document.createElement('div');
         div.className = 'history-item';
         
-        // תאריך מלא ושעה
         let dObj = null;
         if(item.date) dObj = new Date(item.date);
         else if(item.start) dObj = new Date(item.start);
@@ -315,18 +297,10 @@ function loadData(type) {
         if(dObj) {
             const time = dObj.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
             const date = dObj.toLocaleDateString('he-IL', {day:'2-digit', month:'2-digit'});
-            dStr = `${date} ${time}`; // תאריך מימין, שעה משמאל
+            dStr = `${date} ${time}`;
         }
 
-        // כפתורי פעולה בצד שמאל (סוף השורה ב-RTL)
-        let buttons = `
-            <div class="history-actions">
-                <button class="action-icon" onclick="reqDelete('${type}', ${index})">🗑️</button>
-                <button class="action-icon" onclick="editItem('${type}', ${index})">✏️</button>
-            </div>
-        `;
-
-        // נתונים בצד ימין (תחילת השורה ב-RTL)
+        let buttons = `<div class="history-actions"><button class="action-icon" onclick="reqDelete('${type}', ${index})">🗑️</button><button class="action-icon" onclick="editItem('${type}', ${index})">✏️</button></div>`;
         let content = `<div class="history-right">`;
         
         if(type === 'bp') content += `<div class="history-data-row"><span>❤️${item.pulse}</span><span>⬆️${item.sys}</span><span>⬇️${item.dia}</span></div>`;
@@ -337,10 +311,7 @@ function loadData(type) {
         else if(type === 'meds') content += `<div class="history-data-row"><span>💊${item.name}</span></div>`;
         else if(type === 'cycle') content += `<div class="history-data-row"><span>🥀${item.notes}</span></div>`;
         
-        content += `<div class="history-date-full">${dStr}</div>`;
-        content += `</div>`; // סגירת צד ימין
-
-        // הרכבה: נתונים מימין, כפתורים משמאל
+        content += `<div class="history-date-full">${dStr}</div></div>`;
         div.innerHTML = content + buttons;
         container.appendChild(div);
     });
@@ -349,25 +320,18 @@ function loadData(type) {
 }
 
 // ====================
-// גרפים וסינון זמן
+// גרפים
 // ====================
 window.toggleChart = function(type) {
     const wrapper = document.getElementById(type + 'ChartSection');
-    if(wrapper.classList.contains('hidden')) {
-        wrapper.classList.remove('hidden');
-    } else {
-        wrapper.classList.add('hidden');
-    }
+    if(wrapper.classList.contains('hidden')) wrapper.classList.remove('hidden'); else wrapper.classList.add('hidden');
 }
 
 window.updateChartFilter = function(type, days) {
     const key = 'respect_' + type;
     let list = JSON.parse(localStorage.getItem(key)) || [];
-    
-    // סינון לפי ימים
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - days);
-    
     const filteredList = list.filter(i => new Date(i.date) >= cutoff);
     updateChart(type, filteredList);
 }
@@ -375,13 +339,9 @@ window.updateChartFilter = function(type, days) {
 function updateChart(type, rawData) {
     const ctx = document.getElementById(type + 'Chart');
     if(!ctx) return;
-    
-    // הריסת גרף קודם
-    if(chartInstances[type]) {
-        chartInstances[type].destroy();
-    }
+    if(chartInstances[type]) chartInstances[type].destroy();
 
-    const data = [...rawData].reverse(); // כרונולוגי
+    const data = [...rawData].reverse();
     const labels = data.map(i => {
         const d = new Date(i.date);
         return `${d.getDate()}/${d.getMonth()+1}`;
@@ -392,20 +352,9 @@ function updateChart(type, rawData) {
     else if(type==='weight') datasets = [{label:'משקל', data:data.map(i=>i.val), borderColor:'purple', fill:true, tension:0.4}];
     else if(type==='sugar') datasets = [{label:'סוכר', data:data.map(i=>i.val), borderColor:'blue', tension:0.4}];
 
-    chartInstances[type] = new Chart(ctx, { 
-        type:'line', 
-        data:{labels, datasets}, 
-        options:{
-            responsive:true, 
-            maintainAspectRatio:false,
-            plugins: { legend: { display: true, position: 'top' } }
-        } 
-    });
+    chartInstances[type] = new Chart(ctx, { type:'line', data:{labels, datasets}, options:{responsive:true, maintainAspectRatio:false, plugins: { legend: { display: true, position: 'top' } } } });
 }
 
-// ====================
-// כללי
-// ====================
 function updateDates() {
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -415,21 +364,14 @@ function updateDates() {
     if(cyc) cyc.value = now.toISOString().slice(0,10);
 }
 
-// הגדרות
 function loadSettings() {
     const s = JSON.parse(localStorage.getItem('respect_settings')) || {};
     settings = {...settings, ...s};
-    
     document.getElementById('largeFontToggle').checked = settings.largeFont;
     if(settings.largeFont) document.body.classList.add('large-font');
-    
     document.getElementById('historyLimitToggle').checked = settings.historyLimit;
     document.getElementById('exportToggle').checked = settings.showExport;
-    
-    if(localStorage.getItem('theme') === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-        document.getElementById('themeSwitch').checked = true;
-    }
+    if(localStorage.getItem('theme') === 'dark') { document.body.setAttribute('data-theme', 'dark'); document.getElementById('themeSwitch').checked = true; }
 }
 
 function toggleSetting(key, val) {
@@ -447,8 +389,7 @@ function toggleSetting(key, val) {
 
 function updateExportBtn() {
     const btn = document.getElementById('exportCsvBtn');
-    if(settings.showExport && currentSection) btn.classList.remove('hidden');
-    else btn.classList.add('hidden');
+    if(settings.showExport && currentSection) btn.classList.remove('hidden'); else btn.classList.add('hidden');
 }
 
 window.reqDelete = function(type, idx) {
@@ -469,10 +410,7 @@ window.closeConfirm = function(yes) {
 }
 
 window.resetAllData = function() {
-    if(confirm('למחוק את כל הנתונים באפליקציה?')) {
-        localStorage.clear();
-        location.reload();
-    }
+    if(confirm('למחוק את כל הנתונים באפליקציה?')) { localStorage.clear(); location.reload(); }
 }
 
 window.exportData = function() {
