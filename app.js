@@ -315,10 +315,10 @@ function loadData(type) {
         if(dObj) {
             const time = dObj.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
             const date = dObj.toLocaleDateString('he-IL', {day:'2-digit', month:'2-digit'});
-            dStr = `${time} ${date}`;
+            dStr = `${date} ${time}`; // תאריך מימין, שעה משמאל
         }
 
-        // כפתורי פעולה בצד שמאל
+        // כפתורי פעולה בצד שמאל (סוף השורה ב-RTL)
         let buttons = `
             <div class="history-actions">
                 <button class="action-icon" onclick="reqDelete('${type}', ${index})">🗑️</button>
@@ -326,9 +326,10 @@ function loadData(type) {
             </div>
         `;
 
-        // נתונים בצד ימין
+        // נתונים בצד ימין (תחילת השורה ב-RTL)
         let content = `<div class="history-right">`;
         
+        // נתונים
         if(type === 'bp') content += `<div class="history-data-row"><span>❤️${item.pulse}</span><span>⬆️${item.sys}</span><span>⬇️${item.dia}</span></div>`;
         else if(type === 'sugar') content += `<div class="history-data-row"><span>🩸${item.val}</span></div>`;
         else if(type === 'weight') content += `<div class="history-data-row"><span>📟${item.val}</span></div>`;
@@ -337,10 +338,12 @@ function loadData(type) {
         else if(type === 'meds') content += `<div class="history-data-row"><span>💊${item.name}</span></div>`;
         else if(type === 'cycle') content += `<div class="history-data-row"><span>🥀${item.notes}</span></div>`;
         
+        // תאריך
         content += `<div class="history-date-full">${dStr}</div>`;
         content += `</div>`; // סגירת צד ימין
 
-        div.innerHTML = buttons + content;
+        // הרכבה: נתונים מימין, כפתורים משמאל
+        div.innerHTML = content + buttons;
         container.appendChild(div);
     });
 
