@@ -5,10 +5,10 @@
     --primary: #007aff;
     
     /* פלטת צבעים רפואית */
-    --color-normal: #ffffff;      /* תקין */
-    --color-low: #ffe6e6;         /* אדום בהיר - נמוך */
-    --color-borderline: #ffccdd;  /* ורוד כהה - גבולי */
-    --color-high: #ff9999;        /* אדום חזק - גבוה */
+    --color-normal: #ffffff;      
+    --color-low: #ffcccc;         
+    --color-borderline: #ffccdd;  
+    --color-high: #ff9999;        
 }
 
 [data-theme="dark"] {
@@ -49,7 +49,7 @@ body {
 input, select {
     width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
     font-size: 18px; 
-    text-align: right !important; /* חובה! */
+    text-align: right !important; 
     direction: rtl;
     background: var(--card-bg); color: var(--text-color); box-sizing: border-box;
 }
@@ -63,7 +63,6 @@ input, select {
 .legend-item { display: flex; align-items: center; gap: 4px; }
 .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #ccc; }
 
-/* מחלקות צבעים */
 .bg-normal { background-color: var(--color-normal) !important; }
 .bg-low { background-color: var(--color-low) !important; }
 .bg-borderline { background-color: var(--color-borderline) !important; }

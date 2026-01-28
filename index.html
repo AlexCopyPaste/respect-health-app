@@ -23,56 +23,56 @@
             </header>
 
             <div class="dashboard-grid">
-                <div class="app-btn" onclick="showSection('bpSection')">
+                <div class="app-btn" onclick="openSection('bp')">
                     <div class="icon-svg">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="m19 13-2 2"/><path d="m15 13 2 2"/><path d="M19 5h1a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-1"/><path d="M12 17v-1a4 4 0 0 0-4-4H6"/></svg>
                     </div>
                     <span>לחץ דם</span>
                 </div>
                 
-                <div class="app-btn" onclick="showSection('sugarSection')">
+                <div class="app-btn" onclick="openSection('sugar')">
                     <div class="icon-svg">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 16v.01"/><path d="M12 7v3"/><path d="M9.5 13h5"/></svg>
                     </div>
                     <span>סוכר</span>
                 </div>
 
-                <div class="app-btn" onclick="showSection('weightSection')">
+                <div class="app-btn" onclick="openSection('weight')">
                     <div class="icon-svg">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#af52de" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 8h8"/><path d="M12 12h.01"/><path d="M16 16h-8"/></svg>
                     </div>
                     <span>משקל</span>
                 </div>
 
-                <div class="app-btn" onclick="showSection('medsSection')">
+                <div class="app-btn" onclick="openSection('meds')">
                     <div class="icon-svg">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5 19 12m-8.5 8.5L2 12l8.5-8.5 8.5 8.5z"/></svg>
                     </div>
                     <span>תרופות</span>
                 </div>
 
-                <div class="app-btn" onclick="showSection('cycleSection')">
+                <div class="app-btn" onclick="openSection('cycle')">
                     <div class="icon-svg">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#ff2d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 0 0 10 5 5 0 1 0 0-10z"/><path d="M10 14a6 6 0 0 0-6 6v1h16v-1a6 6 0 0 0-6-6"/><path d="M10 18h4"/></svg>
                     </div>
                     <span>מחזור</span>
                 </div>
 
-                <div class="app-btn" onclick="showSection('dietSection')">
+                <div class="app-btn" onclick="openSection('diet')">
                     <div class="icon-svg">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
                     </div>
                     <span>דיאטה</span>
                 </div>
 
-                <div class="app-btn" onclick="showSection('walkingSection')">
+                <div class="app-btn" onclick="openSection('walking')">
                     <div class="icon-svg">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#00c7be" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4v6m-2 7 3-3 2 3M8 17l4-5"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/><path d="M13 10h3"/></svg>
                     </div>
                     <span>הליכה</span>
                 </div>
 
-                <div class="app-btn" onclick="showSection('settingsSection')">
+                <div class="app-btn" onclick="openSection('settings')">
                     <div class="icon-svg">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                     </div>
@@ -81,40 +81,23 @@
             </div>
         </div>
 
-        <div id="bpSection" class="screen hidden" data-category="bp">
-            <div class="screen-header">
-                <div class="header-title"><span>🩺</span><h2>לחץ דם</h2></div>
-                <button onclick="showHome()" class="home-btn">🏠</button>
-            </div>
-            
+        <div id="bpSection" class="screen hidden">
+            <div class="screen-header"><div class="header-title"><span>🩺</span><h2>לחץ דם</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
             <div class="color-legend">
                 <span class="legend-item"><span class="dot bg-low"></span>נמוך</span>
                 <span class="legend-item"><span class="dot bg-normal"></span>תקין</span>
                 <span class="legend-item"><span class="dot bg-borderline"></span>גבולי</span>
                 <span class="legend-item"><span class="dot bg-high"></span>גבוה</span>
             </div>
-
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="bpForm">
-                        <div class="form-group">
-                            <label>תאריך:</label>
-                            <input type="datetime-local" id="bpDate" required>
-                        </div>
+                        <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="bpDate" required></div>
                         <div class="row">
-                            <div class="form-group">
-                                <label>סיסטולי (גבוה):</label>
-                                <input type="tel" inputmode="numeric" id="systolic" oninput="validateField(this, 'systolic')" required placeholder="120">
-                            </div>
-                            <div class="form-group">
-                                <label>דיאסטולי (נמוך):</label>
-                                <input type="tel" inputmode="numeric" id="diastolic" oninput="validateField(this, 'diastolic')" required placeholder="80">
-                            </div>
+                            <div class="form-group"><label>סיסטולי (גבוה):</label><input type="tel" id="systolic" oninput="validateBP()" required placeholder="120"></div>
+                            <div class="form-group"><label>דיאסטולי (נמוך):</label><input type="tel" id="diastolic" oninput="validateBP()" required placeholder="80"></div>
                         </div>
-                        <div class="form-group">
-                            <label>דופק:</label>
-                            <input type="tel" inputmode="numeric" id="pulse" oninput="validateField(this, 'pulse')" required placeholder="70">
-                        </div>
+                        <div class="form-group"><label>דופק:</label><input type="tel" id="pulse" oninput="validateBP()" required placeholder="70"></div>
                         <button type="submit" class="btn-ios">שמור</button>
                     </form>
                 </div>
@@ -123,38 +106,25 @@
             </div>
         </div>
 
-        <div id="sugarSection" class="screen hidden" data-category="sugar">
-            <div class="screen-header">
-                <div class="header-title"><span>🩸</span><h2>סוכר</h2></div>
-                <button onclick="showHome()" class="home-btn">🏠</button>
-            </div>
-
+        <div id="sugarSection" class="screen hidden">
+            <div class="screen-header"><div class="header-title"><span>🩸</span><h2>סוכר</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
             <div class="color-legend">
                 <span class="legend-item"><span class="dot bg-low"></span>נמוך</span>
                 <span class="legend-item"><span class="dot bg-normal"></span>תקין</span>
                 <span class="legend-item"><span class="dot bg-borderline"></span>גבולי</span>
                 <span class="legend-item"><span class="dot bg-high"></span>גבוה</span>
             </div>
-
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="sugarForm">
-                        <div class="form-group">
-                            <label>תאריך:</label>
-                            <input type="datetime-local" id="sugarDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label>מצב בדיקה:</label>
-                            <select id="sugarTime" class="ios-select" onchange="revalidateSugar()">
-                                <option value="fasting">בצום (מומלץ)</option>
+                        <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="sugarDate" required></div>
+                        <div class="form-group"><label>זמן:</label>
+                            <select id="sugarTime" class="ios-select" onchange="validateSugar()">
+                                <option value="fasting">בצום</option>
                                 <option value="after_food">שעתיים אחרי אוכל</option>
-                                <option value="before_food">לפני ארוחה</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>רמת סוכר (mg/dL):</label>
-                            <input type="tel" inputmode="numeric" id="glucoseLevel" oninput="validateField(this, 'sugar')" required placeholder="100">
-                        </div>
+                        <div class="form-group"><label>רמת סוכר:</label><input type="tel" id="glucoseLevel" oninput="validateSugar()" required placeholder="100"></div>
                         <button type="submit" class="btn-ios">שמור</button>
                     </form>
                 </div>
@@ -163,11 +133,8 @@
             </div>
         </div>
 
-        <div id="weightSection" class="screen hidden" data-category="weight">
-            <div class="screen-header">
-                <div class="header-title"><span>📟</span><h2>משקל</h2></div>
-                <button onclick="showHome()" class="home-btn">🏠</button>
-            </div>
+        <div id="weightSection" class="screen hidden">
+            <div class="screen-header"><div class="header-title"><span>📟</span><h2>משקל</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
             <div class="color-legend">
                  <span class="legend-item"><span class="dot bg-normal"></span>תקין</span>
                  <span class="legend-item"><span class="dot bg-borderline"></span>עודף</span>
@@ -177,7 +144,7 @@
                 <div class="card form-card">
                     <form id="weightForm">
                         <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="weightDate" required></div>
-                        <div class="form-group"><label>משקל (ק"ג):</label><input type="tel" inputmode="decimal" id="weightVal" oninput="validateField(this, 'weight')" required placeholder="0.0"></div>
+                        <div class="form-group"><label>משקל (ק"ג):</label><input type="tel" id="weightVal" oninput="validateWeight()" required placeholder="0.0"></div>
                         <button type="submit" class="btn-ios">שמור</button>
                     </form>
                 </div>
@@ -186,17 +153,16 @@
             </div>
         </div>
 
-        <div id="dietSection" class="screen hidden" data-category="diet">
+        <div id="dietSection" class="screen hidden">
             <div class="screen-header"><div class="header-title"><span>🍽️</span><h2>דיאטה</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
             <div class="content-scroll">
                 <div class="card form-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h3>יומן קלוריות</h3>
-                        <button type="button" class="info-btn" onclick="alert('המלצות')">ℹ️</button>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <h3>יומן קלוריות</h3><button type="button" class="info-btn" onclick="alert('המלצות')">ℹ️</button>
                     </div>
                     <form id="dietForm">
                         <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="dietDate" required></div>
-                        <div class="form-group"><label>יעד יומי:</label><input type="tel" id="calorieTarget" placeholder="1800"></div>
+                        <div class="form-group"><label>יעד:</label><input type="tel" id="calorieTarget" placeholder="1800"></div>
                         <div class="row">
                             <div class="form-group"><label>בוקר:</label><input type="tel" id="calBreakfast" placeholder="0"></div>
                             <div class="form-group"><label>צהריים:</label><input type="tel" id="calLunch" placeholder="0"></div>
@@ -209,7 +175,7 @@
             </div>
         </div>
 
-        <div id="walkingSection" class="screen hidden" data-category="walking">
+        <div id="walkingSection" class="screen hidden">
             <div class="screen-header"><div class="header-title"><span>🚶</span><h2>הליכה</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
             <div class="content-scroll">
                 <div class="card form-card">
@@ -230,12 +196,12 @@
             </div>
         </div>
 
-        <div id="medsSection" class="screen hidden" data-category="meds">
+        <div id="medsSection" class="screen hidden">
             <div class="screen-header"><div class="header-title"><span>💊</span><h2>תרופות</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="medsForm">
-                        <div class="form-group"><label>שם:</label><input type="text" id="medName" required></div>
+                        <div class="form-group"><label>שם:</label><input type="text" id="medName" required placeholder="שם התרופה"></div>
                         <div class="checkbox-group">
                             <label><input type="checkbox" value="בוקר" class="med-time"> בוקר</label>
                             <label><input type="checkbox" value="צהריים" class="med-time"> צהריים</label>
@@ -248,8 +214,8 @@
             </div>
         </div>
 
-        <div id="cycleSection" class="screen hidden" data-category="cycle">
-            <div class="screen-header"><div class="header-title"><span>🤰</span><h2>מחזור</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
+        <div id="cycleSection" class="screen hidden">
+            <div class="screen-header"><div class="header-title"><span>🥀</span><h2>מחזור</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="cycleForm">
@@ -270,15 +236,14 @@
                      <div class="settings-item"><span>מצב לילה</span><label class="toggle-switch"><input type="checkbox" id="themeSwitch"><span class="slider"></span></label></div>
                      <div class="settings-item"><span>היסטוריה (חודש)</span><label class="toggle-switch"><input type="checkbox" id="historyLimitToggle"><span class="slider"></span></label></div>
                      <div class="settings-item"><span>הצג Excel</span><label class="toggle-switch"><input type="checkbox" id="exportToggle"><span class="slider"></span></label></div>
-                     <div class="settings-item clickable" onclick="resetData()"><span style="color:red">מחיקת נתונים</span><span>🗑️</span></div>
+                     <div class="settings-item clickable" onclick="resetAllData()"><span style="color:red">מחיקת נתונים</span><span>🗑️</span></div>
                  </div>
              </div>
         </div>
-        <button id="exportCsvBtn" class="floating-export-btn hidden" onclick="exportCurrentData()">📤 Excel</button>
+        <button id="exportCsvBtn" class="floating-export-btn hidden" onclick="exportData()">📤 Excel</button>
         <div id="customConfirm" class="modal-overlay hidden">
             <div class="modal-box"><h3>מחיקה</h3><p>למחוק?</p><div class="modal-actions"><button class="modal-btn cancel" onclick="closeConfirm(false)">ביטול</button><button class="modal-btn delete" onclick="closeConfirm(true)">מחק</button></div></div>
         </div>
-
     </div>
     <script src="app.js"></script>
 </body>
