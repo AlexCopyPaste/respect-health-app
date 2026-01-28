@@ -31,18 +31,30 @@ body {
     user-select: none;
 }
 
-/* כותרת ראשית סימטרית */
+/* כותרת ראשית עם תמונת רקע */
 .main-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 20px; 
-    background: var(--bg-color); 
+    position: relative;
+    text-align: center; 
+    padding: 40px 20px; /* הגדלת הריפוד כדי להציג יותר מהתמונה */
+    background-image: url('image_3.png'); /* שימוש בתמונה שסופקה */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white; /* טקסט לבן לניגודיות */
 }
-.header-content { text-align: center; flex-grow: 1; }
-.header-content h1 { margin: 0; font-size: 22px; }
-.header-content p { margin: 5px 0 0; color: #666; font-size: 13px; }
-.header-icon-side svg { width: 40px; height: 40px; }
+
+/* שכבת טקסט מעל התמונה */
+.header-text-overlay {
+    background-color: rgba(0, 0, 0, 0.4); /* רקע חצי שקוף לשיפור הקריאות */
+    padding: 15px;
+    border-radius: 10px;
+    display: inline-block; /* כדי שהרקע יהיה רק סביב הטקסט */
+}
+
+.header-content h1 { margin: 0; font-size: 26px; }
+.header-content p { margin: 5px 0 0; color: #ddd; font-size: 14px; }
+/* הסרת עיצוב האייקונים הצדדיים הישנים */
+.header-icon-side { display: none; }
 
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 15px; }
 .app-btn {
