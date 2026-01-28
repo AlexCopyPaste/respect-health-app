@@ -1,6 +1,3 @@
-// ====================
-// משתנים גלובליים
-// ====================
 let charts = {};
 let pendingDelete = null;
 let currentSection = null;
@@ -25,23 +22,244 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('exportToggle').addEventListener('change', (e) => toggleSetting('showExport', e.target.checked));
 });
 
-function saveBP() { if(!checkRequired('bpForm')) return; const data = { date: document.getElementById('bpDate').value, sys: document.getElementById('systolic').value, dia: document.getElementById('diastolic').value, pulse: document.getElementById('pulse').value }; handleSave('bp', data, 'bpEditIndex'); document.getElementById('bpForm').reset(); afterSave('bp'); }
-function saveSugar() { if(!checkRequired('sugarForm')) return; const data = { date: document.getElementById('sugarDate').value, val: document.getElementById('glucoseLevel').value, time: document.getElementById('sugarTime').value }; handleSave('sugar', data, 'sugarEditIndex'); document.getElementById('sugarForm').reset(); afterSave('sugar'); }
-function saveWeight() { if(!checkRequired('weightForm')) return; const data = { date: document.getElementById('weightDate').value, val: document.getElementById('weightVal').value }; handleSave('weight', data, 'weightEditIndex'); document.getElementById('weightForm').reset(); afterSave('weight'); }
-function saveDiet() { const data = { date: document.getElementById('dietDate').value, target: document.getElementById('calorieTarget').value, total: (parseInt(document.getElementById('calBreakfast').value)||0) + (parseInt(document.getElementById('calLunch').value)||0) + (parseInt(document.getElementById('calDinner').value)||0), b: document.getElementById('calBreakfast').value, l: document.getElementById('calLunch').value, d: document.getElementById('calDinner').value }; handleSave('diet', data, 'dietEditIndex'); document.getElementById('dietForm').reset(); afterSave('diet'); }
-function saveWalking() { if(!checkRequired('walkingForm')) return; const data = { date: document.getElementById('walkingDate').value, start: document.getElementById('walkStart').value, end: document.getElementById('walkEnd').value, diff: document.getElementById('walkDifficulty').value, speed: document.getElementById('walkSpeed').value }; handleSave('walking', data, 'walkingEditIndex'); document.getElementById('walkingForm').reset(); afterSave('walking'); }
-function saveMeds() { if(!checkRequired('medsForm')) return; const times = []; document.querySelectorAll('.med-time:checked').forEach(cb => times.push(cb.value)); const data = { name: document.getElementById('medName').value, times: times.join(', ') }; handleSave('meds', data, 'medsEditIndex'); document.getElementById('medsForm').reset(); afterSave('meds'); }
-function saveCycle() { if(!checkRequired('cycleForm')) return; const data = { start: document.getElementById('cycleStart').value, notes: document.getElementById('cycleNotes').value }; handleSave('cycle', data, 'cycleEditIndex'); document.getElementById('cycleForm').reset(); afterSave('cycle'); }
+// פונקציית עזר לבדיקת טווח
+function isRangeValid(value, min, max, fieldName) {
+    if (value < min || value > max) {
+        alert(`ערך לא תקין עבור ${fieldName}. נא להזין ערך בין ${min} ל-${max}`);
+        return false;
+    }
+    return true;
+}
 
-function handleSave(type, dataObj, editIndexId) { const key = 'respect_' + type; let list = JSON.parse(localStorage.getItem(key)) || []; const editIdx = document.getElementById(editIndexId).value; if (editIdx !== "") { list[editIdx] = dataObj; document.getElementById(editIndexId).value = ""; const btn = document.getElementById(type + 'SubmitBtn'); if(btn) btn.textContent = "שמור"; } else { list.unshift(dataObj); } localStorage.setItem(key, JSON.stringify(list)); }
-function afterSave(type) { updateDates(); document.querySelectorAll('input').forEach(i => i.className = ''); loadData(type); }
-function checkRequired(formId) { const inputs = document.getElementById(formId).querySelectorAll('input[required]'); for(let i of inputs) { if(!i.value) { alert("נא למלא שדות חובה"); return false; } } return true; }
+function saveBP() {
+    if(!checkRequired('bpForm')) return;
+    const sys = parseInt(document.getElementById('systolic').value);
+    const dia = parseInt(document.getElementById('diastolic').value);
+    const pulse = parseInt(document.getElementById('pulse').value);
 
-window.editItem = function(type, index) { const key = 'respect_' + type; let list = JSON.parse(localStorage.getItem(key)) || []; const item = list[index]; if(!item) return; document.querySelector('.content-scroll').scrollTop = 0; if(type === 'bp') { document.getElementById('bpDate').value = item.date; document.getElementById('systolic').value = item.sys; document.getElementById('diastolic').value = item.dia; document.getElementById('pulse').value = item.pulse; document.getElementById('bpEditIndex').value = index; document.getElementById('bpSubmitBtn').textContent = "עדכן"; validateBP(); } else if(type === 'sugar') { document.getElementById('sugarDate').value = item.date; document.getElementById('glucoseLevel').value = item.val; document.getElementById('sugarTime').value = item.time; document.getElementById('sugarEditIndex').value = index; document.getElementById('sugarSubmitBtn').textContent = "עדכן"; validateSugar(); } else if(type === 'weight') { document.getElementById('weightDate').value = item.date; document.getElementById('weightVal').value = item.val; document.getElementById('weightEditIndex').value = index; document.getElementById('weightSubmitBtn').textContent = "עדכן"; validateWeight(); } else if(type === 'diet') { document.getElementById('dietDate').value = item.date; document.getElementById('calorieTarget').value = item.target; document.getElementById('calBreakfast').value = item.b || ""; document.getElementById('calLunch').value = item.l || ""; document.getElementById('calDinner').value = item.d || ""; document.getElementById('dietEditIndex').value = index; document.getElementById('dietSubmitBtn').textContent = "עדכן"; } else if(type === 'walking') { document.getElementById('walkingDate').value = item.date; document.getElementById('walkStart').value = item.start; document.getElementById('walkEnd').value = item.end; document.getElementById('walkDifficulty').value = item.diff; document.getElementById('walkSpeed').value = item.speed; document.getElementById('walkingEditIndex').value = index; document.getElementById('walkingSubmitBtn').textContent = "עדכן"; } else if(type === 'meds') { document.getElementById('medName').value = item.name; document.querySelectorAll('.med-time').forEach(cb => cb.checked = false); if(item.times) { item.times.split(', ').forEach(t => { const cb = document.querySelector(`.med-time[value="${t}"]`); if(cb) cb.checked = true; }); } document.getElementById('medsEditIndex').value = index; document.getElementById('medsSubmitBtn').textContent = "עדכן"; } else if(type === 'cycle') { document.getElementById('cycleStart').value = item.start; document.getElementById('cycleNotes').value = item.notes; document.getElementById('cycleEditIndex').value = index; document.getElementById('cycleSubmitBtn').textContent = "עדכן"; } }
+    // Sanity Checks
+    if (!isRangeValid(sys, 50, 300, 'סיסטולי')) return;
+    if (!isRangeValid(dia, 30, 200, 'דיאסטולי')) return;
+    if (!isRangeValid(pulse, 30, 250, 'דופק')) return;
+
+    const data = {
+        date: document.getElementById('bpDate').value,
+        sys: sys, dia: dia, pulse: pulse
+    };
+    handleSave('bp', data, 'bpEditIndex');
+    document.getElementById('bpForm').reset();
+    afterSave('bp');
+}
+
+function saveSugar() {
+    if(!checkRequired('sugarForm')) return;
+    const val = parseInt(document.getElementById('glucoseLevel').value);
+    
+    // Sanity Check
+    if (!isRangeValid(val, 20, 1000, 'סוכר')) return;
+
+    const data = {
+        date: document.getElementById('sugarDate').value,
+        val: val,
+        time: document.getElementById('sugarTime').value
+    };
+    handleSave('sugar', data, 'sugarEditIndex');
+    document.getElementById('sugarForm').reset();
+    afterSave('sugar');
+}
+
+function saveWeight() {
+    if(!checkRequired('weightForm')) return;
+    const val = parseFloat(document.getElementById('weightVal').value);
+
+    // Sanity Check
+    if (!isRangeValid(val, 2, 500, 'משקל')) return;
+
+    const data = {
+        date: document.getElementById('weightDate').value,
+        val: val
+    };
+    handleSave('weight', data, 'weightEditIndex');
+    document.getElementById('weightForm').reset();
+    afterSave('weight');
+}
+
+function saveDiet() {
+    const data = {
+        date: document.getElementById('dietDate').value,
+        target: document.getElementById('calorieTarget').value,
+        total: (parseInt(document.getElementById('calBreakfast').value)||0) + 
+               (parseInt(document.getElementById('calLunch').value)||0) + 
+               (parseInt(document.getElementById('calDinner').value)||0),
+        b: document.getElementById('calBreakfast').value,
+        l: document.getElementById('calLunch').value,
+        d: document.getElementById('calDinner').value
+    };
+    handleSave('diet', data, 'dietEditIndex');
+    document.getElementById('dietForm').reset();
+    afterSave('diet');
+}
+
+function saveWalking() {
+    if(!checkRequired('walkingForm')) return;
+    const data = {
+        date: document.getElementById('walkingDate').value,
+        start: document.getElementById('walkStart').value,
+        end: document.getElementById('walkEnd').value,
+        diff: document.getElementById('walkDifficulty').value,
+        speed: document.getElementById('walkSpeed').value
+    };
+    handleSave('walking', data, 'walkingEditIndex');
+    document.getElementById('walkingForm').reset();
+    afterSave('walking');
+}
+
+function saveMeds() {
+    if(!checkRequired('medsForm')) return;
+    const times = [];
+    document.querySelectorAll('.med-time:checked').forEach(cb => times.push(cb.value));
+    const data = { name: document.getElementById('medName').value, times: times.join(', ') };
+    handleSave('meds', data, 'medsEditIndex');
+    document.getElementById('medsForm').reset();
+    afterSave('meds');
+}
+
+function saveCycle() {
+    if(!checkRequired('cycleForm')) return;
+    const data = { start: document.getElementById('cycleStart').value, notes: document.getElementById('cycleNotes').value };
+    handleSave('cycle', data, 'cycleEditIndex');
+    document.getElementById('cycleForm').reset();
+    afterSave('cycle');
+}
+
+function handleSave(type, dataObj, editIndexId) {
+    const key = 'respect_' + type;
+    let list = JSON.parse(localStorage.getItem(key)) || [];
+    const editIdx = document.getElementById(editIndexId).value;
+
+    if (editIdx !== "") {
+        list[editIdx] = dataObj;
+        document.getElementById(editIndexId).value = "";
+        const btn = document.getElementById(type + 'SubmitBtn');
+        if(btn) btn.textContent = "שמור";
+    } else {
+        list.unshift(dataObj);
+    }
+    localStorage.setItem(key, JSON.stringify(list));
+}
+
+function afterSave(type) {
+    updateDates();
+    document.querySelectorAll('input').forEach(i => i.className = '');
+    loadData(type);
+}
+
+function checkRequired(formId) {
+    const inputs = document.getElementById(formId).querySelectorAll('input[required]');
+    for(let i of inputs) {
+        if(!i.value) { alert("נא למלא שדות חובה"); return false; }
+    }
+    return true;
+}
+
+window.editItem = function(type, index) {
+    const key = 'respect_' + type;
+    let list = JSON.parse(localStorage.getItem(key)) || [];
+    const item = list[index];
+    if(!item) return;
+
+    document.querySelector('.content-scroll').scrollTop = 0;
+
+    if(type === 'bp') {
+        document.getElementById('bpDate').value = item.date;
+        document.getElementById('systolic').value = item.sys;
+        document.getElementById('diastolic').value = item.dia;
+        document.getElementById('pulse').value = item.pulse;
+        document.getElementById('bpEditIndex').value = index;
+        document.getElementById('bpSubmitBtn').textContent = "עדכן";
+        validateBP();
+    }
+    else if(type === 'sugar') {
+        document.getElementById('sugarDate').value = item.date;
+        document.getElementById('glucoseLevel').value = item.val;
+        document.getElementById('sugarTime').value = item.time;
+        document.getElementById('sugarEditIndex').value = index;
+        document.getElementById('sugarSubmitBtn').textContent = "עדכן";
+        validateSugar();
+    }
+    else if(type === 'weight') {
+        document.getElementById('weightDate').value = item.date;
+        document.getElementById('weightVal').value = item.val;
+        document.getElementById('weightEditIndex').value = index;
+        document.getElementById('weightSubmitBtn').textContent = "עדכן";
+        validateWeight();
+    }
+    else if(type === 'diet') {
+        document.getElementById('dietDate').value = item.date;
+        document.getElementById('calorieTarget').value = item.target;
+        document.getElementById('calBreakfast').value = item.b || "";
+        document.getElementById('calLunch').value = item.l || "";
+        document.getElementById('calDinner').value = item.d || "";
+        document.getElementById('dietEditIndex').value = index;
+        document.getElementById('dietSubmitBtn').textContent = "עדכן";
+    }
+    else if(type === 'walking') {
+        document.getElementById('walkingDate').value = item.date;
+        document.getElementById('walkStart').value = item.start;
+        document.getElementById('walkEnd').value = item.end;
+        document.getElementById('walkDifficulty').value = item.diff;
+        document.getElementById('walkSpeed').value = item.speed;
+        document.getElementById('walkingEditIndex').value = index;
+        document.getElementById('walkingSubmitBtn').textContent = "עדכן";
+    }
+    else if(type === 'meds') {
+        document.getElementById('medName').value = item.name;
+        document.querySelectorAll('.med-time').forEach(cb => cb.checked = false);
+        if(item.times) {
+            item.times.split(', ').forEach(t => {
+                const cb = document.querySelector(`.med-time[value="${t}"]`);
+                if(cb) cb.checked = true;
+            });
+        }
+        document.getElementById('medsEditIndex').value = index;
+        document.getElementById('medsSubmitBtn').textContent = "עדכן";
+    }
+    else if(type === 'cycle') {
+        document.getElementById('cycleStart').value = item.start;
+        document.getElementById('cycleNotes').value = item.notes;
+        document.getElementById('cycleEditIndex').value = index;
+        document.getElementById('cycleSubmitBtn').textContent = "עדכן";
+    }
+}
+
 function setClass(el, cls) { el.className = cls; }
-window.validateBP = function() { const sys = parseFloat(document.getElementById('systolic').value); const dia = parseFloat(document.getElementById('diastolic').value); const pul = parseFloat(document.getElementById('pulse').value); const sysEl = document.getElementById('systolic'); if(sys < 90) setClass(sysEl, 'bg-low'); else if(sys > 140) setClass(sysEl, 'bg-high'); else if(sys >= 130) setClass(sysEl, 'bg-borderline'); else setClass(sysEl, 'bg-normal'); const diaEl = document.getElementById('diastolic'); if(dia < 60) setClass(diaEl, 'bg-low'); else if(dia > 90) setClass(diaEl, 'bg-high'); else if(dia >= 85) setClass(diaEl, 'bg-borderline'); else setClass(diaEl, 'bg-normal'); const pulEl = document.getElementById('pulse'); if(pul < 50) setClass(pulEl, 'bg-low'); else if(pul > 100) setClass(pulEl, 'bg-high'); else setClass(pulEl, 'bg-normal'); }
-window.validateSugar = function() { const val = parseFloat(document.getElementById('glucoseLevel').value); const mode = document.getElementById('sugarTime').value; const el = document.getElementById('glucoseLevel'); const highLimit = (mode === 'fasting') ? 126 : 200; const borderLimit = (mode === 'fasting') ? 100 : 140; if(val < 70) setClass(el, 'bg-low'); else if(val >= highLimit) setClass(el, 'bg-high'); else if(val >= borderLimit) setClass(el, 'bg-borderline'); else setClass(el, 'bg-normal'); }
-window.validateWeight = function() { const val = parseFloat(document.getElementById('weightVal').value); const el = document.getElementById('weightVal'); if(val < 45) setClass(el, 'bg-low'); else if(val > 120) setClass(el, 'bg-high'); else if(val > 100) setClass(el, 'bg-borderline'); else setClass(el, 'bg-normal'); }
+
+window.validateBP = function() {
+    const sys = parseFloat(document.getElementById('systolic').value);
+    const dia = parseFloat(document.getElementById('diastolic').value);
+    const pul = parseFloat(document.getElementById('pulse').value);
+    const sysEl = document.getElementById('systolic');
+    if(sys < 90) setClass(sysEl, 'bg-low'); else if(sys > 140) setClass(sysEl, 'bg-high'); else if(sys >= 130) setClass(sysEl, 'bg-borderline'); else setClass(sysEl, 'bg-normal');
+    const diaEl = document.getElementById('diastolic');
+    if(dia < 60) setClass(diaEl, 'bg-low'); else if(dia > 90) setClass(diaEl, 'bg-high'); else if(dia >= 85) setClass(diaEl, 'bg-borderline'); else setClass(diaEl, 'bg-normal');
+    const pulEl = document.getElementById('pulse');
+    if(pul < 50) setClass(pulEl, 'bg-low'); else if(pul > 100) setClass(pulEl, 'bg-high'); else setClass(pulEl, 'bg-normal');
+}
+
+window.validateSugar = function() {
+    const val = parseFloat(document.getElementById('glucoseLevel').value);
+    const mode = document.getElementById('sugarTime').value;
+    const el = document.getElementById('glucoseLevel');
+    const highLimit = (mode === 'fasting') ? 126 : 200;
+    const borderLimit = (mode === 'fasting') ? 100 : 140;
+    if(val < 70) setClass(el, 'bg-low'); else if(val >= highLimit) setClass(el, 'bg-high'); else if(val >= borderLimit) setClass(el, 'bg-borderline'); else setClass(el, 'bg-normal');
+}
+
+window.validateWeight = function() {
+    const val = parseFloat(document.getElementById('weightVal').value);
+    const el = document.getElementById('weightVal');
+    if(val < 45) setClass(el, 'bg-low'); else if(val > 120) setClass(el, 'bg-high'); else if(val > 100) setClass(el, 'bg-borderline'); else setClass(el, 'bg-normal');
+}
 
 window.openSection = function(name) { document.getElementById('mainMenu').classList.remove('active'); setTimeout(() => document.getElementById('mainMenu').classList.add('hidden'), 200); document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden')); const target = document.getElementById(name + 'Section'); target.classList.remove('hidden'); target.classList.add('active'); currentSection = name; loadData(name); updateExportBtn(); }
 window.showHome = function() { document.querySelectorAll('.screen').forEach(el => { el.classList.remove('active'); el.classList.add('hidden'); }); const menu = document.getElementById('mainMenu'); menu.classList.remove('hidden'); menu.classList.add('active'); document.getElementById('exportCsvBtn').classList.add('hidden'); document.querySelectorAll('.chart-wrapper').forEach(cw => cw.classList.add('hidden')); }
