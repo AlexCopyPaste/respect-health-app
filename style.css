@@ -31,19 +31,17 @@ body {
     user-select: none;
 }
 
-/* --- כותרת ראשית --- */
+/* כותרת ראשית (דף הבית) */
 .main-header { 
     display: flex; 
     align-items: center; 
     padding: 20px; 
     background: var(--bg-color);
-    gap: 15px; 
+    gap: 15px;
 }
-
 .header-content { text-align: center; flex: 1; }
 .header-content h1 { margin: 0; font-size: 24px; font-weight: 800; }
 .header-content p { margin: 5px 0 0; color: #666; font-size: 13px; }
-
 .header-logo { flex-shrink: 0; }
 .header-logo img { width: 65px; height: auto; display: block; }
 
@@ -68,58 +66,47 @@ body {
 
 input, select {
     width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
-    font-size: 18px; 
-    text-align: right !important; 
-    direction: rtl;
+    font-size: 18px; text-align: right !important; direction: rtl;
     background: var(--card-bg); color: var(--text-color); box-sizing: border-box;
 }
 
-/* מקרא דק */
-.color-legend { 
-    display: flex; justify-content: center; gap: 15px; 
-    padding: 8px 0; margin-bottom: 5px; font-size: 12px; 
-    background: var(--bg-color);
-}
+.color-legend { display: flex; justify-content: center; gap: 15px; padding: 8px 0; margin-bottom: 5px; font-size: 12px; background: var(--bg-color); }
 .legend-item { display: flex; align-items: center; gap: 4px; }
 .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #ccc; }
-
 .bg-normal { background-color: var(--color-normal) !important; }
 .bg-low { background-color: var(--color-low) !important; }
 .bg-borderline { background-color: var(--color-borderline) !important; }
 .bg-high { background-color: var(--color-high) !important; }
 
-/* כללי */
+/* --- כותרות פנימיות --- */
 .screen-header { 
-    position: relative;
     display: flex; 
-    justify-content: space-between; 
     align-items: center; 
+    justify-content: center; /* מירכוז הכותרת */
     padding: 15px; 
     background: var(--card-bg); 
     border-bottom: 1px solid rgba(0,0,0,0.1); 
-    height: 50px;
+    position: relative; /* כדי למקם את הכפתורים בצד */
 }
 
-/* כותרת מורכזת אבסולוטית */
-.header-center-title {
-    position: absolute;
-    left: 0; right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    pointer-events: none; /* כדי לא להפריע ללחיצות בצדדים */
+/* הכותרת עצמה */
+.header-title h2 { 
+    margin: 0; 
+    font-size: 20px; /* ברירת מחדל */
 }
-.header-center-title h2 { margin: 0; font-size: 20px; }
-.icon-svg-small svg { width: 24px; height: 24px; }
 
+/* הוספה: הגדלת כותרת בדף לחץ דם ספציפית אם צריך, או כאן באופן כללי */
+#bpSection .header-title h2 {
+    font-size: 24px; /* טיפה יותר גדול */
+}
+
+/* כפתורי הבית/גרף - מוצמדים לשמאל */
 .header-actions { 
-    display: flex; gap: 10px; 
-    margin-right: auto; /* דחיפה שמאלה ב-RTL */
-    z-index: 2; /* מעל הכותרת */
+    position: absolute; 
+    left: 15px; /* הצמדה לשמאל */
+    display: flex; 
+    gap: 15px; 
 }
-/* כפתור הבית גם צריך z-index אם הוא לבד */
-.home-btn { z-index: 2; position: relative; margin-right: auto; }
 
 .home-btn, .chart-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
 
@@ -137,11 +124,17 @@ label { display: block; margin-bottom: 5px; font-size: 14px; color: #888; }
     white-space: nowrap; 
 }
 
-.history-right { display: flex; align-items: center; gap: 12px; overflow: hidden; }
+/* צד ימין (התחלה ב-RTL): תאריך ואז נתונים */
+.history-right { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    overflow: hidden; 
+}
 .history-data-row { display: flex; gap: 10px; font-size: 16px; font-weight: 500; }
-.history-date-full { font-size: 12px; color: #999; margin-left: 5px; }
+.history-date-full { font-size: 12px; color: #999; margin-left: 8px; font-weight: bold; } /* תאריך */
 
-/* פעולות - עיפרון ואז פח */
+/* צד שמאל (סוף ב-RTL): כפתורים */
 .history-actions { display: flex; gap: 15px; }
 .action-icon { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; padding: 0; }
 .action-icon:hover { opacity: 1; color: var(--primary); }
@@ -149,7 +142,6 @@ label { display: block; margin-bottom: 5px; font-size: 14px; color: #888; }
 .screen { display: none; } .screen.active { display: block; animation: fade 0.3s; } .screen.hidden { display: none; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
-/* גרפים */
 .chart-wrapper { width: 100%; background: var(--card-bg); padding: 10px; margin-bottom: 10px; border-radius: 12px; box-sizing: border-box; }
 .chart-wrapper.hidden { display: none; }
 .chart-controls { display: flex; justify-content: center; gap: 5px; margin-bottom: 10px; }
