@@ -2,8 +2,8 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Respect Health</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Respect Health Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#f2f2f7">
@@ -16,137 +16,197 @@
         <div id="mainMenu" class="screen active">
             <header class="main-header">
                 <h1>Respect Health</h1>
-                <p>הבריאות שלך, בידיים שלך</p>
+                <p>מערכת ניהול בריאות אישית</p>
             </header>
 
             <div class="dashboard-grid">
-                <div class="app-icon-wrapper" onclick="showSection('bpSection')">
-                    <div class="app-icon icon-heart">
-                        ❤️
-                    </div>
+                <div class="app-btn" onclick="showSection('bpSection')">
+                    <div class="icon-3d red-gradient">❤️</div>
                     <span>לחץ דם</span>
                 </div>
                 
-                <div class="app-icon-wrapper" onclick="showSection('weightSection')">
-                    <div class="app-icon icon-weight">
-                        <svg viewBox="0 0 24 24" fill="white" width="35" height="35">
-                            <path d="M12,3A4,4 0 0,1 16,7A4,4 0 0,1 12,11A4,4 0 0,1 8,7A4,4 0 0,1 12,3M12,5A2,2 0 0,0 10,7A2,2 0 0,0 12,9A2,2 0 0,0 14,7A2,2 0 0,0 12,5M19,13H5V21H19V13M19,11A2,2 0 0,1 21,13V21A2,2 0 0,1 19,23H5A2,2 0 0,1 3,21V13A2,2 0 0,1 5,11H19Z" />
-                        </svg>
-                    </div>
+                <div class="app-btn" onclick="showSection('sugarSection')">
+                    <div class="icon-3d blue-gradient">🩸</div>
+                    <span>סוכר</span>
+                </div>
+
+                <div class="app-btn" onclick="showSection('weightSection')">
+                    <div class="icon-3d purple-gradient">⚖️</div>
                     <span>משקל</span>
                 </div>
 
-                <div class="app-icon-wrapper" onclick="showSection('walkingSection')">
-                    <div class="app-icon icon-walk">
-                        👟
-                    </div>
-                    <span>הליכה</span>
-                </div>
-
-                <div class="app-icon-wrapper" onclick="showSection('medsSection')">
-                    <div class="app-icon icon-meds">
-                        💊
-                    </div>
+                <div class="app-btn" onclick="showSection('medsSection')">
+                    <div class="icon-3d orange-gradient">💊</div>
                     <span>תרופות</span>
                 </div>
 
-                <div class="app-icon-wrapper" onclick="showSection('settingsSection')">
-                    <div class="app-icon icon-settings">
-                        ⚙️
-                    </div>
+                <div class="app-btn" onclick="showSection('cycleSection')">
+                    <div class="icon-3d pink-gradient">🌸</div>
+                    <span>מחזור</span>
+                </div>
+
+                <div class="app-btn" onclick="showSection('settingsSection')">
+                    <div class="icon-3d gray-gradient">⚙️</div>
                     <span>הגדרות</span>
                 </div>
             </div>
         </div>
 
-        <div id="bpSection" class="screen hidden">
+        <div id="bpSection" class="screen hidden" data-category="bp">
             <div class="screen-header">
-                <button onclick="showHome()" class="back-btn">❌ סגור</button>
-                <h2>לחץ דם ודופק</h2>
+                <button onclick="showHome()" class="back-btn">❌</button>
+                <h2>לחץ דם</h2>
             </div>
             
             <div class="content-scroll">
                 <div class="card form-card">
-                    <h3>מדידה חדשה</h3>
-                    <form id="healthForm">
-                        <input type="hidden" id="editId">
+                    <form id="bpForm">
                         <div class="form-group">
-                            <label>תאריך ושעה:</label>
-                            <input type="datetime-local" id="date" required>
+                            <label>תאריך:</label>
+                            <input type="datetime-local" id="bpDate" required>
                         </div>
-                        
                         <div class="row">
                             <div class="form-group">
-                                <label>לחץ דם (גבוה):</label>
-                                <input type="number" id="systolic" placeholder="120">
+                                <label>סיסטולי (גבוה):</label>
+                                <input type="number" id="systolic" placeholder="120" oninput="validateField(this, 'systolic')">
                             </div>
                             <div class="form-group">
-                                <label>לחץ דם (נמוך):</label>
-                                <input type="number" id="diastolic" placeholder="80">
+                                <label>דיאסטולי (נמוך):</label>
+                                <input type="number" id="diastolic" placeholder="80" oninput="validateField(this, 'diastolic')">
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="form-group">
-                                <label>דופק:</label>
-                                <input type="number" id="pulse" placeholder="70">
-                            </div>
-                            </div>
-
                         <div class="form-group">
-                            <label>הערות:</label>
-                            <textarea id="notes" rows="2" placeholder="איך הרגשת?"></textarea>
+                            <label>דופק:</label>
+                            <input type="number" id="pulse" placeholder="70" oninput="validateField(this, 'pulse')">
+                            <small class="feedback-text"></small>
                         </div>
-
-                        <button type="submit" id="submitBtn" class="btn-primary">שמור מדידה</button>
+                        <button type="submit" class="btn-ios">שמור נתונים</button>
                     </form>
                 </div>
-
-                <div class="history-section">
-                    <div class="history-header">
-                        <h3>היסטוריה</h3>
-                        <button id="exportBtn" class="btn-small">ייצוא CSV</button>
-                    </div>
-                    <div id="entriesList"></div>
-                </div>
+                <div id="bpList" class="history-list"></div>
             </div>
         </div>
 
-        <div id="weightSection" class="screen hidden">
+        <div id="sugarSection" class="screen hidden" data-category="sugar">
             <div class="screen-header">
-                <button onclick="showHome()" class="back-btn">❌ סגור</button>
+                <button onclick="showHome()" class="back-btn">❌</button>
+                <h2>סוכר בדם</h2>
+            </div>
+            <div class="content-scroll">
+                <div class="card form-card">
+                    <form id="sugarForm">
+                        <div class="form-group">
+                            <label>תאריך:</label>
+                            <input type="datetime-local" id="sugarDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>רמת סוכר (mg/dL):</label>
+                            <input type="number" id="glucoseLevel" placeholder="100" oninput="validateField(this, 'sugar')">
+                            <small class="feedback-text"></small>
+                        </div>
+                        <div class="form-group">
+                            <label>זמן מדידה:</label>
+                            <select id="sugarTime" class="ios-select">
+                                <option value="צום">בצום</option>
+                                <option value="אחרי אוכל">שעתיים אחרי אוכל</option>
+                                <option value="אקראי">אקראי</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-ios">שמור נתונים</button>
+                    </form>
+                </div>
+                <div id="sugarList" class="history-list"></div>
+            </div>
+        </div>
+
+        <div id="weightSection" class="screen hidden" data-category="weight">
+            <div class="screen-header">
+                <button onclick="showHome()" class="back-btn">❌</button>
                 <h2>מעקב משקל</h2>
             </div>
-            <div class="content-scroll placeholder-content">
-                <div class="app-icon icon-weight large">
-                    <svg viewBox="0 0 24 24" fill="white" width="60" height="60">
-                        <path d="M12,3A4,4 0 0,1 16,7A4,4 0 0,1 12,11A4,4 0 0,1 8,7A4,4 0 0,1 12,3M12,5A2,2 0 0,0 10,7A2,2 0 0,0 12,9A2,2 0 0,0 14,7A2,2 0 0,0 12,5M19,13H5V21H19V13M19,11A2,2 0 0,1 21,13V21A2,2 0 0,1 19,23H5A2,2 0 0,1 3,21V13A2,2 0 0,1 5,11H19Z" />
-                    </svg>
+            <div class="content-scroll">
+                <div class="card form-card">
+                    <form id="weightForm">
+                        <div class="form-group">
+                            <label>תאריך:</label>
+                            <input type="datetime-local" id="weightDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>משקל (ק"ג):</label>
+                            <input type="number" step="0.1" id="weightVal" placeholder="75.0" oninput="validateField(this, 'weight')">
+                            <small class="feedback-text"></small>
+                        </div>
+                        <button type="submit" class="btn-ios">שמור נתונים</button>
+                    </form>
                 </div>
-                <p>כאן יופיע גרף משקל ומעקב שקילות.</p>
-                <button class="btn-primary" onclick="alert('פונקציה זו בפיתוח')">הוסף שקילה</button>
+                <div id="weightList" class="history-list"></div>
             </div>
         </div>
 
-        <div id="walkingSection" class="screen hidden">
+        <div id="medsSection" class="screen hidden" data-category="meds">
             <div class="screen-header">
-                <button onclick="showHome()" class="back-btn">❌ סגור</button>
-                <h2>צעדים והליכה</h2>
-            </div>
-            <div class="content-scroll placeholder-content">
-                <div class="app-icon icon-walk large">👟</div>
-                <p>כאן תוכל לעקוב אחרי הפעילות הגופנית שלך.</p>
-            </div>
-        </div>
-
-        <div id="medsSection" class="screen hidden">
-            <div class="screen-header">
-                <button onclick="showHome()" class="back-btn">❌ סגור</button>
+                <button onclick="showHome()" class="back-btn">❌</button>
                 <h2>ארון תרופות</h2>
             </div>
-            <div class="content-scroll placeholder-content">
-                <div class="app-icon icon-meds large">💊</div>
-                <p>כאן תהיה רשימת התרופות ותזכורות לנטילה.</p>
+            <div class="content-scroll">
+                <div class="card form-card">
+                    <form id="medsForm">
+                        <div class="form-group">
+                            <label>שם התרופה:</label>
+                            <input type="text" id="medName" placeholder="למשל: אקמול" required>
+                        </div>
+                        <div class="form-group">
+                            <label>מינון (מ"ג):</label>
+                            <input type="number" id="medDosage" placeholder="500">
+                        </div>
+                        <div class="form-group">
+                            <label>זמני נטילה:</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" value="בוקר" class="med-time"> ☀️ בוקר</label>
+                                <label><input type="checkbox" value="צהריים" class="med-time"> 🌤️ צהריים</label>
+                                <label><input type="checkbox" value="ערב" class="med-time"> 🌙 ערב</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-ios">הוסף תרופה</button>
+                    </form>
+                </div>
+                <div id="medsList" class="history-list"></div>
+            </div>
+        </div>
+
+        <div id="cycleSection" class="screen hidden" data-category="cycle">
+            <div class="screen-header">
+                <button onclick="showHome()" class="back-btn">❌</button>
+                <h2>מעקב נשי</h2>
+            </div>
+            <div class="content-scroll">
+                <div id="cyclePrediction" class="prediction-card hidden">
+                    <span>המחזור הבא משוער ב:</span>
+                    <strong id="nextCycleDate">--/--/----</strong>
+                </div>
+
+                <div class="card form-card">
+                    <form id="cycleForm">
+                        <div class="form-group">
+                            <label>תאריך התחלה:</label>
+                            <input type="date" id="cycleStart" required>
+                        </div>
+                        <div class="form-group">
+                            <label>רמת כאב / קושי:</label>
+                            <select id="cyclePain" class="ios-select">
+                                <option value="קל">🙂 קל</option>
+                                <option value="בינוני">😐 בינוני</option>
+                                <option value="קשה">😣 קשה</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>הערות:</label>
+                            <textarea id="cycleNotes" rows="2" placeholder="תופעות לוואי, מצב רוח..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-ios">שמור</button>
+                    </form>
+                </div>
+                <div id="cycleList" class="history-list"></div>
             </div>
         </div>
 
@@ -155,40 +215,22 @@
                 <button onclick="showHome()" class="back-btn">חזרה</button>
                 <h2>הגדרות</h2>
             </div>
-            
             <div class="content-scroll">
                 <div class="settings-list">
-                    
                     <div class="settings-item">
-                        <div class="settings-label">
-                            <span class="icon">🌗</span>
-                            <span>מצב לילה (Dark Mode)</span>
-                        </div>
-                        <div class="toggle-container">
-                            <input type="checkbox" id="themeSwitch">
-                            <label for="themeSwitch" class="slider-rect"></label>
-                        </div>
+                        <span>מצב לילה</span>
+                        <input type="checkbox" id="themeSwitch" class="ios-toggle">
                     </div>
-
-                    <div class="settings-item" onclick="contactSupport()">
-                        <div class="settings-label">
-                            <span class="icon">💬</span>
-                            <span>צור קשר (WhatsApp)</span>
-                        </div>
-                        <div class="arrow">›</div>
+                    <div class="settings-item" onclick="resetData()">
+                        <span style="color:red">מחיקת כל הנתונים</span>
                     </div>
-
-                    <div class="settings-item" onclick="alert('גרסה 1.2 - פותח עבור אלכס')">
-                        <div class="settings-label">
-                            <span class="icon">ℹ️</span>
-                            <span>אודות</span>
-                        </div>
-                        <div class="arrow">›</div>
-                    </div>
-
                 </div>
             </div>
         </div>
+
+        <button id="exportCsvBtn" class="floating-export-btn hidden" onclick="exportCurrentData()">
+            📤 ייצוא Excel
+        </button>
 
     </div>
 

@@ -1,215 +1,347 @@
 // ==========================================
-// 1. הגדרות ומשתנים
+// ניהול משתנים ונתונים
 // ==========================================
-const form = document.getElementById('healthForm');
-const entriesList = document.getElementById('entriesList');
-const dateInput = document.getElementById('date');
-const exportBtn = document.getElementById('exportBtn');
-const editIdInput = document.getElementById('editId');
-const submitBtn = document.getElementById('submitBtn');
-const themeSwitch = document.getElementById('themeSwitch'); // הבורר החדש
+const storageKeys = {
+    bp: 'respect_bp',
+    sugar: 'respect_sugar',
+    weight: 'respect_weight',
+    meds: 'respect_meds',
+    cycle: 'respect_cycle'
+};
 
-// הגדרת תאריך ושעה נוכחיים כברירת מחדל
-const now = new Date();
-now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-dateInput.value = now.toISOString().slice(0, 16);
-
-// ==========================================
-// 2. אתחול האפליקציה
-// ==========================================
+// =תאריך נוכחי כברירת מחדל לכל השדות
 document.addEventListener('DOMContentLoaded', () => {
-    loadEntries();
-    loadTheme();
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    const dateStr = now.toISOString().slice(0, 16); // format: YYYY-MM-DDTHH:MM
+    const dateDateStr = now.toISOString().slice(0, 10); // format: YYYY-MM-DD
+
+    document.getElementById('bpDate').value = dateStr;
+    document.getElementById('sugarDate').value = dateStr;
+    document.getElementById('weightDate').value = dateStr;
+    document.getElementById('cycleStart').value = dateDateStr;
+
+    loadDataForSection('bp'); // טעינה ראשונית ברקע
+    setupTheme();
 });
 
 // ==========================================
-// 3. ניווט בין מסכים (תוקן: פותח דפים נפרדים)
+// ניווט וניהול תצוגה
 // ==========================================
-function showSection(sectionId) {
-    // הסתר את כל המסכים
-    document.querySelectorAll('.screen').forEach(el => {
-        el.classList.remove('active');
-        el.classList.add('hidden');
-    });
+let currentCategory = null;
 
-    // הצג את המסך הרצוי
-    const targetScreen = document.getElementById(sectionId);
-    if (targetScreen) {
-        targetScreen.classList.remove('hidden');
-        // טיימר קטן כדי לאפשר אנימציה
-        setTimeout(() => {
-            targetScreen.classList.add('active');
-        }, 10);
-    }
-    
-    // גלילה לראש העמוד
-    window.scrollTo(0, 0);
+function showSection(sectionId) {
+    document.getElementById('mainMenu').classList.remove('active');
+    setTimeout(() => document.getElementById('mainMenu').classList.add('hidden'), 300);
+
+    const target = document.getElementById(sectionId);
+    target.classList.remove('hidden');
+    // טיימר קטן לאנימציה
+    setTimeout(() => target.classList.add('active'), 10);
+
+    // זיהוי הקטגוריה הנוכחית עבור הייצוא
+    currentCategory = target.getAttribute('data-category');
+    loadDataForSection(currentCategory);
 }
 
 function showHome() {
-    // הסתר את כל המסכים הפנימיים
-    document.querySelectorAll('.screen').forEach(el => {
-        if (el.id !== 'mainMenu') {
-            el.classList.remove('active');
-            setTimeout(() => el.classList.add('hidden'), 300); // מחכה לסיום האנימציה
-        }
-    });
-
-    // הצג את התפריט הראשי
+    const activeScreen = document.querySelector('.screen.active:not(#mainMenu)');
+    if (activeScreen) {
+        activeScreen.classList.remove('active');
+        setTimeout(() => activeScreen.classList.add('hidden'), 300);
+    }
+    
     const menu = document.getElementById('mainMenu');
     menu.classList.remove('hidden');
-    menu.classList.add('active');
+    setTimeout(() => menu.classList.add('active'), 10);
     
-    resetForm();
+    currentCategory = null;
+    updateExportButton(); // הסתרת הכפתור
 }
 
 // ==========================================
-// 4. ניהול מצב לילה (לוגיקה חדשה לבורר)
+// מערכת ולידציה (רמזור) בזמן אמת
 // ==========================================
-themeSwitch.addEventListener('change', (e) => {
-    if (e.target.checked) {
-        document.body.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-    } else {
-        document.body.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
+function validateField(input, type) {
+    const val = parseFloat(input.value);
+    const parentForm = input.closest('form');
+    const submitBtn = parentForm.querySelector('button[type="submit"]');
+    const feedback = input.parentNode.querySelector('.feedback-text') || { style: {} };
+    
+    // ניקוי מחלקות קודמות
+    input.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+    submitBtn.disabled = false;
+    feedback.innerText = "";
+    feedback.style.color = "";
+
+    if (isNaN(val)) return;
+
+    let status = 'good'; // good, warn, danger
+
+    // לוגיקה לפי סוג
+    if (type === 'pulse') {
+        if (val > 220) status = 'danger';
+        else if (val > 100) status = 'warn';
+    } 
+    else if (type === 'systolic') {
+        if (val > 180 || val < 90) status = 'danger';
+        else if (val > 140) status = 'warn';
     }
-});
+    else if (type === 'diastolic') {
+        if (val > 110 || val < 60) status = 'danger';
+        else if (val > 90) status = 'warn';
+    }
+    else if (type === 'weight') {
+        if (val >= 100) status = 'danger';
+        else if (val > 90) status = 'warn';
+    }
+    else if (type === 'sugar') {
+        if (val > 200 || val < 70) status = 'danger';
+        else if (val > 140) status = 'warn';
+    }
 
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-        themeSwitch.checked = true;
-    } else {
-        themeSwitch.checked = false;
+    // יישום הצבעים
+    if (status === 'good') {
+        input.classList.add('bg-success');
+    } else if (status === 'warn') {
+        input.classList.add('bg-warning');
+        if (type === 'weight') feedback.innerText = "מתקרב לטווח הגבוה";
+    } else if (status === 'danger') {
+        input.classList.add('bg-danger');
+        feedback.innerText = "ערך חריג! הכפתור ננעל.";
+        feedback.style.color = "red";
+        submitBtn.disabled = true; // נעילת כפתור
     }
 }
 
 // ==========================================
-// 5. צור קשר בוואטסאף (הוספת הפונקציה)
+// שמירת נתונים (לפי מחלקות)
 // ==========================================
-window.contactSupport = function() {
-    const phone = "9720547565000";
-    const message = encodeURIComponent("אני משתמש באפליקציה שלך ורוצה לומר לך ש...");
-    const url = `https://wa.me/${phone}?text=${message}`;
-    window.open(url, '_blank');
-}
 
-// ==========================================
-// 6. שמירה ועיבוד נתונים (לוגיקה קיימת)
-// ==========================================
-form.addEventListener('submit', function(e) {
+// 1. לחץ דם
+document.getElementById('bpForm').addEventListener('submit', (e) => {
     e.preventDefault();
-
-    const isEdit = editIdInput.value !== '';
-    const entryId = isEdit ? parseInt(editIdInput.value) : Date.now();
-
-    const entryData = {
-        id: entryId,
-        date: document.getElementById('date').value,
-        systolic: document.getElementById('systolic').value,
-        diastolic: document.getElementById('diastolic').value,
-        pulse: document.getElementById('pulse').value,
-        // weight: document.getElementById('weight').value, // הוסר זמנית מהטופס הזה
-        notes: document.getElementById('notes').value
+    const data = {
+        date: document.getElementById('bpDate').value,
+        sys: document.getElementById('systolic').value,
+        dia: document.getElementById('diastolic').value,
+        pulse: document.getElementById('pulse').value
     };
-
-    saveOrUpdateEntry(entryData, isEdit);
-    resetForm();
-    loadEntries();
-    
-    // הודעת אישור קטנה
-    alert('הנתונים נשמרו בהצלחה!');
+    saveItem('bp', data);
 });
 
-function saveOrUpdateEntry(entry, isUpdate) {
-    let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
+// 2. סוכר
+document.getElementById('sugarForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {
+        date: document.getElementById('sugarDate').value,
+        val: document.getElementById('glucoseLevel').value,
+        time: document.getElementById('sugarTime').value
+    };
+    saveItem('sugar', data);
+});
+
+// 3. משקל
+document.getElementById('weightForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {
+        date: document.getElementById('weightDate').value,
+        val: document.getElementById('weightVal').value
+    };
+    saveItem('weight', data);
+});
+
+// 4. תרופות (טיפול בצ'ק בוקס)
+document.getElementById('medsForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const times = [];
+    document.querySelectorAll('.med-time:checked').forEach(cb => times.push(cb.value));
     
-    if (isUpdate) {
-        const index = entries.findIndex(e => e.id === entry.id);
-        if (index !== -1) entries[index] = entry;
-    } else {
-        entries.unshift(entry);
-    }
+    const data = {
+        name: document.getElementById('medName').value,
+        dosage: document.getElementById('medDosage').value,
+        times: times.join(', ')
+    };
+    saveItem('meds', data);
+});
+
+// 5. מחזור
+document.getElementById('cycleForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {
+        start: document.getElementById('cycleStart').value,
+        pain: document.getElementById('cyclePain').value,
+        notes: document.getElementById('cycleNotes').value
+    };
+    saveItem('cycle', data);
+});
+
+// פונקציית שמירה גנרית
+function saveItem(type, obj) {
+    const key = storageKeys[type];
+    let list = JSON.parse(localStorage.getItem(key)) || [];
+    list.unshift(obj); // הוספה להתחלה
+    localStorage.setItem(key, JSON.stringify(list));
     
-    localStorage.setItem('respectHealthData', JSON.stringify(entries));
-}
-
-function loadEntries() {
-    let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
-    entriesList.innerHTML = '';
-
-    entries.forEach(entry => {
-        const div = document.createElement('div');
-        div.className = 'entry-card';
-        
-        let content = `<div class="entry-date">${new Date(entry.date).toLocaleString('he-IL')}</div>`;
-        content += `<div class="entry-data">`;
-        if (entry.systolic) content += `לחץ דם: ${entry.systolic}/${entry.diastolic} | `;
-        if (entry.pulse) content += `דופק: ${entry.pulse}`;
-        content += `</div>`;
-        
-        if (entry.notes) content += `<div style="font-size:0.9em; margin-top:5px; color:#888;">"${entry.notes}"</div>`;
-
-        content += `
-            <div style="position: absolute; left: 15px; top: 15px;">
-                <button onclick="editEntry(${entry.id})" class="btn-small">✏️</button>
-                <button onclick="deleteEntry(${entry.id})" class="btn-small" style="color:red;">🗑️</button>
-            </div>
-        `;
-
-        div.innerHTML = content;
-        entriesList.appendChild(div);
-    });
-}
-
-window.deleteEntry = function(id) {
-    if(confirm('למחוק?')) {
-        let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
-        entries = entries.filter(entry => entry.id !== id);
-        localStorage.setItem('respectHealthData', JSON.stringify(entries));
-        loadEntries();
-    }
-}
-
-window.editEntry = function(id) {
-    let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
-    const entry = entries.find(e => e.id === id);
-    
-    if (entry) {
-        document.getElementById('date').value = entry.date;
-        document.getElementById('systolic').value = entry.systolic;
-        document.getElementById('diastolic').value = entry.diastolic;
-        document.getElementById('pulse').value = entry.pulse;
-        document.getElementById('notes').value = entry.notes;
-        
-        editIdInput.value = entry.id;
-        submitBtn.textContent = 'עדכן';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-}
-
-function resetForm() {
-    form.reset();
-    editIdInput.value = '';
-    submitBtn.textContent = 'שמור מדידה';
+    document.querySelector(`#${type}Form`).reset();
+    // החזרת תאריך עדכני
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    dateInput.value = now.toISOString().slice(0, 16);
+    
+    // איפוס ספציפי לשדות תאריך
+    if(type === 'cycle') {
+        // לא מאפס תאריך למחזור בדרך כלל
+    } else {
+        const dateField = document.querySelector(`#${type}Date`) || document.querySelector(`#${type}Start`);
+        if(dateField) dateField.value = now.toISOString().slice(0, 16);
+    }
+    
+    loadDataForSection(type);
+    alert('נשמר בהצלחה!');
 }
 
-exportBtn.addEventListener('click', function() {
-    let entries = JSON.parse(localStorage.getItem('respectHealthData')) || [];
-    if(entries.length === 0) { alert("אין נתונים"); return; }
+// ==========================================
+// טעינת נתונים + תחזית מחזור + ייצוא
+// ==========================================
+function loadDataForSection(type) {
+    if (!type) return;
+    
+    const key = storageKeys[type];
+    const list = JSON.parse(localStorage.getItem(key)) || [];
+    const container = document.getElementById(`${type}List`);
+    
+    container.innerHTML = ''; // ניקוי
 
-    let csvContent = "data:text/csv;charset=utf-8,\uFEFFתאריך,לחץ דם,דופק,הערות\n";
-    entries.forEach(e => {
-        csvContent += `${e.date},${e.systolic}/${e.diastolic},${e.pulse},"${e.notes}"\n`;
+    // טיפול מיוחד למחזור - תחזית
+    if (type === 'cycle' && list.length > 0) {
+        const lastPeriod = new Date(list[0].start);
+        // חישוב פשוט: הוספת 28 יום
+        const nextPeriod = new Date(lastPeriod.setDate(lastPeriod.getDate() + 28));
+        document.getElementById('nextCycleDate').innerText = nextPeriod.toLocaleDateString('he-IL');
+        document.getElementById('cyclePrediction').classList.remove('hidden');
+    }
+
+    list.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        
+        let html = '';
+        if (type === 'bp') {
+            html = `<div><strong>${formatDate(item.date)}</strong><br>לחץ דם: ${item.sys}/${item.dia} | דופק: ${item.pulse}</div>`;
+        } else if (type === 'sugar') {
+            html = `<div><strong>${formatDate(item.date)}</strong><br>סוכר: ${item.val} (${item.time})</div>`;
+        } else if (type === 'weight') {
+            html = `<div><strong>${formatDate(item.date)}</strong><br>משקל: ${item.val} ק"ג</div>`;
+        } else if (type === 'meds') {
+            html = `<div><strong>${item.name}</strong> (${item.dosage} מ"ג)<br>זמנים: ${item.times}</div>`;
+        } else if (type === 'cycle') {
+            html = `<div><strong>${item.start}</strong><br>רמת כאב: ${item.pain}<br><small>${item.notes}</small></div>`;
+        }
+
+        // כפתור מחיקה
+        html += `<button onclick="deleteItem('${type}', ${index})" style="background:none;border:none;font-size:18px;">🗑️</button>`;
+        
+        div.innerHTML = html;
+        container.appendChild(div);
     });
 
+    updateExportButton();
+}
+
+function deleteItem(type, index) {
+    if(!confirm('למחוק שורה זו?')) return;
+    const key = storageKeys[type];
+    let list = JSON.parse(localStorage.getItem(key)) || [];
+    list.splice(index, 1);
+    localStorage.setItem(key, JSON.stringify(list));
+    loadDataForSection(type);
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' });
+}
+
+// ==========================================
+// ייצוא לאקסל (CSV) עם כפתור צף
+// ==========================================
+function updateExportButton() {
+    const btn = document.getElementById('exportCsvBtn');
+    if (!currentCategory) {
+        btn.classList.add('hidden');
+        return;
+    }
+
+    const key = storageKeys[currentCategory];
+    const list = JSON.parse(localStorage.getItem(key)) || [];
+    
+    if (list.length > 0) {
+        btn.classList.remove('hidden');
+    } else {
+        btn.classList.add('hidden');
+    }
+}
+
+function exportCurrentData() {
+    if (!currentCategory) return;
+    
+    const key = storageKeys[currentCategory];
+    const list = JSON.parse(localStorage.getItem(key)) || [];
+    
+    // כותרות לפי סוג
+    let csvContent = '\uFEFF'; // BOM לעברית
+    
+    if (currentCategory === 'bp') csvContent += "תאריך,סיסטולי,דיאסטולי,דופק\n";
+    if (currentCategory === 'sugar') csvContent += "תאריך,רמת סוכר,זמן\n";
+    if (currentCategory === 'weight') csvContent += "תאריך,משקל\n";
+    if (currentCategory === 'meds') csvContent += "שם תרופה,מינון,זמנים\n";
+    if (currentCategory === 'cycle') csvContent += "תאריך התחלה,רמת כאב,הערות\n";
+
+    // המרת נתונים
+    list.forEach(item => {
+        if (currentCategory === 'bp') csvContent += `${item.date},${item.sys},${item.dia},${item.pulse}\n`;
+        if (currentCategory === 'sugar') csvContent += `${item.date},${item.val},${item.time}\n`;
+        if (currentCategory === 'weight') csvContent += `${item.date},${item.val}\n`;
+        if (currentCategory === 'meds') csvContent += `${item.name},${item.dosage},"${item.times}"\n`;
+        if (currentCategory === 'cycle') csvContent += `${item.start},${item.pain},"${item.notes}"\n`;
+    });
+
+    // הורדה
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
-    link.href = encodeURI(csvContent);
-    link.download = "health_data.csv";
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `respect_${currentCategory}_data.csv`);
+    document.body.appendChild(link);
     link.click();
-});
+    document.body.removeChild(link);
+}
+
+// ==========================================
+// הגדרות
+// ==========================================
+function setupTheme() {
+    const toggle = document.getElementById('themeSwitch');
+    if(localStorage.getItem('theme') === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggle.checked = true;
+    }
+    
+    toggle.addEventListener('change', (e) => {
+        if(e.target.checked) {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+}
+
+function resetData() {
+    if(confirm('פעולה זו תמחק את כל הנתונים מכל המחלקות. להמשיך?')) {
+        localStorage.clear();
+        location.reload();
+    }
+}
