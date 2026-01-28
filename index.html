@@ -15,12 +15,12 @@
         
         <div id="mainMenu" class="screen active">
             <header class="main-header">
-                <div class="header-logo">
-                    <img src="header_icon.png" alt="לוגו">
-                </div>
                 <div class="header-content">
                     <h1>Respect Your Health</h1>
                     <p>הבריאות שלך בידיים שלך</p>
+                </div>
+                <div class="header-logo">
+                    <img src="header_icon.png" alt="לוגו">
                 </div>
             </header>
 
@@ -54,19 +54,25 @@
                     <span>הליכה</span>
                 </div>
                 <div class="app-btn" onclick="openSection('settings')">
-                    <div class="icon-svg color-gray"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
+                    <div class="icon-svg color-settings-bold">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.43 12.98c.04-.32.07-.64.07-.98 0-.34-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+                    </div>
                     <span>הגדרות</span>
                 </div>
             </div>
         </div>
 
         <div id="bpSection" class="screen hidden">
-            <div class="screen-header">
+            <div class="screen-header symmetric-header">
+                <button class="nav-btn right-btn" onclick="toggleChart('bp')">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zM16.2 13h2.8v6h-2.8z"/></svg>
+                </button>
+                
                 <div class="header-title"><h2>לחץ דם ודופק</h2></div>
-                <div class="header-actions">
-                    <button class="chart-btn" onclick="toggleChart('bp')">📈</button>
-                    <button onclick="showHome()" class="home-btn">🏠</button>
-                </div>
+                
+                <button class="nav-btn left-btn" onclick="showHome()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
             </div>
             
             <div id="bpChartSection" class="chart-wrapper hidden">
@@ -103,12 +109,14 @@
         </div>
 
         <div id="sugarSection" class="screen hidden">
-            <div class="screen-header">
+            <div class="screen-header symmetric-header">
+                <button class="nav-btn right-btn" onclick="toggleChart('sugar')">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zM16.2 13h2.8v6h-2.8z"/></svg>
+                </button>
                 <div class="header-title"><h2>סוכר</h2></div>
-                <div class="header-actions">
-                    <button class="chart-btn" onclick="toggleChart('sugar')">📈</button>
-                    <button onclick="showHome()" class="home-btn">🏠</button>
-                </div>
+                <button class="nav-btn left-btn" onclick="showHome()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
             </div>
             <div id="sugarChartSection" class="chart-wrapper hidden">
                 <div class="chart-controls">
@@ -144,12 +152,14 @@
         </div>
 
         <div id="weightSection" class="screen hidden">
-            <div class="screen-header">
+            <div class="screen-header symmetric-header">
+                <button class="nav-btn right-btn" onclick="toggleChart('weight')">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zM16.2 13h2.8v6h-2.8z"/></svg>
+                </button>
                 <div class="header-title"><h2>משקל</h2></div>
-                <div class="header-actions">
-                    <button class="chart-btn" onclick="toggleChart('weight')">📈</button>
-                    <button onclick="showHome()" class="home-btn">🏠</button>
-                </div>
+                <button class="nav-btn left-btn" onclick="showHome()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
             </div>
             <div id="weightChartSection" class="chart-wrapper hidden">
                 <div class="chart-controls">
@@ -178,11 +188,11 @@
         </div>
 
         <div id="dietSection" class="screen hidden">
-            <div class="screen-header">
+            <div class="screen-header symmetric-header">
                 <div class="header-title"><h2>דיאטה</h2></div>
-                <div class="header-actions">
-                    <button onclick="showHome()" class="home-btn">🏠</button>
-                </div>
+                <button class="nav-btn left-btn" onclick="showHome()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
             </div>
             <div class="content-scroll">
                 <div class="card form-card">
@@ -206,11 +216,11 @@
         </div>
 
         <div id="walkingSection" class="screen hidden">
-            <div class="screen-header">
+            <div class="screen-header symmetric-header">
                 <div class="header-title"><h2>הליכה</h2></div>
-                <div class="header-actions">
-                    <button onclick="showHome()" class="home-btn">🏠</button>
-                </div>
+                <button class="nav-btn left-btn" onclick="showHome()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
             </div>
             <div class="content-scroll">
                 <div class="card form-card">
@@ -233,11 +243,11 @@
         </div>
 
         <div id="medsSection" class="screen hidden">
-            <div class="screen-header">
+            <div class="screen-header symmetric-header">
                 <div class="header-title"><h2>תרופות</h2></div>
-                <div class="header-actions">
-                    <button onclick="showHome()" class="home-btn">🏠</button>
-                </div>
+                <button class="nav-btn left-btn" onclick="showHome()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
             </div>
             <div class="content-scroll">
                 <div class="card form-card">
@@ -257,11 +267,11 @@
         </div>
 
         <div id="cycleSection" class="screen hidden">
-            <div class="screen-header">
+            <div class="screen-header symmetric-header">
                 <div class="header-title"><h2>מחזור</h2></div>
-                <div class="header-actions">
-                    <button onclick="showHome()" class="home-btn">🏠</button>
-                </div>
+                <button class="nav-btn left-btn" onclick="showHome()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
             </div>
             <div class="content-scroll">
                 <div class="card form-card">
@@ -277,11 +287,11 @@
         </div>
 
         <div id="settingsSection" class="screen hidden">
-             <div class="screen-header">
+             <div class="screen-header symmetric-header">
                  <div class="header-title"><h2>הגדרות</h2></div>
-                 <div class="header-actions">
-                    <button onclick="showHome()" class="home-btn">🏠</button>
-                 </div>
+                 <button class="nav-btn left-btn" onclick="showHome()">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                 </button>
              </div>
              <div class="content-scroll">
                  <div class="settings-group">
