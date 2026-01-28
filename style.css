@@ -31,10 +31,18 @@ body {
     user-select: none;
 }
 
-.main-header { position: relative; text-align: center; padding: 25px 20px; background: var(--bg-color); }
-.header-logo-left { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 30px; }
-.header-content h1 { margin: 0; font-size: 24px; }
+/* כותרת ראשית סימטרית */
+.main-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 20px; 
+    background: var(--bg-color); 
+}
+.header-content { text-align: center; flex-grow: 1; }
+.header-content h1 { margin: 0; font-size: 22px; }
 .header-content p { margin: 5px 0 0; color: #666; font-size: 13px; }
+.header-icon-side svg { width: 40px; height: 40px; }
 
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 15px; }
 .app-btn {
@@ -45,7 +53,6 @@ body {
 .app-btn:active { transform: scale(0.98); }
 .icon-svg svg { width: 45px; height: 45px; margin-bottom: 5px; }
 
-/* צבעי אייקונים בתפריט הראשי */
 .color-red { color: #ff3b30; }
 .color-blue { color: #007aff; }
 .color-purple { color: #af52de; }
@@ -55,7 +62,7 @@ body {
 .color-teal { color: #00c7be; }
 .color-gray { color: #8e8e93; }
 
-/* שדות טקסט - יישור לימין אגרסיבי */
+/* שדות טקסט נקיים וללא מספרים, מיושרים לימין */
 input, select {
     width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
     font-size: 18px; 
@@ -64,14 +71,14 @@ input, select {
     background: var(--card-bg); color: var(--text-color); box-sizing: border-box;
 }
 
-/* מקרא דק */
+/* מקרא צבעים דק */
 .color-legend { 
     display: flex; justify-content: center; gap: 15px; 
-    padding: 8px 0; margin-bottom: 5px; font-size: 12px; 
+    padding: 5px 0; font-size: 11px; 
     background: var(--bg-color);
 }
 .legend-item { display: flex; align-items: center; gap: 4px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #ccc; }
+.dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #ccc; }
 
 .bg-normal { background-color: var(--color-normal) !important; }
 .bg-low { background-color: var(--color-low) !important; }
@@ -80,21 +87,45 @@ input, select {
 
 /* כללי */
 .screen-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--card-bg); border-bottom: 1px solid rgba(0,0,0,0.1); }
+.header-actions { display: flex; gap: 10px; }
 .header-title { display: flex; align-items: center; gap: 10px; font-size: 20px; }
-.home-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
+.home-btn, .chart-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
+
 .content-scroll { padding: 15px; padding-bottom: 80px; }
 .card { background: var(--card-bg); padding: 15px; border-radius: 16px; margin-bottom: 20px; }
 .form-group { margin-bottom: 15px; }
 label { display: block; margin-bottom: 5px; font-size: 14px; color: #888; }
 .btn-ios { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 10px; }
-.history-item { background: var(--card-bg); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
-.history-data-row { display: flex; gap: 10px; font-size: 15px; overflow: hidden; }
-.history-date-small { font-size: 11px; color: #999; margin-left: 8px; min-width: 35px; }
-.delete-icon { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; }
+
+/* היסטוריה - שורה אחת מסודרת */
+.history-item { 
+    background: var(--card-bg); padding: 10px; border-radius: 10px; margin-bottom: 8px; 
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #f0f0f0; 
+    white-space: nowrap; 
+}
+
+/* צד ימין של ההיסטוריה (תאריך ונתונים) */
+.history-right { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+.history-date-full { font-size: 12px; color: #999; min-width: 80px; }
+.history-data-row { display: flex; gap: 8px; font-size: 15px; font-weight: 500; }
+
+/* צד שמאל של ההיסטוריה (כפתורים) */
+.history-actions { display: flex; gap: 10px; }
+.action-icon { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.7; padding: 0; }
+.action-icon:hover { opacity: 1; }
+
 .screen { display: none; } .screen.active { display: block; animation: fade 0.3s; } .screen.hidden { display: none; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* גרפים */
+.chart-wrapper { width: 100%; background: var(--card-bg); padding: 10px; margin-bottom: 10px; border-radius: 12px; box-sizing: border-box; }
+.chart-wrapper.hidden { display: none; }
+.chart-controls { display: flex; justify-content: center; gap: 5px; margin-bottom: 10px; }
+.chart-controls button { background: #eee; border: none; padding: 5px 10px; border-radius: 15px; font-size: 12px; cursor: pointer; }
+.chart-container { height: 200px; width: 100%; }
+
 .floating-export-btn { position: fixed; bottom: 20px; left: 20px; background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; z-index: 90; }
 .floating-export-btn.hidden { display: none; }
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; } .modal-overlay.hidden { display: none; } .modal-box { background: var(--card-bg); padding: 20px; border-radius: 15px; width: 80%; text-align: center; } .modal-actions { display: flex; gap: 10px; margin-top: 15px; } .modal-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; } .modal-btn.delete { background: #ff3b30; color: white; }
 .settings-group { background: var(--card-bg); border-radius: 12px; overflow: hidden; } .settings-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; } .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; } .toggle-switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; } input:checked + .slider { background-color: var(--primary); } input:checked + .slider:before { transform: translateX(22px); }
-.chart-container { height: 200px; margin-bottom: 10px; }

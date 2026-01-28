@@ -15,11 +15,18 @@
         
         <div id="mainMenu" class="screen active">
             <header class="main-header">
+                <div class="header-icon-side color-red">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                
                 <div class="header-content">
                     <h1>Respect Your Health</h1>
                     <p>הבריאות שלך בידיים שלך</p>
                 </div>
-                <div class="header-logo-left">⚕️</div>
+
+                <div class="header-icon-side color-blue">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+                </div>
             </header>
 
             <div class="dashboard-grid">
@@ -53,14 +60,14 @@
 
                 <div class="app-btn" onclick="openSection('cycle')">
                     <div class="icon-svg color-pink">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 0 0 10 5 5 0 1 0 0-10z"/><path d="M10 14a6 6 0 0 0-6 6v1h16v-1a6 6 0 0 0-6-6"/><path d="M10 18h4"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 1-9-9c0-3.87 2.36-7.17 5.76-8.48a1 1 0 0 1 1.23.97c0 .16-.06.31-.15.43-.9.99-1.5 2.27-1.5 3.73 0 3.31 2.69 6 6 6s6-2.69 6-6c0-1.46-.6-2.74-1.5-3.73-.09-.12-.15-.27-.15-.43a1 1 0 0 1 1.23-.97C19.64 4.83 22 8.13 22 12a9 9 0 0 1-9 9z"/><path d="M12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
                     </div>
                     <span>מחזור</span>
                 </div>
 
                 <div class="app-btn" onclick="openSection('diet')">
                     <div class="icon-svg color-green">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/><path d="M12 2v20"/><path d="M20 4.5l-3 3"/><path d="M4 4.5l3 3"/></svg>
                     </div>
                     <span>דיאטה</span>
                 </div>
@@ -82,41 +89,77 @@
         </div>
 
         <div id="bpSection" class="screen hidden">
-            <div class="screen-header"><div class="header-title"><span>🩺</span><h2>לחץ דם</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
+            <div class="screen-header">
+                <div class="header-title"><span>🩺</span><h2>לחץ דם</h2></div>
+                <div class="header-actions">
+                    <button class="chart-btn" onclick="toggleChart('bp')">📈</button>
+                    <button onclick="showHome()" class="home-btn">🏠</button>
+                </div>
+            </div>
+            
+            <div id="bpChartSection" class="chart-wrapper hidden">
+                <div class="chart-controls">
+                    <button onclick="updateChartFilter('bp', 7)">שבוע</button>
+                    <button onclick="updateChartFilter('bp', 30)">חודש</button>
+                    <button onclick="updateChartFilter('bp', 90)">3 ח'</button>
+                    <button onclick="updateChartFilter('bp', 365)">שנה</button>
+                </div>
+                <div class="chart-container"><canvas id="bpChart"></canvas></div>
+            </div>
+
             <div class="color-legend">
                 <span class="legend-item"><span class="dot bg-low"></span>נמוך</span>
                 <span class="legend-item"><span class="dot bg-normal"></span>תקין</span>
                 <span class="legend-item"><span class="dot bg-borderline"></span>גבולי</span>
                 <span class="legend-item"><span class="dot bg-high"></span>גבוה</span>
             </div>
+            
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="bpForm">
+                        <input type="hidden" id="bpEditIndex">
                         <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="bpDate" required></div>
                         <div class="row">
-                            <div class="form-group"><label>סיסטולי (גבוה):</label><input type="tel" id="systolic" oninput="validateBP()" required placeholder="120"></div>
-                            <div class="form-group"><label>דיאסטולי (נמוך):</label><input type="tel" id="diastolic" oninput="validateBP()" required placeholder="80"></div>
+                            <div class="form-group"><label>סיסטולי (גבוה):</label><input type="tel" id="systolic" oninput="validateBP()" required></div>
+                            <div class="form-group"><label>דיאסטולי (נמוך):</label><input type="tel" id="diastolic" oninput="validateBP()" required></div>
                         </div>
-                        <div class="form-group"><label>דופק:</label><input type="tel" id="pulse" oninput="validateBP()" required placeholder="70"></div>
-                        <button type="submit" class="btn-ios">שמור</button>
+                        <div class="form-group"><label>דופק:</label><input type="tel" id="pulse" oninput="validateBP()" required></div>
+                        <button type="submit" id="bpSubmitBtn" class="btn-ios">שמור</button>
                     </form>
                 </div>
-                <div class="chart-container"><canvas id="bpChart"></canvas></div>
                 <div id="bpList" class="history-list"></div>
             </div>
         </div>
 
         <div id="sugarSection" class="screen hidden">
-            <div class="screen-header"><div class="header-title"><span>🩸</span><h2>סוכר</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
+            <div class="screen-header">
+                <div class="header-title"><span>🩸</span><h2>סוכר</h2></div>
+                <div class="header-actions">
+                    <button class="chart-btn" onclick="toggleChart('sugar')">📈</button>
+                    <button onclick="showHome()" class="home-btn">🏠</button>
+                </div>
+            </div>
+            
+            <div id="sugarChartSection" class="chart-wrapper hidden">
+                <div class="chart-controls">
+                    <button onclick="updateChartFilter('sugar', 7)">שבוע</button>
+                    <button onclick="updateChartFilter('sugar', 30)">חודש</button>
+                    <button onclick="updateChartFilter('sugar', 365)">שנה</button>
+                </div>
+                <div class="chart-container"><canvas id="sugarChart"></canvas></div>
+            </div>
+
             <div class="color-legend">
                 <span class="legend-item"><span class="dot bg-low"></span>נמוך</span>
                 <span class="legend-item"><span class="dot bg-normal"></span>תקין</span>
                 <span class="legend-item"><span class="dot bg-borderline"></span>גבולי</span>
                 <span class="legend-item"><span class="dot bg-high"></span>גבוה</span>
             </div>
+
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="sugarForm">
+                        <input type="hidden" id="sugarEditIndex">
                         <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="sugarDate" required></div>
                         <div class="form-group"><label>זמן:</label>
                             <select id="sugarTime" class="ios-select" onchange="validateSugar()">
@@ -124,17 +167,32 @@
                                 <option value="after_food">שעתיים אחרי אוכל</option>
                             </select>
                         </div>
-                        <div class="form-group"><label>רמת סוכר:</label><input type="tel" id="glucoseLevel" oninput="validateSugar()" required placeholder="100"></div>
-                        <button type="submit" class="btn-ios">שמור</button>
+                        <div class="form-group"><label>רמת סוכר:</label><input type="tel" id="glucoseLevel" oninput="validateSugar()" required></div>
+                        <button type="submit" id="sugarSubmitBtn" class="btn-ios">שמור</button>
                     </form>
                 </div>
-                <div class="chart-container"><canvas id="sugarChart"></canvas></div>
                 <div id="sugarList" class="history-list"></div>
             </div>
         </div>
 
         <div id="weightSection" class="screen hidden">
-            <div class="screen-header"><div class="header-title"><span>📟</span><h2>משקל</h2></div><button onclick="showHome()" class="home-btn">🏠</button></div>
+            <div class="screen-header">
+                <div class="header-title"><span>📟</span><h2>משקל</h2></div>
+                <div class="header-actions">
+                    <button class="chart-btn" onclick="toggleChart('weight')">📈</button>
+                    <button onclick="showHome()" class="home-btn">🏠</button>
+                </div>
+            </div>
+
+            <div id="weightChartSection" class="chart-wrapper hidden">
+                <div class="chart-controls">
+                    <button onclick="updateChartFilter('weight', 30)">חודש</button>
+                    <button onclick="updateChartFilter('weight', 90)">3 ח'</button>
+                    <button onclick="updateChartFilter('weight', 365)">שנה</button>
+                </div>
+                <div class="chart-container"><canvas id="weightChart"></canvas></div>
+            </div>
+
             <div class="color-legend">
                  <span class="legend-item"><span class="dot bg-normal"></span>תקין</span>
                  <span class="legend-item"><span class="dot bg-borderline"></span>עודף</span>
@@ -143,12 +201,12 @@
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="weightForm">
+                        <input type="hidden" id="weightEditIndex">
                         <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="weightDate" required></div>
-                        <div class="form-group"><label>משקל (ק"ג):</label><input type="tel" id="weightVal" oninput="validateWeight()" required placeholder="0.0"></div>
-                        <button type="submit" class="btn-ios">שמור</button>
+                        <div class="form-group"><label>משקל (ק"ג):</label><input type="tel" id="weightVal" oninput="validateWeight()" required></div>
+                        <button type="submit" id="weightSubmitBtn" class="btn-ios">שמור</button>
                     </form>
                 </div>
-                <div class="chart-container"><canvas id="weightChart"></canvas></div>
                 <div id="weightList" class="history-list"></div>
             </div>
         </div>
@@ -161,14 +219,15 @@
                         <h3>יומן קלוריות</h3><button type="button" class="info-btn" onclick="alert('המלצות')">ℹ️</button>
                     </div>
                     <form id="dietForm">
+                        <input type="hidden" id="dietEditIndex">
                         <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="dietDate" required></div>
-                        <div class="form-group"><label>יעד:</label><input type="tel" id="calorieTarget" placeholder="1800"></div>
+                        <div class="form-group"><label>יעד:</label><input type="tel" id="calorieTarget"></div>
                         <div class="row">
-                            <div class="form-group"><label>בוקר:</label><input type="tel" id="calBreakfast" placeholder="0"></div>
-                            <div class="form-group"><label>צהריים:</label><input type="tel" id="calLunch" placeholder="0"></div>
-                            <div class="form-group"><label>ערב:</label><input type="tel" id="calDinner" placeholder="0"></div>
+                            <div class="form-group"><label>בוקר:</label><input type="tel" id="calBreakfast"></div>
+                            <div class="form-group"><label>צהריים:</label><input type="tel" id="calLunch"></div>
+                            <div class="form-group"><label>ערב:</label><input type="tel" id="calDinner"></div>
                         </div>
-                        <button type="submit" class="btn-ios">שמור</button>
+                        <button type="submit" id="dietSubmitBtn" class="btn-ios">שמור</button>
                     </form>
                 </div>
                 <div id="dietList" class="history-list"></div>
@@ -180,6 +239,7 @@
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="walkingForm">
+                        <input type="hidden" id="walkingEditIndex">
                         <div class="form-group"><label>תאריך:</label><input type="datetime-local" id="walkingDate" required></div>
                         <div class="row">
                             <div class="form-group"><label>התחלה:</label><input type="time" id="walkStart" required></div>
@@ -189,7 +249,7 @@
                             <div class="form-group"><label>קושי:</label><select id="walkDifficulty" class="ios-select"><option>קל</option><option>רגיל</option><option>שיפוע</option><option>אתגרי</option></select></div>
                             <div class="form-group"><label>מהירות:</label><select id="walkSpeed" class="ios-select"><option>רגילה</option><option>מהירה</option><option>ריצה</option></select></div>
                         </div>
-                        <button type="submit" class="btn-ios">שמור</button>
+                        <button type="submit" id="walkingSubmitBtn" class="btn-ios">שמור</button>
                     </form>
                 </div>
                 <div id="walkingList" class="history-list"></div>
@@ -201,13 +261,14 @@
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="medsForm">
-                        <div class="form-group"><label>שם:</label><input type="text" id="medName" required placeholder="שם התרופה"></div>
+                        <input type="hidden" id="medsEditIndex">
+                        <div class="form-group"><label>שם:</label><input type="text" id="medName" required></div>
                         <div class="checkbox-group">
                             <label><input type="checkbox" value="בוקר" class="med-time"> בוקר</label>
                             <label><input type="checkbox" value="צהריים" class="med-time"> צהריים</label>
                             <label><input type="checkbox" value="ערב" class="med-time"> ערב</label>
                         </div>
-                        <button type="submit" class="btn-ios">הוסף</button>
+                        <button type="submit" id="medsSubmitBtn" class="btn-ios">הוסף</button>
                     </form>
                 </div>
                 <div id="medsList" class="history-list"></div>
@@ -219,9 +280,10 @@
             <div class="content-scroll">
                 <div class="card form-card">
                     <form id="cycleForm">
+                        <input type="hidden" id="cycleEditIndex">
                         <div class="form-group"><label>תאריך התחלה:</label><input type="date" id="cycleStart" required></div>
-                        <div class="form-group"><label>הערות:</label><input type="text" id="cycleNotes" placeholder="כאב, תחושה..."></div>
-                        <button type="submit" class="btn-ios">שמור</button>
+                        <div class="form-group"><label>הערות:</label><input type="text" id="cycleNotes"></div>
+                        <button type="submit" id="cycleSubmitBtn" class="btn-ios">שמור</button>
                     </form>
                 </div>
                 <div id="cycleList" class="history-list"></div>

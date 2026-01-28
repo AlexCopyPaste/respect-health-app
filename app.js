@@ -5,12 +5,13 @@ let charts = {};
 let pendingDelete = null;
 let currentSection = null;
 let settings = { largeFont: false, historyLimit: false, showExport: false };
+let chartInstances = {}; // לשמירת הגרפים
 
 document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     updateDates();
 
-    // חיבור פונקציות שמירה באופן ספציפי לכל טופס
+    // חיבור טפסים
     document.getElementById('bpForm').addEventListener('submit', function(e) { e.preventDefault(); saveBP(); });
     document.getElementById('sugarForm').addEventListener('submit', function(e) { e.preventDefault(); saveSugar(); });
     document.getElementById('weightForm').addEventListener('submit', function(e) { e.preventDefault(); saveWeight(); });
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ====================
-// שמירת נתונים (פונקציות נפרדות)
+// שמירה (עם תמיכה בעריכה)
 // ====================
 
 function saveBP() {
@@ -38,7 +39,7 @@ function saveBP() {
         dia: document.getElementById('diastolic').value,
         pulse: document.getElementById('pulse').value
     };
-    saveToStorage('respect_bp', data);
+    handleSave('bp', data, 'bpEditIndex');
     document.getElementById('bpForm').reset();
     afterSave('bp');
 }
@@ -50,7 +51,7 @@ function saveSugar() {
         val: document.getElementById('glucoseLevel').value,
         time: document.getElementById('sugarTime').value
     };
-    saveToStorage('respect_sugar', data);
+    handleSave('sugar', data, 'sugarEditIndex');
     document.getElementById('sugarForm').reset();
     afterSave('sugar');
 }
@@ -61,7 +62,7 @@ function saveWeight() {
         date: document.getElementById('weightDate').value,
         val: document.getElementById('weightVal').value
     };
-    saveToStorage('respect_weight', data);
+    handleSave('weight', data, 'weightEditIndex');
     document.getElementById('weightForm').reset();
     afterSave('weight');
 }
@@ -72,9 +73,12 @@ function saveDiet() {
         target: document.getElementById('calorieTarget').value,
         total: (parseInt(document.getElementById('calBreakfast').value)||0) + 
                (parseInt(document.getElementById('calLunch').value)||0) + 
-               (parseInt(document.getElementById('calDinner').value)||0)
+               (parseInt(document.getElementById('calDinner').value)||0),
+        b: document.getElementById('calBreakfast').value,
+        l: document.getElementById('calLunch').value,
+        d: document.getElementById('calDinner').value
     };
-    saveToStorage('respect_diet', data);
+    handleSave('diet', data, 'dietEditIndex');
     document.getElementById('dietForm').reset();
     afterSave('diet');
 }
@@ -88,7 +92,7 @@ function saveWalking() {
         diff: document.getElementById('walkDifficulty').value,
         speed: document.getElementById('walkSpeed').value
     };
-    saveToStorage('respect_walking', data);
+    handleSave('walking', data, 'walkingEditIndex');
     document.getElementById('walkingForm').reset();
     afterSave('walking');
 }
@@ -98,7 +102,7 @@ function saveMeds() {
     const times = [];
     document.querySelectorAll('.med-time:checked').forEach(cb => times.push(cb.value));
     const data = { name: document.getElementById('medName').value, times: times.join(', ') };
-    saveToStorage('respect_meds', data);
+    handleSave('meds', data, 'medsEditIndex');
     document.getElementById('medsForm').reset();
     afterSave('meds');
 }
@@ -106,14 +110,28 @@ function saveMeds() {
 function saveCycle() {
     if(!checkRequired('cycleForm')) return;
     const data = { start: document.getElementById('cycleStart').value, notes: document.getElementById('cycleNotes').value };
-    saveToStorage('respect_cycle', data);
+    handleSave('cycle', data, 'cycleEditIndex');
     document.getElementById('cycleForm').reset();
     afterSave('cycle');
 }
 
-function saveToStorage(key, obj) {
+// לוגיקה לשמירה חדשה או עדכון קיים
+function handleSave(type, dataObj, editIndexId) {
+    const key = 'respect_' + type;
     let list = JSON.parse(localStorage.getItem(key)) || [];
-    list.unshift(obj);
+    const editIdx = document.getElementById(editIndexId).value;
+
+    if (editIdx !== "") {
+        // עדכון קיים
+        list[editIdx] = dataObj;
+        document.getElementById(editIndexId).value = ""; // איפוס
+        // שינוי חזרה של כפתור השמירה (אופציונלי)
+        const btn = document.getElementById(type + 'SubmitBtn');
+        if(btn) btn.textContent = "שמור";
+    } else {
+        // חדש
+        list.unshift(dataObj);
+    }
     localStorage.setItem(key, JSON.stringify(list));
 }
 
@@ -132,7 +150,84 @@ function checkRequired(formId) {
 }
 
 // ====================
-// ולידציה וצבעים (לפי 4 טווחים)
+// עריכה (Edit)
+// ====================
+window.editItem = function(type, index) {
+    const key = 'respect_' + type;
+    let list = JSON.parse(localStorage.getItem(key)) || [];
+    const item = list[index];
+    if(!item) return;
+
+    // גלילה למעלה
+    document.querySelector('.content-scroll').scrollTop = 0;
+
+    // מילוי טופס לפי סוג
+    if(type === 'bp') {
+        document.getElementById('bpDate').value = item.date;
+        document.getElementById('systolic').value = item.sys;
+        document.getElementById('diastolic').value = item.dia;
+        document.getElementById('pulse').value = item.pulse;
+        document.getElementById('bpEditIndex').value = index;
+        document.getElementById('bpSubmitBtn').textContent = "עדכן";
+        validateBP();
+    }
+    else if(type === 'sugar') {
+        document.getElementById('sugarDate').value = item.date;
+        document.getElementById('glucoseLevel').value = item.val;
+        document.getElementById('sugarTime').value = item.time;
+        document.getElementById('sugarEditIndex').value = index;
+        document.getElementById('sugarSubmitBtn').textContent = "עדכן";
+        validateSugar();
+    }
+    else if(type === 'weight') {
+        document.getElementById('weightDate').value = item.date;
+        document.getElementById('weightVal').value = item.val;
+        document.getElementById('weightEditIndex').value = index;
+        document.getElementById('weightSubmitBtn').textContent = "עדכן";
+        validateWeight();
+    }
+    else if(type === 'diet') {
+        document.getElementById('dietDate').value = item.date;
+        document.getElementById('calorieTarget').value = item.target;
+        document.getElementById('calBreakfast').value = item.b || "";
+        document.getElementById('calLunch').value = item.l || "";
+        document.getElementById('calDinner').value = item.d || "";
+        document.getElementById('dietEditIndex').value = index;
+        document.getElementById('dietSubmitBtn').textContent = "עדכן";
+    }
+    else if(type === 'walking') {
+        document.getElementById('walkingDate').value = item.date;
+        document.getElementById('walkStart').value = item.start;
+        document.getElementById('walkEnd').value = item.end;
+        document.getElementById('walkDifficulty').value = item.diff;
+        document.getElementById('walkSpeed').value = item.speed;
+        document.getElementById('walkingEditIndex').value = index;
+        document.getElementById('walkingSubmitBtn').textContent = "עדכן";
+    }
+    else if(type === 'meds') {
+        document.getElementById('medName').value = item.name;
+        // איפוס צ'ק בוקסים
+        document.querySelectorAll('.med-time').forEach(cb => cb.checked = false);
+        // סימון מחדש
+        if(item.times) {
+            item.times.split(', ').forEach(t => {
+                const cb = document.querySelector(`.med-time[value="${t}"]`);
+                if(cb) cb.checked = true;
+            });
+        }
+        document.getElementById('medsEditIndex').value = index;
+        document.getElementById('medsSubmitBtn').textContent = "עדכן";
+    }
+    else if(type === 'cycle') {
+        document.getElementById('cycleStart').value = item.start;
+        document.getElementById('cycleNotes').value = item.notes;
+        document.getElementById('cycleEditIndex').value = index;
+        document.getElementById('cycleSubmitBtn').textContent = "עדכן";
+    }
+}
+
+// ====================
+// ולידציה וצבעים
 // ====================
 function setClass(el, cls) { el.className = cls; }
 
@@ -141,48 +236,30 @@ window.validateBP = function() {
     const dia = parseFloat(document.getElementById('diastolic').value);
     const pul = parseFloat(document.getElementById('pulse').value);
     
-    // סיסטולי
     const sysEl = document.getElementById('systolic');
-    if(sys < 90) setClass(sysEl, 'bg-low');
-    else if(sys > 140) setClass(sysEl, 'bg-high');
-    else if(sys >= 130) setClass(sysEl, 'bg-borderline');
-    else setClass(sysEl, 'bg-normal');
+    if(sys < 90) setClass(sysEl, 'bg-low'); else if(sys > 140) setClass(sysEl, 'bg-high'); else if(sys >= 130) setClass(sysEl, 'bg-borderline'); else setClass(sysEl, 'bg-normal');
 
-    // דיאסטולי
     const diaEl = document.getElementById('diastolic');
-    if(dia < 60) setClass(diaEl, 'bg-low');
-    else if(dia > 90) setClass(diaEl, 'bg-high');
-    else if(dia >= 85) setClass(diaEl, 'bg-borderline');
-    else setClass(diaEl, 'bg-normal');
+    if(dia < 60) setClass(diaEl, 'bg-low'); else if(dia > 90) setClass(diaEl, 'bg-high'); else if(dia >= 85) setClass(diaEl, 'bg-borderline'); else setClass(diaEl, 'bg-normal');
 
-    // דופק
     const pulEl = document.getElementById('pulse');
-    if(pul < 50) setClass(pulEl, 'bg-low');
-    else if(pul > 100) setClass(pulEl, 'bg-high'); 
-    else setClass(pulEl, 'bg-normal');
+    if(pul < 50) setClass(pulEl, 'bg-low'); else if(pul > 100) setClass(pulEl, 'bg-high'); else setClass(pulEl, 'bg-normal');
 }
 
 window.validateSugar = function() {
     const val = parseFloat(document.getElementById('glucoseLevel').value);
     const mode = document.getElementById('sugarTime').value;
     const el = document.getElementById('glucoseLevel');
-    
     const highLimit = (mode === 'fasting') ? 126 : 200;
     const borderLimit = (mode === 'fasting') ? 100 : 140;
 
-    if(val < 70) setClass(el, 'bg-low');
-    else if(val >= highLimit) setClass(el, 'bg-high');
-    else if(val >= borderLimit) setClass(el, 'bg-borderline');
-    else setClass(el, 'bg-normal');
+    if(val < 70) setClass(el, 'bg-low'); else if(val >= highLimit) setClass(el, 'bg-high'); else if(val >= borderLimit) setClass(el, 'bg-borderline'); else setClass(el, 'bg-normal');
 }
 
 window.validateWeight = function() {
     const val = parseFloat(document.getElementById('weightVal').value);
     const el = document.getElementById('weightVal');
-    if(val < 45) setClass(el, 'bg-low');
-    else if(val > 120) setClass(el, 'bg-high');
-    else if(val > 100) setClass(el, 'bg-borderline');
-    else setClass(el, 'bg-normal');
+    if(val < 45) setClass(el, 'bg-low'); else if(val > 120) setClass(el, 'bg-high'); else if(val > 100) setClass(el, 'bg-borderline'); else setClass(el, 'bg-normal');
 }
 
 // ====================
@@ -209,6 +286,9 @@ window.showHome = function() {
     menu.classList.remove('hidden');
     menu.classList.add('active');
     document.getElementById('exportCsvBtn').classList.add('hidden');
+    
+    // איפוס גרפים פתוחים
+    document.querySelectorAll('.chart-wrapper').forEach(cw => cw.classList.add('hidden'));
 }
 
 function loadData(type) {
@@ -226,46 +306,104 @@ function loadData(type) {
         const div = document.createElement('div');
         div.className = 'history-item';
         
-        let dStr = '';
-        if(item.date) { const d=new Date(item.date); dStr=`${d.getDate()}/${d.getMonth()+1}`; }
-        else if(item.start) { const d=new Date(item.start); dStr=`${d.getDate()}/${d.getMonth()+1}`; }
-
-        let html = `<span class="history-date-small">${dStr}</span><div class="history-data-row">`;
+        // תאריך מלא ושעה
+        let dObj = null;
+        if(item.date) dObj = new Date(item.date);
+        else if(item.start) dObj = new Date(item.start);
         
-        if(type === 'bp') html += `<span>❤️${item.pulse}</span><span>⬆️${item.sys}</span><span>⬇️${item.dia}</span>`;
-        else if(type === 'sugar') html += `<span>🩸${item.val}</span>`;
-        else if(type === 'weight') html += `<span>⚖️${item.val}</span>`;
-        else if(type === 'diet') html += `<span>🔥${item.total}</span>`;
-        else if(type === 'walking') html += `<span>🚶${item.start}-${item.end}</span>`;
-        else if(type === 'meds') html += `<span>💊${item.name}</span>`;
-        else if(type === 'cycle') html += `<span>🥀${item.notes}</span>`;
+        let dStr = "";
+        if(dObj) {
+            const time = dObj.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+            const date = dObj.toLocaleDateString('he-IL', {day:'2-digit', month:'2-digit'});
+            dStr = `${time} ${date}`;
+        }
 
-        html += `</div><button class="delete-icon" onclick="reqDelete('${type}', ${index})">×</button>`;
-        div.innerHTML = html;
+        // כפתורי פעולה בצד שמאל
+        let buttons = `
+            <div class="history-actions">
+                <button class="action-icon" onclick="reqDelete('${type}', ${index})">🗑️</button>
+                <button class="action-icon" onclick="editItem('${type}', ${index})">✏️</button>
+            </div>
+        `;
+
+        // נתונים בצד ימין
+        let content = `<div class="history-right">`;
+        
+        if(type === 'bp') content += `<div class="history-data-row"><span>❤️${item.pulse}</span><span>⬆️${item.sys}</span><span>⬇️${item.dia}</span></div>`;
+        else if(type === 'sugar') content += `<div class="history-data-row"><span>🩸${item.val}</span></div>`;
+        else if(type === 'weight') content += `<div class="history-data-row"><span>📟${item.val}</span></div>`;
+        else if(type === 'diet') content += `<div class="history-data-row"><span>🔥${item.total}</span></div>`;
+        else if(type === 'walking') content += `<div class="history-data-row"><span>🚶${item.start}-${item.end}</span></div>`;
+        else if(type === 'meds') content += `<div class="history-data-row"><span>💊${item.name}</span></div>`;
+        else if(type === 'cycle') content += `<div class="history-data-row"><span>🥀${item.notes}</span></div>`;
+        
+        content += `<div class="history-date-full">${dStr}</div>`;
+        content += `</div>`; // סגירת צד ימין
+
+        div.innerHTML = buttons + content;
         container.appendChild(div);
     });
 
-    if(type === 'bp' || type === 'sugar' || type === 'weight') drawChart(type, list);
-}
-
-function drawChart(type, rawData) {
-    const ctx = document.getElementById(type + 'Chart');
-    if(!ctx) return;
-    if(charts[type]) charts[type].destroy();
-
-    const data = [...rawData].reverse();
-    const labels = data.map(i => { const d=new Date(i.date); return `${d.getDate()}/${d.getMonth()+1}`; });
-    let datasets = [];
-
-    if(type==='bp') datasets = [{label:'גבוה', data:data.map(i=>i.sys), borderColor:'red'}, {label:'נמוך', data:data.map(i=>i.dia), borderColor:'orange'}];
-    else if(type==='weight') datasets = [{label:'משקל', data:data.map(i=>i.val), borderColor:'purple', fill:true}];
-    else if(type==='sugar') datasets = [{label:'סוכר', data:data.map(i=>i.val), borderColor:'blue'}];
-
-    charts[type] = new Chart(ctx, { type:'line', data:{labels, datasets}, options:{responsive:true, maintainAspectRatio:false} });
+    if(type === 'bp' || type === 'sugar' || type === 'weight') updateChart(type, list);
 }
 
 // ====================
-// עזרים והגדרות
+// גרפים וסינון זמן
+// ====================
+window.toggleChart = function(type) {
+    const wrapper = document.getElementById(type + 'ChartSection');
+    if(wrapper.classList.contains('hidden')) {
+        wrapper.classList.remove('hidden');
+    } else {
+        wrapper.classList.add('hidden');
+    }
+}
+
+window.updateChartFilter = function(type, days) {
+    const key = 'respect_' + type;
+    let list = JSON.parse(localStorage.getItem(key)) || [];
+    
+    // סינון לפי ימים
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    
+    const filteredList = list.filter(i => new Date(i.date) >= cutoff);
+    updateChart(type, filteredList);
+}
+
+function updateChart(type, rawData) {
+    const ctx = document.getElementById(type + 'Chart');
+    if(!ctx) return;
+    
+    // הריסת גרף קודם
+    if(chartInstances[type]) {
+        chartInstances[type].destroy();
+    }
+
+    const data = [...rawData].reverse(); // כרונולוגי
+    const labels = data.map(i => {
+        const d = new Date(i.date);
+        return `${d.getDate()}/${d.getMonth()+1}`;
+    });
+
+    let datasets = [];
+    if(type==='bp') datasets = [{label:'גבוה', data:data.map(i=>i.sys), borderColor:'red'}, {label:'נמוך', data:data.map(i=>i.dia), borderColor:'orange'}];
+    else if(type==='weight') datasets = [{label:'משקל', data:data.map(i=>i.val), borderColor:'purple', fill:true, tension:0.4}];
+    else if(type==='sugar') datasets = [{label:'סוכר', data:data.map(i=>i.val), borderColor:'blue', tension:0.4}];
+
+    chartInstances[type] = new Chart(ctx, { 
+        type:'line', 
+        data:{labels, datasets}, 
+        options:{
+            responsive:true, 
+            maintainAspectRatio:false,
+            plugins: { legend: { display: true, position: 'top' } }
+        } 
+    });
+}
+
+// ====================
+// כללי
 // ====================
 function updateDates() {
     const now = new Date();
@@ -276,6 +414,7 @@ function updateDates() {
     if(cyc) cyc.value = now.toISOString().slice(0,10);
 }
 
+// הגדרות
 function loadSettings() {
     const s = JSON.parse(localStorage.getItem('respect_settings')) || {};
     settings = {...settings, ...s};
@@ -329,7 +468,10 @@ window.closeConfirm = function(yes) {
 }
 
 window.resetAllData = function() {
-    if(confirm('למחוק את כל הנתונים?')) { localStorage.clear(); location.reload(); }
+    if(confirm('למחוק את כל הנתונים באפליקציה?')) {
+        localStorage.clear();
+        location.reload();
+    }
 }
 
 window.exportData = function() {
