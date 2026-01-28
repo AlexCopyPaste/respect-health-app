@@ -2,7 +2,7 @@
 // משתנים גלובליים
 // ====================
 let charts = {};
-let pendingDelete = null; // למחיקה
+let pendingDelete = null;
 let currentSection = null;
 let settings = { largeFont: false, historyLimit: false, showExport: false };
 
@@ -10,14 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     updateDates();
 
-    // מאזינים לכפתורי שמירה - כל אחד בנפרד למניעת תקלות!
-    document.getElementById('bpForm').addEventListener('submit', (e) => { e.preventDefault(); saveBP(); });
-    document.getElementById('sugarForm').addEventListener('submit', (e) => { e.preventDefault(); saveSugar(); });
-    document.getElementById('weightForm').addEventListener('submit', (e) => { e.preventDefault(); saveWeight(); });
-    document.getElementById('dietForm').addEventListener('submit', (e) => { e.preventDefault(); saveDiet(); });
-    document.getElementById('walkingForm').addEventListener('submit', (e) => { e.preventDefault(); saveWalking(); });
-    document.getElementById('medsForm').addEventListener('submit', (e) => { e.preventDefault(); saveMeds(); });
-    document.getElementById('cycleForm').addEventListener('submit', (e) => { e.preventDefault(); saveCycle(); });
+    // חיבור פונקציות שמירה באופן ספציפי לכל טופס
+    document.getElementById('bpForm').addEventListener('submit', function(e) { e.preventDefault(); saveBP(); });
+    document.getElementById('sugarForm').addEventListener('submit', function(e) { e.preventDefault(); saveSugar(); });
+    document.getElementById('weightForm').addEventListener('submit', function(e) { e.preventDefault(); saveWeight(); });
+    document.getElementById('dietForm').addEventListener('submit', function(e) { e.preventDefault(); saveDiet(); });
+    document.getElementById('walkingForm').addEventListener('submit', function(e) { e.preventDefault(); saveWalking(); });
+    document.getElementById('medsForm').addEventListener('submit', function(e) { e.preventDefault(); saveMeds(); });
+    document.getElementById('cycleForm').addEventListener('submit', function(e) { e.preventDefault(); saveCycle(); });
 
     // הגדרות
     document.getElementById('largeFontToggle').addEventListener('change', (e) => toggleSetting('largeFont', e.target.checked));
@@ -27,8 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ====================
-// פונקציות שמירה (מפורשות!)
+// שמירת נתונים (פונקציות נפרדות)
 // ====================
+
 function saveBP() {
     if(!checkRequired('bpForm')) return;
     const data = {
@@ -110,18 +111,16 @@ function saveCycle() {
     afterSave('cycle');
 }
 
-// עזר לשמירה
 function saveToStorage(key, obj) {
     let list = JSON.parse(localStorage.getItem(key)) || [];
     list.unshift(obj);
     localStorage.setItem(key, JSON.stringify(list));
 }
 
-function afterSave(section) {
+function afterSave(type) {
     updateDates();
-    // ניקוי צבעים
-    document.querySelectorAll('input').forEach(i => i.className = '');
-    loadData(section);
+    document.querySelectorAll('input').forEach(i => i.className = ''); // ניקוי צבעים
+    loadData(type);
 }
 
 function checkRequired(formId) {
@@ -133,11 +132,11 @@ function checkRequired(formId) {
 }
 
 // ====================
-// ולידציה וצבעים (4 צבעים)
+// ולידציה וצבעים (לפי 4 טווחים)
 // ====================
 function setClass(el, cls) { el.className = cls; }
 
-function validateBP() {
+window.validateBP = function() {
     const sys = parseFloat(document.getElementById('systolic').value);
     const dia = parseFloat(document.getElementById('diastolic').value);
     const pul = parseFloat(document.getElementById('pulse').value);
@@ -159,11 +158,11 @@ function validateBP() {
     // דופק
     const pulEl = document.getElementById('pulse');
     if(pul < 50) setClass(pulEl, 'bg-low');
-    else if(pul > 100) setClass(pulEl, 'bg-high'); // שונה ל-100 כסף עליון
+    else if(pul > 100) setClass(pulEl, 'bg-high'); 
     else setClass(pulEl, 'bg-normal');
 }
 
-function validateSugar() {
+window.validateSugar = function() {
     const val = parseFloat(document.getElementById('glucoseLevel').value);
     const mode = document.getElementById('sugarTime').value;
     const el = document.getElementById('glucoseLevel');
@@ -177,10 +176,9 @@ function validateSugar() {
     else setClass(el, 'bg-normal');
 }
 
-function validateWeight() {
+window.validateWeight = function() {
     const val = parseFloat(document.getElementById('weightVal').value);
     const el = document.getElementById('weightVal');
-    // הערכה גסה ללא גובה
     if(val < 45) setClass(el, 'bg-low');
     else if(val > 120) setClass(el, 'bg-high');
     else if(val > 100) setClass(el, 'bg-borderline');
@@ -188,18 +186,17 @@ function validateWeight() {
 }
 
 // ====================
-// תצוגה וגרפים
+// תצוגה
 // ====================
 window.openSection = function(name) {
     document.getElementById('mainMenu').classList.remove('active');
     setTimeout(() => document.getElementById('mainMenu').classList.add('hidden'), 200);
     
-    // הסתרת כל הסקציות
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     
     const target = document.getElementById(name + 'Section');
     target.classList.remove('hidden');
-    target.classList.add('active'); // לאנימציה
+    target.classList.add('active');
     
     currentSection = name;
     loadData(name);
@@ -220,7 +217,6 @@ function loadData(type) {
     const container = document.getElementById(type + 'List');
     container.innerHTML = '';
 
-    // סינון חודש
     if (settings.historyLimit) {
         const m = new Date(); m.setMonth(m.getMonth() - 1);
         list = list.filter(i => new Date(i.date || i.start) >= m);
@@ -230,7 +226,6 @@ function loadData(type) {
         const div = document.createElement('div');
         div.className = 'history-item';
         
-        // תאריך קצר
         let dStr = '';
         if(item.date) { const d=new Date(item.date); dStr=`${d.getDate()}/${d.getMonth()+1}`; }
         else if(item.start) { const d=new Date(item.start); dStr=`${d.getDate()}/${d.getMonth()+1}`; }
@@ -270,7 +265,7 @@ function drawChart(type, rawData) {
 }
 
 // ====================
-// ניהול כללי
+// עזרים והגדרות
 // ====================
 function updateDates() {
     const now = new Date();
@@ -281,7 +276,6 @@ function updateDates() {
     if(cyc) cyc.value = now.toISOString().slice(0,10);
 }
 
-// הגדרות
 function loadSettings() {
     const s = JSON.parse(localStorage.getItem('respect_settings')) || {};
     settings = {...settings, ...s};
@@ -317,7 +311,6 @@ function updateExportBtn() {
     else btn.classList.add('hidden');
 }
 
-// מחיקה וייצוא
 window.reqDelete = function(type, idx) {
     document.getElementById('customConfirm').classList.remove('hidden');
     pendingDelete = () => {
@@ -336,10 +329,7 @@ window.closeConfirm = function(yes) {
 }
 
 window.resetAllData = function() {
-    if(confirm('למחוק את כל הנתונים באפליקציה?')) {
-        localStorage.clear();
-        location.reload();
-    }
+    if(confirm('למחוק את כל הנתונים?')) { localStorage.clear(); location.reload(); }
 }
 
 window.exportData = function() {
