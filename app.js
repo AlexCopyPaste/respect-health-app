@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     updateDates();
 
-    // חיבור טפסים
     document.getElementById('bpForm').addEventListener('submit', function(e) { e.preventDefault(); saveBP(); });
     document.getElementById('sugarForm').addEventListener('submit', function(e) { e.preventDefault(); saveSugar(); });
     document.getElementById('weightForm').addEventListener('submit', function(e) { e.preventDefault(); saveWeight(); });
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('medsForm').addEventListener('submit', function(e) { e.preventDefault(); saveMeds(); });
     document.getElementById('cycleForm').addEventListener('submit', function(e) { e.preventDefault(); saveCycle(); });
 
-    // הגדרות
     document.getElementById('largeFontToggle').addEventListener('change', (e) => toggleSetting('largeFont', e.target.checked));
     document.getElementById('themeSwitch').addEventListener('change', (e) => toggleSetting('theme', e.target.checked));
     document.getElementById('historyLimitToggle').addEventListener('change', (e) => toggleSetting('historyLimit', e.target.checked));
@@ -28,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ====================
-// שמירה (עם תמיכה בעריכה)
+// שמירה
 // ====================
 
 function saveBP() {
@@ -145,9 +143,6 @@ function checkRequired(formId) {
     return true;
 }
 
-// ====================
-// עריכה
-// ====================
 window.editItem = function(type, index) {
     const key = 'respect_' + type;
     let list = JSON.parse(localStorage.getItem(key)) || [];
@@ -218,9 +213,6 @@ window.editItem = function(type, index) {
     }
 }
 
-// ====================
-// ולידציה וצבעים
-// ====================
 function setClass(el, cls) { el.className = cls; }
 
 window.validateBP = function() {
@@ -250,9 +242,6 @@ window.validateWeight = function() {
     if(val < 45) setClass(el, 'bg-low'); else if(val > 120) setClass(el, 'bg-high'); else if(val > 100) setClass(el, 'bg-borderline'); else setClass(el, 'bg-normal');
 }
 
-// ====================
-// תצוגה
-// ====================
 window.openSection = function(name) {
     document.getElementById('mainMenu').classList.remove('active');
     setTimeout(() => document.getElementById('mainMenu').classList.add('hidden'), 200);
@@ -300,10 +289,15 @@ function loadData(type) {
             dStr = `${date} ${time}`;
         }
 
-        let buttons = `<div class="history-actions"><button class="action-icon" onclick="reqDelete('${type}', ${index})">🗑️</button><button class="action-icon" onclick="editItem('${type}', ${index})">✏️</button></div>`;
+        // כפתורים: עריכה מימין, מחיקה משמאל
+        let buttons = `<div class="history-actions"><button class="action-icon" onclick="editItem('${type}', ${index})">✏️</button><button class="action-icon" onclick="reqDelete('${type}', ${index})">🗑️</button></div>`;
+        
         let content = `<div class="history-right">`;
         
-        if(type === 'bp') content += `<div class="history-data-row"><span>❤️${item.pulse}</span><span>⬆️${item.sys}</span><span>⬇️${item.dia}</span></div>`;
+        if(type === 'bp') {
+            // דופק עבר לסוף (צד שמאל של השורה בעברית)
+            content += `<div class="history-data-row"><span>⬆️${item.sys}</span><span>⬇️${item.dia}</span><span>❤️${item.pulse}</span></div>`;
+        }
         else if(type === 'sugar') content += `<div class="history-data-row"><span>🩸${item.val}</span></div>`;
         else if(type === 'weight') content += `<div class="history-data-row"><span>📟${item.val}</span></div>`;
         else if(type === 'diet') content += `<div class="history-data-row"><span>🔥${item.total}</span></div>`;
@@ -319,9 +313,6 @@ function loadData(type) {
     if(type === 'bp' || type === 'sugar' || type === 'weight') updateChart(type, list);
 }
 
-// ====================
-// גרפים
-// ====================
 window.toggleChart = function(type) {
     const wrapper = document.getElementById(type + 'ChartSection');
     if(wrapper.classList.contains('hidden')) wrapper.classList.remove('hidden'); else wrapper.classList.add('hidden');

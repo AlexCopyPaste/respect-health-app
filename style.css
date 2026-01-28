@@ -31,31 +31,21 @@ body {
     user-select: none;
 }
 
-/* --- כותרת ראשית מעודכנת --- */
+/* --- כותרת ראשית --- */
 .main-header { 
-    display: flex; /* תצוגה גמישה */
+    display: flex; 
     align-items: center; 
     padding: 20px; 
     background: var(--bg-color);
-    gap: 15px; /* רווח בין הטקסט ללוגו */
+    gap: 15px; 
 }
 
-.header-content { 
-    text-align: center; 
-    flex: 1; /* לוקח את כל המקום הפנוי */
-}
+.header-content { text-align: center; flex: 1; }
 .header-content h1 { margin: 0; font-size: 24px; font-weight: 800; }
 .header-content p { margin: 5px 0 0; color: #666; font-size: 13px; }
 
-/* הלוגו בצד שמאל */
-.header-logo {
-    flex-shrink: 0; /* לא מתכווץ */
-}
-.header-logo img {
-    width: 65px; /* גודל האייקון */
-    height: auto;
-    display: block;
-}
+.header-logo { flex-shrink: 0; }
+.header-logo img { width: 65px; height: auto; display: block; }
 
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 15px; }
 .app-btn {
@@ -76,7 +66,6 @@ body {
 .color-teal { color: #00c7be; }
 .color-gray { color: #8e8e93; }
 
-/* שדות טקסט - יישור לימין חזק */
 input, select {
     width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
     font-size: 18px; 
@@ -100,9 +89,38 @@ input, select {
 .bg-high { background-color: var(--color-high) !important; }
 
 /* כללי */
-.screen-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--card-bg); border-bottom: 1px solid rgba(0,0,0,0.1); }
-.header-actions { display: flex; gap: 10px; }
-.header-title { display: flex; align-items: center; gap: 10px; font-size: 20px; }
+.screen-header { 
+    position: relative;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px; 
+    background: var(--card-bg); 
+    border-bottom: 1px solid rgba(0,0,0,0.1); 
+    height: 50px;
+}
+
+/* כותרת מורכזת אבסולוטית */
+.header-center-title {
+    position: absolute;
+    left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    pointer-events: none; /* כדי לא להפריע ללחיצות בצדדים */
+}
+.header-center-title h2 { margin: 0; font-size: 20px; }
+.icon-svg-small svg { width: 24px; height: 24px; }
+
+.header-actions { 
+    display: flex; gap: 10px; 
+    margin-right: auto; /* דחיפה שמאלה ב-RTL */
+    z-index: 2; /* מעל הכותרת */
+}
+/* כפתור הבית גם צריך z-index אם הוא לבד */
+.home-btn { z-index: 2; position: relative; margin-right: auto; }
+
 .home-btn, .chart-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
 
 .content-scroll { padding: 15px; padding-bottom: 80px; }
@@ -119,12 +137,11 @@ label { display: block; margin-bottom: 5px; font-size: 14px; color: #888; }
     white-space: nowrap; 
 }
 
-/* צד ימין (התחלה) */
 .history-right { display: flex; align-items: center; gap: 12px; overflow: hidden; }
 .history-data-row { display: flex; gap: 10px; font-size: 16px; font-weight: 500; }
 .history-date-full { font-size: 12px; color: #999; margin-left: 5px; }
 
-/* צד שמאל (סוף) */
+/* פעולות - עיפרון ואז פח */
 .history-actions { display: flex; gap: 15px; }
 .action-icon { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; padding: 0; }
 .action-icon:hover { opacity: 1; color: var(--primary); }
