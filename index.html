@@ -61,24 +61,35 @@
 
         /* סרגל כלים מתקדם */
         .toolbar {
-            background: var(--card-bg); border-radius: 12px; padding: 8px;
+            background: var(--card-bg); border-radius: 12px; padding: 10px;
             display: flex; flex-direction: column; gap: 10px;
             margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .toolbar-top { display: flex; justify-content: space-between; width: 100%; }
-        .filter-scroll { 
-            display: flex; gap: 5px; overflow-x: auto; padding-bottom: 2px; 
-            -webkit-overflow-scrolling: touch; scrollbar-width: none; width: 100%;
+        
+        /* שורה עליונה: אקסל בשמאל, גרף בימין */
+        .toolbar-top { 
+            display: flex; 
+            justify-content: space-between; /* מפריד לצדדים */
+            width: 100%; 
         }
-        .filter-scroll::-webkit-scrollbar { display: none; }
+
+        /* שורת כפתורי זמן - רווחים שווים */
+        .filter-row { 
+            display: flex; 
+            justify-content: space-between; 
+            gap: 5px; 
+            width: 100%;
+        }
         
         .btn-tool {
             border: 1px solid var(--border-color); background: transparent;
-            color: var(--text-color); border-radius: 8px; padding: 6px 12px; font-size: 0.85rem;
-            white-space: nowrap; font-weight: 600;
+            color: var(--text-color); border-radius: 8px; padding: 6px 0; 
+            font-size: 0.8rem; font-weight: 600;
+            flex: 1; /* ממלא מקום שווה */
+            text-align: center;
         }
         .btn-tool.active { background: #007aff; color: white; border-color: #007aff; }
-        .btn-icon-tool { font-size: 1.2rem; padding: 5px 15px; }
+        .btn-icon-tool { font-size: 1.2rem; padding: 5px 15px; flex: none; width: auto; }
 
         /* היסטוריה */
         .history-row {
@@ -88,8 +99,14 @@
         }
         .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.2; min-width: 50px; }
         .h-data { display: flex; gap: 12px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
-        .h-data i { font-size: 0.9rem; opacity: 0.6; margin-left: 3px; }
         
+        /* צבעי אייקונים בהיסטוריה */
+        .icon-up { color: #ff3b30; } /* אדום */
+        .icon-down { color: #007aff; } /* כחול */
+        .icon-heart { color: #ff3b30; } /* אדום */
+        .icon-edit { color: #ff9500; cursor: pointer; } /* כתום */
+        .icon-trash { color: #8e8e93; cursor: pointer; } /* אפור */
+
         /* וואטסאפ מוקטן */
         .whatsapp-btn {
             position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white;
@@ -163,17 +180,16 @@
 
         <div class="toolbar">
             <div class="toolbar-top">
-                <div class="d-flex gap-2">
-                    <button class="btn btn-tool btn-icon-tool" onclick="exportTopicExcel()" style="color:#198754; border-color:#198754">
-                        <i class="fas fa-file-excel"></i>
-                    </button>
-                    <button id="btn-show-graph" class="btn btn-tool btn-icon-tool" onclick="openGraphView()" style="color:#0d6efd; border-color:#0d6efd">
-                        <i class="fas fa-chart-line"></i>
-                    </button>
-                </div>
-                <div class="small text-muted align-self-center">סינון לפי:</div>
+                <button class="btn btn-tool btn-icon-tool" onclick="exportTopicExcel()" style="color:#198754; border-color:#198754">
+                    <i class="fas fa-file-excel"></i>
+                </button>
+                
+                <button id="btn-show-graph" class="btn btn-tool btn-icon-tool" onclick="openGraphView()" style="color:#0d6efd; border-color:#0d6efd">
+                    <i class="fas fa-chart-line"></i>
+                </button>
             </div>
-            <div class="filter-scroll" id="filter-container-list">
+            
+            <div class="filter-row" id="filter-container-list">
                 </div>
         </div>
 
@@ -194,7 +210,7 @@
 
     <div class="container pt-3">
         <div class="toolbar">
-            <div class="filter-scroll" id="filter-container-graph">
+            <div class="filter-row" id="filter-container-graph">
                 </div>
         </div>
 
@@ -202,8 +218,7 @@
             <canvas id="mainChart"></canvas>
         </div>
         <div class="text-center mt-3 text-muted small">
-            הגרף מציג נתונים בהתאם לתקופה הנבחרת<br>
-            החל מהמדידה האחרונה שלך
+            הגרף מציג נתונים בהתאם לתקופה הנבחרת
         </div>
     </div>
 </div>
@@ -246,8 +261,8 @@
 const CONFIG = {
     bp: { name: 'לחץ דם ודופק', icon: 'fa-heart-pulse', color: '#ff3b30', 
           fields: [
-            { id: 'sys', label: 'גבוה', min: 60, max: 250, ranges: { low: 90, high: 120, border: 140, extreme: 180 }, icon: 'fa-arrow-up' },
-            { id: 'dia', label: 'נמוך', min: 30, max: 150, ranges: { low: 60, high: 80, border: 90, extreme: 110 }, icon: 'fa-arrow-down' },
+            { id: 'sys', label: 'גבוה (סיסטולי)', min: 60, max: 250, ranges: { low: 90, high: 120, border: 140, extreme: 180 }, icon: 'fa-arrow-up' },
+            { id: 'dia', label: 'נמוך (דיאסטולי)', min: 30, max: 150, ranges: { low: 60, high: 80, border: 90, extreme: 110 }, icon: 'fa-arrow-down' },
             { id: 'pulse', label: 'דופק', min: 30, max: 220, ranges: { low: 50, high: 100, border: 120, extreme: 150 }, icon: 'fa-heart' }
           ]},
     sugar: { name: 'סוכר', icon: 'fa-droplet', color: '#ff9500', 
@@ -261,19 +276,20 @@ const CONFIG = {
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
 
+// רשימת זמנים מעודכנת - שורה אחת
 const FILTERS = [
     { label: '7D', days: 7 },
+    { label: '1M', days: 30 },
     { label: '3M', days: 90 },
     { label: '6M', days: 180 },
     { label: '1Y', days: 365 },
     { label: '2Y', days: 730 },
-    { label: '3Y', days: 1095 },
-    { label: 'All', days: 0 } // 0 = infinity
+    { label: '3Y', days: 1095 }
 ];
 
-const MY_PHONE = "972500000000"; 
+const MY_PHONE = "972500000000"; // <--- שנה למספר שלך
 let currentMetric = null;
-let currentFilterDays = 0; // 0 = all
+let currentFilterDays = 0; // 0 = default (usually last setting or 7D)
 let chartInstance = null;
 let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": ""}');
 
@@ -319,12 +335,12 @@ function openMetric(key) {
     document.getElementById('metric-header').style.backgroundColor = c.color;
     document.getElementById('header-title').innerText = c.name;
     
-    // ניהול כפתור גרף (לא רלוונטי לתרופות)
+    // ניהול כפתור גרף
     document.getElementById('btn-show-graph').style.display = (c.type === 'meds') ? 'none' : 'block';
 
     renderForm(c);
     resetForm();
-    renderFilters('filter-container-list', false); // יצירת כפתורי פילטר
+    renderFilters('filter-container-list', false);
     renderHistory();
     showPage('metric-page');
 }
@@ -340,7 +356,7 @@ function renderFilters(containerId, isGraph) {
 
 function setFilter(days, containerId, isGraph) {
     currentFilterDays = days;
-    renderFilters(containerId, isGraph); // עדכון ויזואלי של הכפתור הפעיל
+    renderFilters(containerId, isGraph); 
     if (isGraph) {
         updateChart();
     } else {
@@ -353,34 +369,35 @@ function getFilteredData() {
     let filtered = db.filter(e => e.metric === currentMetric);
     
     if (filtered.length === 0) return [];
-    if (currentFilterDays === 0) return filtered; // All
+    
+    // ברירת מחדל אם לא נבחר - נציג הכל או לפי בחירה אחרונה.
+    // כאן נשתמש בבחירה הנוכחית. אם היא 0 (שלא קיים בכפתורים כרגע), נציג הכל? 
+    // אבל ביקשת להסיר ALL. אז נניח שהמשתמש לוחץ. נגדיר ברירת מחדל 7 ימים אם 0.
+    let days = currentFilterDays || 7;
 
-    // מציאת התאריך האחרון במדידות (לא היום!)
     const dates = filtered.map(e => new Date(e.date).getTime());
     const lastDate = new Date(Math.max.apply(null, dates));
     
-    // חישוב תאריך התחלה אחורה מהמדידה האחרונה
     const cutoff = new Date(lastDate);
-    cutoff.setDate(lastDate.getDate() - currentFilterDays);
+    cutoff.setDate(lastDate.getDate() - days);
     
     return filtered.filter(item => new Date(item.date) >= cutoff);
 }
 
-// --- גרפים (Chart.js) ---
+// --- גרפים ---
 function openGraphView() {
     const c = CONFIG[currentMetric];
     document.getElementById('graph-header').style.backgroundColor = c.color;
     showPage('graph-page');
     renderFilters('filter-container-graph', true);
-    setTimeout(updateChart, 100); // דיליי קטן לוודא שהקנבס נטען
+    setTimeout(updateChart, 100);
 }
 
 function updateChart() {
     const ctx = document.getElementById('mainChart').getContext('2d');
-    if (chartInstance) chartInstance.destroy(); // ניקוי גרף קודם
+    if (chartInstance) chartInstance.destroy();
 
     const rawData = getFilteredData();
-    // מיון כרונולוגי לגרף (ישן לחדש)
     rawData.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
 
     const labels = rawData.map(i => {
@@ -394,17 +411,16 @@ function updateChart() {
     if (currentMetric === 'bp') {
         datasets = [
             { label: 'גבוה', data: rawData.map(i => i.sys), borderColor: '#ff3b30', tension: 0.3 },
-            { label: 'נמוך', data: rawData.map(i => i.dia), borderColor: '#5856d6', tension: 0.3 },
-            { label: 'דופק', data: rawData.map(i => i.pulse), borderColor: '#34c759', borderDash: [5, 5], tension: 0.3 }
+            { label: 'נמוך', data: rawData.map(i => i.dia), borderColor: '#007aff', tension: 0.3 },
+            { label: 'דופק', data: rawData.map(i => i.pulse), borderColor: '#ff3b30', borderDash: [5, 5], tension: 0.3 }
         ];
     } else {
-        // שאר המדדים (קו אחד)
         const field = c.fields[0];
         datasets = [{
             label: field.label,
             data: rawData.map(i => i.val),
             borderColor: c.color,
-            backgroundColor: c.color + '20', // שקוף
+            backgroundColor: c.color + '20',
             fill: true,
             tension: 0.3
         }];
@@ -414,18 +430,12 @@ function updateChart() {
         type: 'line',
         data: { labels: labels, datasets: datasets },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top', rtl: true, labels: { font: { family: 'system-ui' } } }
-            },
-            scales: {
-                y: { beginAtZero: false }
-            }
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', rtl: true, labels: { font: { family: 'system-ui' } } } },
+            scales: { y: { beginAtZero: false } }
         }
     });
 }
-
 
 function renderForm(c) {
     const div = document.getElementById('dynamic-fields');
@@ -487,8 +497,7 @@ function saveEntry() {
 }
 
 function renderHistory() {
-    let filtered = getFilteredData(); // משתמש בפונקציה עם הלוגיקה החדשה
-    // מיון היסטוריה: חדש למעלה
+    let filtered = getFilteredData();
     filtered.sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
     
     const list = document.getElementById('history-list');
@@ -510,7 +519,14 @@ function renderHistory() {
                      if (f.ranges && val > f.ranges.extreme) rowColor = 'bg-danger-custom'; 
                      else if (f.ranges && val < f.ranges.low) rowColor = 'bg-low';
                 }
-                return `<span class="text-nowrap ms-2"><i class="fas ${f.icon}"></i> ${val}</span>`;
+                
+                // בחירת צבע לאייקון לפי סוג
+                let iconClass = '';
+                if (f.icon === 'fa-arrow-up') iconClass = 'icon-up';
+                if (f.icon === 'fa-arrow-down') iconClass = 'icon-down';
+                if (f.icon === 'fa-heart') iconClass = 'icon-heart';
+
+                return `<span class="text-nowrap ms-2"><i class="fas ${f.icon} ${iconClass}"></i> ${val}</span>`;
             }).join('');
         }
 
@@ -519,8 +535,8 @@ function renderHistory() {
                 <div class="h-meta text-center"><div>${dateStr}</div><div>${item.time}</div></div>
                 <div class="h-data">${contentStr}</div>
                 <div class="h-actions">
-                    <i class="fas fa-pencil-alt text-primary p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
-                    <i class="fas fa-trash text-danger p-2" onclick="deleteEntry(${item.id})"></i>
+                    <i class="fas fa-pencil-alt icon-edit p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash icon-trash p-2" onclick="deleteEntry(${item.id})"></i>
                 </div>
             </div>`;
     }).join('');
@@ -561,7 +577,7 @@ function resetForm() {
     document.getElementById('edit-id').value = '';
     setDateTimeNow();
     document.getElementById('cancel-edit-btn').classList.add('d-none');
-    document.querySelectorAll('.form-control').forEach(el => el.className = 'form-control text-end');
+    document.querySelectorAll('.form-control').forEach(el => el.className = 'form-control form-control-lg text-end');
 }
 
 function exportTopicExcel() {
