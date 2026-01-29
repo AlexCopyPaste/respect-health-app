@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
@@ -31,19 +32,13 @@
             padding-bottom: 80px; transition: all 0.3s;
         }
 
-        /* שדות קלט - צמוד לימין ופלייסהולדר חיוור */
-        .form-control, .form-select {
-            text-align: right !important; /* אילוץ הצמדה לימין */
-            direction: rtl;
-        }
-        ::placeholder {
-            color: #d1d1d6 !important; /* אפור חיוור מאוד */
-            opacity: 1;
-        }
+        /* שדות קלט */
+        .form-control, .form-select { text-align: right !important; direction: rtl; }
+        ::placeholder { color: #d1d1d6 !important; opacity: 1; }
         
         /* כותרת ראשית */
         .main-header { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 20px 0; margin-bottom: 10px; }
-        .main-header i { font-size: 2rem; color: #5856d6; /* סגול כחול חדש */ }
+        .main-header i { font-size: 2rem; color: #5856d6; }
         .main-header h1 { font-weight: 800; font-size: 1.8rem; margin: 0; line-height: 1; }
 
         /* דשבורד */
@@ -64,43 +59,51 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        /* סרגל כלים (אקסל ופילטרים) */
+        /* סרגל כלים מתקדם */
         .toolbar {
             background: var(--card-bg); border-radius: 12px; padding: 8px;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; flex-direction: column; gap: 10px;
             margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .filter-group { display: flex; gap: 5px; }
+        .toolbar-top { display: flex; justify-content: space-between; width: 100%; }
+        .filter-scroll { 
+            display: flex; gap: 5px; overflow-x: auto; padding-bottom: 2px; 
+            -webkit-overflow-scrolling: touch; scrollbar-width: none; width: 100%;
+        }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        
         .btn-tool {
             border: 1px solid var(--border-color); background: transparent;
-            color: var(--text-color); border-radius: 8px; padding: 5px 10px; font-size: 0.9rem;
+            color: var(--text-color); border-radius: 8px; padding: 6px 12px; font-size: 0.85rem;
+            white-space: nowrap; font-weight: 600;
         }
         .btn-tool.active { background: #007aff; color: white; border-color: #007aff; }
-        .btn-excel { color: #198754; border-color: #198754; font-size: 1.2rem; }
+        .btn-icon-tool { font-size: 1.2rem; padding: 5px 15px; }
 
-        /* היסטוריה - שורה אחת */
+        /* היסטוריה */
         .history-row {
             background: var(--card-bg); border-radius: 12px; padding: 12px; margin-bottom: 8px;
             display: flex; justify-content: space-between; align-items: center;
             border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            flex-wrap: nowrap; /* מניעת שבירת שורה */
         }
         .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.2; min-width: 50px; }
-        .h-data { 
-            display: flex; gap: 12px; font-weight: bold; font-size: 1.1rem; 
-            align-items: center; flex-grow: 1; justify-content: center;
-        }
+        .h-data { display: flex; gap: 12px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
         .h-data i { font-size: 0.9rem; opacity: 0.6; margin-left: 3px; }
-        .h-actions { display: flex; gap: 5px; }
         
         /* וואטסאפ מוקטן */
         .whatsapp-btn {
             position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white;
-            width: 45px; height: 45px; border-radius: 50%; /* הוקטן */
+            width: 45px; height: 45px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1000; text-decoration: none;
-            display: none; /* מוסתר כברירת מחדל */
+            z-index: 1000; text-decoration: none; display: none;
+        }
+
+        /* גרף */
+        .chart-container { 
+            position: relative; height: 50vh; width: 100%; margin-top: 20px;
+            background: var(--card-bg); border-radius: 15px; padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .app-page { display: none; animation: fadeIn 0.2s; }
@@ -147,12 +150,8 @@
             <form id="entry-form">
                 <input type="hidden" id="edit-id">
                 <div class="row g-2 align-items-end">
-                    <div class="col-6">
-                        <input type="date" id="f-date" class="form-control text-end">
-                    </div>
-                    <div class="col-6">
-                        <input type="time" id="f-time" class="form-control text-end">
-                    </div>
+                    <div class="col-6"><input type="date" id="f-date" class="form-control text-end"></div>
+                    <div class="col-6"><input type="time" id="f-time" class="form-control text-end"></div>
                 </div>
                 <div id="dynamic-fields" class="mt-3 row g-3"></div>
                 <div class="mt-3 d-flex gap-2">
@@ -163,14 +162,49 @@
         </div>
 
         <div class="toolbar">
-            <button class="btn btn-tool btn-excel" onclick="exportTopicExcel()">
-                <i class="fas fa-file-excel"></i>
-            </button>
-            <div class="filter-group">
-                <button class="btn btn-tool" onclick="setFilter('week', this)">7</button> <button class="btn btn-tool" onclick="setFilter('month', this)">30</button> <button class="btn btn-tool" onclick="setFilter('half', this)">½</button> <button class="btn btn-tool active" onclick="setFilter('all', this)">∞</button> </div>
+            <div class="toolbar-top">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-tool btn-icon-tool" onclick="exportTopicExcel()" style="color:#198754; border-color:#198754">
+                        <i class="fas fa-file-excel"></i>
+                    </button>
+                    <button id="btn-show-graph" class="btn btn-tool btn-icon-tool" onclick="openGraphView()" style="color:#0d6efd; border-color:#0d6efd">
+                        <i class="fas fa-chart-line"></i>
+                    </button>
+                </div>
+                <div class="small text-muted align-self-center">סינון לפי:</div>
+            </div>
+            <div class="filter-scroll" id="filter-container-list">
+                </div>
         </div>
 
         <div id="history-list"></div>
+    </div>
+</div>
+
+<div id="graph-page" class="app-page">
+    <div id="graph-header" class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-link text-white p-0" onclick="showPage('metric-page')">
+                <i class="fas fa-arrow-right fs-2"></i>
+            </button>
+            <h3 class="m-0 fw-bold">מגמות</h3>
+            <div style="width: 30px;"></div>
+        </div>
+    </div>
+
+    <div class="container pt-3">
+        <div class="toolbar">
+            <div class="filter-scroll" id="filter-container-graph">
+                </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="mainChart"></canvas>
+        </div>
+        <div class="text-center mt-3 text-muted small">
+            הגרף מציג נתונים בהתאם לתקופה הנבחרת<br>
+            החל מהמדידה האחרונה שלך
+        </div>
     </div>
 </div>
 
@@ -198,40 +232,49 @@
             <div class="d-flex align-items-center gap-3"><i class="fas fa-trash-alt fs-4 text-danger"></i><span class="fw-bold text-danger">מחיקת הכל</span></div>
             <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="toggle-reset-data" onchange="handleResetToggle()"></div>
         </div>
-        
         <div class="settings-row mt-3">
              <input type="text" id="doctor-name" class="form-control border-0 bg-transparent p-0 fw-bold text-end" 
                     placeholder="שם הרופא (אופציונלי)..." onchange="saveDocName()">
-         </div>
+        </div>
     </div>
 </div>
 
 <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
 
 <script>
-// --- הגדרות שדות מעודכנות ---
+// --- הגדרות ---
 const CONFIG = {
     bp: { name: 'לחץ דם ודופק', icon: 'fa-heart-pulse', color: '#ff3b30', 
           fields: [
-            // טקסטים קצרים וברורים
-            { id: 'sys', label: 'גבוה', unit: '', min: 60, max: 250, ranges: { low: 90, high: 120, border: 140, extreme: 180 }, icon: 'fa-arrow-up' },
-            { id: 'dia', label: 'נמוך', unit: '', min: 30, max: 150, ranges: { low: 60, high: 80, border: 90, extreme: 110 }, icon: 'fa-arrow-down' },
-            { id: 'pulse', label: 'דופק', unit: '', min: 30, max: 220, ranges: { low: 50, high: 100, border: 120, extreme: 150 }, icon: 'fa-heart' }
+            { id: 'sys', label: 'גבוה', min: 60, max: 250, ranges: { low: 90, high: 120, border: 140, extreme: 180 }, icon: 'fa-arrow-up' },
+            { id: 'dia', label: 'נמוך', min: 30, max: 150, ranges: { low: 60, high: 80, border: 90, extreme: 110 }, icon: 'fa-arrow-down' },
+            { id: 'pulse', label: 'דופק', min: 30, max: 220, ranges: { low: 50, high: 100, border: 120, extreme: 150 }, icon: 'fa-heart' }
           ]},
     sugar: { name: 'סוכר', icon: 'fa-droplet', color: '#ff9500', 
-             fields: [{ id: 'val', label: 'ערך', unit: '', min: 20, max: 800, ranges: { low: 70, high: 140, border: 200, extreme: 300 }, icon: 'fa-droplet' }]},
+             fields: [{ id: 'val', label: 'ערך', min: 20, max: 800, ranges: { low: 70, high: 140, border: 200, extreme: 300 }, icon: 'fa-droplet' }]},
     weight: { name: 'משקל', icon: 'fa-weight-scale', color: '#007aff', 
-              fields: [{ id: 'val', label: 'ק"ג', unit: '', min: 30, max: 300, ranges: { low: 50, high: 100, border: 150, extreme: 200 }, icon: 'fa-weight-scale' }]},
+              fields: [{ id: 'val', label: 'ק"ג', min: 30, max: 300, ranges: { low: 50, high: 100, border: 150, extreme: 200 }, icon: 'fa-weight-scale' }]},
     pills: { name: 'תרופות', icon: 'fa-pills', color: '#34c759', type: 'meds' },
-    walk: { name: 'הליכה', icon: 'fa-person-walking', color: '#5856d6', fields: [{ id: 'val', label: 'ק"מ', unit: '', min: 0, max: 100, icon: 'fa-person-walking' }] },
-    gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', fields: [{ id: 'val', label: 'דקות', unit: '', min: 0, max: 300, icon: 'fa-clock' }] },
-    water: { name: 'מים', icon: 'fa-glass-water', color: '#5ac8fa', fields: [{ id: 'val', label: 'מ"ל', unit: '', min: 0, max: 5000, icon: 'fa-glass-water' }] },
+    walk: { name: 'הליכה', icon: 'fa-person-walking', color: '#5856d6', fields: [{ id: 'val', label: 'ק"מ', min: 0, max: 100, icon: 'fa-person-walking' }] },
+    gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', fields: [{ id: 'val', label: 'דקות', min: 0, max: 300, icon: 'fa-clock' }] },
+    water: { name: 'מים', icon: 'fa-glass-water', color: '#5ac8fa', fields: [{ id: 'val', label: 'מ"ל', min: 0, max: 5000, icon: 'fa-glass-water' }] },
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
 
+const FILTERS = [
+    { label: '7D', days: 7 },
+    { label: '3M', days: 90 },
+    { label: '6M', days: 180 },
+    { label: '1Y', days: 365 },
+    { label: '2Y', days: 730 },
+    { label: '3Y', days: 1095 },
+    { label: 'All', days: 0 } // 0 = infinity
+];
+
 const MY_PHONE = "972500000000"; 
 let currentMetric = null;
-let currentFilter = 'all'; // all, week, month, half
+let currentFilterDays = 0; // 0 = all
+let chartInstance = null;
 let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": ""}');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -264,35 +307,10 @@ function initDashboard() {
 function showPage(id) {
     document.querySelectorAll('.app-page').forEach(el => el.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    
-    // הצגת וואטסאפ רק בדף הבית
     const wa = document.getElementById('wa-link');
     if(id === 'home-page') wa.style.display = 'flex';
     else wa.style.display = 'none';
-    
     window.scrollTo(0,0);
-}
-
-// לוגיקת סינון
-function setFilter(type, btn) {
-    currentFilter = type;
-    document.querySelectorAll('.btn-tool').forEach(b => {
-        if(!b.classList.contains('btn-excel')) b.classList.remove('active');
-    });
-    btn.classList.add('active');
-    renderHistory();
-}
-
-function filterHistory(db) {
-    if (currentFilter === 'all') return db;
-    const now = new Date();
-    const cutoff = new Date();
-    
-    if (currentFilter === 'week') cutoff.setDate(now.getDate() - 7);
-    if (currentFilter === 'month') cutoff.setDate(now.getDate() - 30);
-    if (currentFilter === 'half') cutoff.setMonth(now.getMonth() - 6);
-    
-    return db.filter(item => new Date(item.date) >= cutoff);
 }
 
 function openMetric(key) {
@@ -300,11 +318,114 @@ function openMetric(key) {
     const c = CONFIG[key];
     document.getElementById('metric-header').style.backgroundColor = c.color;
     document.getElementById('header-title').innerText = c.name;
+    
+    // ניהול כפתור גרף (לא רלוונטי לתרופות)
+    document.getElementById('btn-show-graph').style.display = (c.type === 'meds') ? 'none' : 'block';
+
     renderForm(c);
     resetForm();
+    renderFilters('filter-container-list', false); // יצירת כפתורי פילטר
     renderHistory();
     showPage('metric-page');
 }
+
+// --- ניהול פילטרים ---
+function renderFilters(containerId, isGraph) {
+    const div = document.getElementById(containerId);
+    div.innerHTML = FILTERS.map(f => 
+        `<button class="btn btn-tool ${currentFilterDays === f.days ? 'active' : ''}" 
+          onclick="setFilter(${f.days}, '${containerId}', ${isGraph})">${f.label}</button>`
+    ).join('');
+}
+
+function setFilter(days, containerId, isGraph) {
+    currentFilterDays = days;
+    renderFilters(containerId, isGraph); // עדכון ויזואלי של הכפתור הפעיל
+    if (isGraph) {
+        updateChart();
+    } else {
+        renderHistory();
+    }
+}
+
+function getFilteredData() {
+    let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
+    let filtered = db.filter(e => e.metric === currentMetric);
+    
+    if (filtered.length === 0) return [];
+    if (currentFilterDays === 0) return filtered; // All
+
+    // מציאת התאריך האחרון במדידות (לא היום!)
+    const dates = filtered.map(e => new Date(e.date).getTime());
+    const lastDate = new Date(Math.max.apply(null, dates));
+    
+    // חישוב תאריך התחלה אחורה מהמדידה האחרונה
+    const cutoff = new Date(lastDate);
+    cutoff.setDate(lastDate.getDate() - currentFilterDays);
+    
+    return filtered.filter(item => new Date(item.date) >= cutoff);
+}
+
+// --- גרפים (Chart.js) ---
+function openGraphView() {
+    const c = CONFIG[currentMetric];
+    document.getElementById('graph-header').style.backgroundColor = c.color;
+    showPage('graph-page');
+    renderFilters('filter-container-graph', true);
+    setTimeout(updateChart, 100); // דיליי קטן לוודא שהקנבס נטען
+}
+
+function updateChart() {
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy(); // ניקוי גרף קודם
+
+    const rawData = getFilteredData();
+    // מיון כרונולוגי לגרף (ישן לחדש)
+    rawData.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+
+    const labels = rawData.map(i => {
+        const d = new Date(i.date);
+        return `${d.getDate()}/${d.getMonth()+1}`;
+    });
+
+    const c = CONFIG[currentMetric];
+    let datasets = [];
+
+    if (currentMetric === 'bp') {
+        datasets = [
+            { label: 'גבוה', data: rawData.map(i => i.sys), borderColor: '#ff3b30', tension: 0.3 },
+            { label: 'נמוך', data: rawData.map(i => i.dia), borderColor: '#5856d6', tension: 0.3 },
+            { label: 'דופק', data: rawData.map(i => i.pulse), borderColor: '#34c759', borderDash: [5, 5], tension: 0.3 }
+        ];
+    } else {
+        // שאר המדדים (קו אחד)
+        const field = c.fields[0];
+        datasets = [{
+            label: field.label,
+            data: rawData.map(i => i.val),
+            borderColor: c.color,
+            backgroundColor: c.color + '20', // שקוף
+            fill: true,
+            tension: 0.3
+        }];
+    }
+
+    chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: labels, datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', rtl: true, labels: { font: { family: 'system-ui' } } }
+            },
+            scales: {
+                y: { beginAtZero: false }
+            }
+        }
+    });
+}
+
 
 function renderForm(c) {
     const div = document.getElementById('dynamic-fields');
@@ -317,7 +438,6 @@ function renderForm(c) {
         `;
     } else {
         c.fields.forEach(f => {
-            // Placeholder עדין מאוד ללא המילה undefined
             div.innerHTML += `<div class="col-12"><label class="small text-muted fw-bold">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg text-end" placeholder="${f.min}-${f.max}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
         });
     }
@@ -350,7 +470,7 @@ function saveEntry() {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
             const val = parseFloat(el.value);
-            if (isNaN(val)) isValid = false; // ויתרנו על אכיפת טווח קשיחה בשמירה כדי לא לחסום, רק צבע
+            if (isNaN(val)) isValid = false; 
             entry[f.id] = val;
         });
     }
@@ -366,11 +486,9 @@ function saveEntry() {
     resetForm(); renderHistory();
 }
 
-// --- היסטוריה משודרגת: שורה אחת + אייקונים ---
 function renderHistory() {
-    let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
-    let filtered = db.filter(e => e.metric === currentMetric);
-    filtered = filterHistory(filtered); // סינון זמן
+    let filtered = getFilteredData(); // משתמש בפונקציה עם הלוגיקה החדשה
+    // מיון היסטוריה: חדש למעלה
     filtered.sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
     
     const list = document.getElementById('history-list');
@@ -386,10 +504,8 @@ function renderHistory() {
         if (c.type === 'meds') {
             contentStr = `<div class="d-flex align-items-center gap-2"><i class="fas fa-pills small"></i><span>${item.med} ${item.mg?item.mg:''} (${item.takeTime})</span></div>`;
         } else {
-            // יצירת מחרוזת עם אייקונים
             contentStr = c.fields.map(f => {
                 const val = item[f.id];
-                // בדיקת צבע שורה לפי הערך הראשון (או הראשי)
                 if (f.id === 'sys' || f.id === 'val') { 
                      if (f.ranges && val > f.ranges.extreme) rowColor = 'bg-danger-custom'; 
                      else if (f.ranges && val < f.ranges.low) rowColor = 'bg-low';
@@ -400,10 +516,7 @@ function renderHistory() {
 
         return `
             <div class="history-row ${rowColor}" style="border-right-color: ${c.color}">
-                <div class="h-meta text-center">
-                    <div>${dateStr}</div>
-                    <div>${item.time}</div>
-                </div>
+                <div class="h-meta text-center"><div>${dateStr}</div><div>${item.time}</div></div>
                 <div class="h-data">${contentStr}</div>
                 <div class="h-actions">
                     <i class="fas fa-pencil-alt text-primary p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
@@ -452,10 +565,7 @@ function resetForm() {
 }
 
 function exportTopicExcel() {
-    let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
-    let filtered = db.filter(e => e.metric === currentMetric);
-    filtered = filterHistory(filtered); // מייצא רק מה שבמסנן
-    
+    let filtered = getFilteredData();
     if (!filtered.length) return Swal.fire('אין נתונים לייצוא', '', 'info');
     let csv = "\uFEFFתאריך,שעה,נושא,מידע\n";
     const c = CONFIG[currentMetric];
