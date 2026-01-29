@@ -14,6 +14,7 @@
         :root {
             --main-bg: #f2f2f7; --card-bg: #ffffff; --text-color: #000000; --border-color: #e5e5ea;
             --c-low: #ffe6f2; --c-norm: #ffffff; --c-high: #ffb3d9; --c-border: #ff80bf; --c-danger: #ffcccc;   
+            --primary-color: #5856d6;
         }
         body.dark-mode { --main-bg: #000000; --card-bg: #1c1c1e; --text-color: #ffffff; --border-color: #38383a; --c-norm: #2c2c2e; }
         body.font-large { font-size: 115%; }
@@ -21,11 +22,12 @@
         
         /* עיצוב שדות */
         .form-control, .form-select { text-align: right !important; direction: rtl; }
-        ::placeholder { color: #d1d1d6 !important; opacity: 1; }
+        ::placeholder { color: #d1d1d6 !important; opacity: 0.7; font-weight: 300; }
+        .form-control:disabled, .form-control[readonly] { background-color: var(--main-bg); opacity: 0.6; }
 
         /* כותרת */
         .main-header { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 20px 0; margin-bottom: 10px; }
-        .main-header i { font-size: 2rem; color: #5856d6; }
+        .main-header i { font-size: 2rem; color: var(--primary-color); }
         .main-header h1 { font-weight: 800; font-size: 1.8rem; margin: 0; line-height: 1; }
 
         /* דשבורד */
@@ -56,7 +58,7 @@
             display: flex; justify-content: space-between; align-items: center;
             border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.2; min-width: 50px; }
+        .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.2; min-width: 50px; text-align: center; }
         .h-data { display: flex; gap: 12px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
         
         /* אייקונים */
@@ -70,14 +72,22 @@
         }
         body.dark-mode .goal-card { background: #1a2633; border-color: #2c4c6b; color: #90caf9; }
 
+        /* מתג בחירה ליעד */
+        .unit-toggle {
+            display: flex; background: var(--border-color); border-radius: 8px; padding: 2px;
+        }
+        .unit-toggle div {
+            flex: 1; text-align: center; padding: 5px 10px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+        }
+        .unit-toggle div.active { background: white; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-weight: bold; }
+        body.dark-mode .unit-toggle div.active { background: #636366; color: white; }
+
         .app-page { display: none; animation: fadeIn 0.2s; } .app-page.active { display: block; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* צבעי ולידציה */
         .bg-low { background-color: var(--c-low) !important; color: #000; } .bg-norm { background-color: var(--c-norm) !important; }
         .bg-high { background-color: var(--c-high) !important; color: #000;} .bg-border { background-color: var(--c-border) !important; color: #000;}
         .bg-danger-custom { background-color: var(--c-danger) !important; color: #000;}
-
-        body.dark-mode .form-control, body.dark-mode .form-select { background-color: #2c2c2e; border-color: #3a3a3c; color: white; }
     </style>
 </head>
 <body>
@@ -104,26 +114,38 @@
 
     <div class="container pt-3">
         <div id="walk-goal-container" class="d-none">
-            <div class="input-group mb-3 shadow-sm" style="direction: ltr;">
-                <span class="input-group-text">ק"מ</span>
-                <input type="number" id="monthly-goal-input" class="form-control text-center" placeholder="יעד חודשי (למשל 50)" oninput="calcGoalStatus()">
-                <span class="input-group-text bg-primary text-white">יעד חודשי</span>
-            </div>
-            <div id="goal-status-box" class="goal-card d-none">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="small text-muted fw-bold">קביעת יעד חודשי</label>
+                <div class="unit-toggle">
+                    <div id="toggle-unit-steps" onclick="toggleWalkUnit('steps')">צעדים</div>
+                    <div id="toggle-unit-km" onclick="toggleWalkUnit('km')" class="active">ק"מ</div>
                 </div>
+            </div>
+            <div class="input-group mb-3 shadow-sm" style="direction: ltr;">
+                <span class="input-group-text" id="goal-unit-label">ק"מ</span>
+                <input type="number" id="monthly-goal-input" class="form-control text-center" placeholder="הזן יעד..." oninput="calcGoalStatus()">
+            </div>
+            <div id="goal-status-box" class="goal-card d-none"></div>
         </div>
 
         <div class="card shadow-sm border-0 rounded-4 p-3 mb-3" style="background: var(--card-bg);">
             <form id="entry-form">
                 <input type="hidden" id="edit-id">
-                <div class="row g-2 align-items-end">
-                    <div class="col-6"><input type="date" id="f-date" class="form-control text-end"></div>
-                    <div class="col-6"><input type="time" id="f-time" class="form-control text-end"></div>
-                </div>
                 
-                <div id="end-time-container" class="mt-2 d-none">
-                     <label class="small text-muted fw-bold">שעת סיום (אופציונלי)</label>
-                     <input type="time" id="f-end-time" class="form-control text-end">
+                <div class="mb-2">
+                    <label class="small text-muted fw-bold">תאריך</label>
+                    <input type="date" id="f-date" class="form-control text-end">
+                </div>
+
+                <div class="row g-2 align-items-end">
+                    <div class="col-6">
+                        <label class="small text-muted fw-bold">שעת סיום</label>
+                        <input type="time" id="f-end-time" class="form-control text-center">
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted fw-bold">שעת התחלה</label>
+                        <input type="time" id="f-time" class="form-control text-center">
+                    </div>
                 </div>
 
                 <div id="dynamic-fields" class="mt-3 row g-3"></div>
@@ -192,7 +214,6 @@
 </div>
 
 <script>
-// --- הגדרות ---
 const CONFIG = {
     bp: { name: 'לחץ דם ודופק', icon: 'fa-heart-pulse', color: '#ff3b30', 
           fields: [
@@ -200,7 +221,7 @@ const CONFIG = {
             { id: 'dia', label: 'נמוך (דיאסטולי)', min: 30, max: 150, ranges: { low: 60, high: 80, border: 90, extreme: 110 }, icon: 'fa-arrow-down' },
             { id: 'pulse', label: 'דופק', min: 30, max: 220, ranges: { low: 50, high: 100, border: 120, extreme: 150 }, icon: 'fa-heart' }
           ]},
-    walk: { name: 'הליכה', icon: 'fa-person-walking', color: '#5856d6', type: 'walk' }, // סוג מיוחד
+    walk: { name: 'הליכה', icon: 'fa-person-walking', color: '#5856d6', type: 'walk' },
     sugar: { name: 'סוכר', icon: 'fa-droplet', color: '#ff9500', 
              fields: [{ id: 'val', label: 'ערך', min: 20, max: 800, ranges: { low: 70, high: 140, border: 200, extreme: 300 }, icon: 'fa-droplet' }]},
     weight: { name: 'משקל', icon: 'fa-weight-scale', color: '#007aff', 
@@ -216,7 +237,7 @@ const MY_PHONE = "972500000000";
 let currentMetric = null;
 let currentFilterDays = 0; 
 let chartInstance = null;
-let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": ""}');
+let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": "", "walkUnit": "km"}');
 
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
@@ -248,6 +269,9 @@ function initDashboard() {
 function showPage(id) {
     document.querySelectorAll('.app-page').forEach(el => el.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    const wa = document.getElementById('wa-link');
+    if(id === 'home-page') wa.style.display = 'flex';
+    else wa.style.display = 'none';
     window.scrollTo(0,0);
 }
 
@@ -258,13 +282,16 @@ function openMetric(key) {
     document.getElementById('header-title').innerText = c.name;
     document.getElementById('btn-show-graph').style.display = (c.type === 'meds') ? 'none' : 'block';
 
-    // ניהול שדות מיוחדים להליכה
     const isWalk = (key === 'walk');
-    document.getElementById('end-time-container').classList.toggle('d-none', !isWalk);
+    // ניהול שדות מיוחדים להליכה
     document.getElementById('walk-goal-container').classList.toggle('d-none', !isWalk);
+    // שדה זמן סיום תמיד זמין להליכה עכשיו בשורה נפרדת - אבל לא צריך להסתיר כי הוא בתוך הטופס המיוחד
+    
     if(isWalk) {
+        // שחזור יחידה אחרונה שנבחרה
+        toggleWalkUnit(appSettings.walkUnit || 'km');
         document.getElementById('monthly-goal-input').value = appSettings.walkGoal || '';
-        calcGoalStatus(); // חישוב ראשוני
+        calcGoalStatus();
     }
 
     renderForm(c);
@@ -274,10 +301,32 @@ function openMetric(key) {
     showPage('metric-page');
 }
 
+// ניהול יחידות הליכה (היפוך אקטיבי/פסיבי)
+function toggleWalkUnit(unit) {
+    appSettings.walkUnit = unit;
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    
+    // עדכון כפתורי הבחירה
+    document.getElementById('toggle-unit-steps').className = unit === 'steps' ? 'active' : '';
+    document.getElementById('toggle-unit-km').className = unit === 'km' ? 'active' : '';
+    
+    // עדכון תווית היעד
+    document.getElementById('goal-unit-label').innerText = unit === 'steps' ? 'צעדים' : 'ק"מ';
+    
+    // רענון הטופס אם אנחנו כבר בדף
+    if(currentMetric === 'walk') {
+        renderForm(CONFIG.walk);
+        calcGoalStatus(); // חישוב מחדש ליעד
+    }
+}
+
 function renderForm(c) {
     const div = document.getElementById('dynamic-fields');
     div.innerHTML = '';
     
+    // הסתרת/הצגת שדה זמן סיום לפי סוג
+    document.getElementById('f-end-time').parentElement.parentElement.classList.toggle('d-none', c.type === 'meds');
+
     if (c.type === 'meds') {
         div.innerHTML = `
             <div class="col-12"><input type="text" id="inp-med" class="form-control text-end" placeholder="שם התרופה"></div>
@@ -285,18 +334,20 @@ function renderForm(c) {
             <div class="col-6"><select id="inp-time" class="form-select text-end"><option>בוקר</option><option>צהריים</option><option>ערב</option><option>לילה</option></select></div>
         `;
     } else if (c.type === 'walk') {
-        // טופס הליכה מיוחד
+        // בדיקת מצב יחידות כדי לקבוע מי פעיל
+        const isKmActive = appSettings.walkUnit === 'km';
+        
         let opts = '<option value="">בחר מרחק...</option>';
-        for(let i=0.5; i<=10; i+=0.5) opts += `<option value="${i}">${i} ק"מ</option>`;
+        for(let i=0.5; i<=15; i+=0.5) opts += `<option value="${i}">${i} ק"מ</option>`;
         
         div.innerHTML = `
             <div class="col-6">
                 <label class="small text-muted fw-bold">מרחק (ק"מ)</label>
-                <select id="walk-dist" class="form-select text-center" onchange="syncStepsToDist()">${opts}</select>
+                <select id="walk-dist" class="form-select text-center" onchange="syncStepsToDist()" ${!isKmActive ? 'disabled' : ''}>${opts}</select>
             </div>
             <div class="col-6">
                  <label class="small text-muted fw-bold">צעדים (משוער)</label>
-                 <input type="number" id="walk-steps" class="form-control text-center" placeholder="או הזן צעדים" oninput="syncDistToSteps()">
+                 <input type="number" id="walk-steps" class="form-control text-center" placeholder="הזן צעדים" oninput="syncDistToSteps()" ${isKmActive ? 'readonly' : ''}>
             </div>
         `;
     } else {
@@ -306,11 +357,9 @@ function renderForm(c) {
     }
 }
 
-// --- לוגיקת הליכה ---
 function syncStepsToDist() {
     const dist = parseFloat(document.getElementById('walk-dist').value);
     if (!isNaN(dist)) {
-        // ממוצע: 1312 צעדים לק"מ
         document.getElementById('walk-steps').value = Math.round(dist * 1312);
     } else {
         document.getElementById('walk-steps').value = '';
@@ -322,10 +371,10 @@ function syncDistToSteps() {
     const select = document.getElementById('walk-dist');
     if (!isNaN(steps) && steps > 0) {
         const calcDist = steps / 1312;
-        // מציאת הערך הקרוב ביותר ב-SELECT
+        // מציאת הערך הקרוב ביותר
         let closest = 0.5;
         let minDiff = Infinity;
-        for(let i=0.5; i<=10; i+=0.5) {
+        for(let i=0.5; i<=15; i+=0.5) {
             let diff = Math.abs(calcDist - i);
             if(diff < minDiff) { minDiff = diff; closest = i; }
         }
@@ -336,46 +385,46 @@ function syncDistToSteps() {
 function calcGoalStatus() {
     const goal = parseFloat(document.getElementById('monthly-goal-input').value);
     const statusBox = document.getElementById('goal-status-box');
+    const unit = appSettings.walkUnit; // km or steps
     
-    // שמירת היעד בהגדרות
     appSettings.walkGoal = document.getElementById('monthly-goal-input').value;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
 
-    if (!goal || goal <= 0) {
-        statusBox.classList.add('d-none');
-        return;
-    }
+    if (!goal || goal <= 0) { statusBox.classList.add('d-none'); return; }
 
-    // חישוב כמה הלך החודש
     const db = JSON.parse(localStorage.getItem('healthDB') || '[]');
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
     
-    // סינון: רק הליכה, רק החודש הזה
     const monthWalks = db.filter(e => {
         if (e.metric !== 'walk') return false;
         const d = new Date(e.date);
         return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
     });
 
-    const totalKm = monthWalks.reduce((sum, e) => sum + (parseFloat(e.val) || 0), 0);
-    const remaining = goal - totalKm;
-    
-    // חישוב ימים שנותרו בחודש
+    // חישוב סך הכל לפי היחידה הנבחרת
+    let total = 0;
+    if (unit === 'km') {
+        total = monthWalks.reduce((sum, e) => sum + (parseFloat(e.val) || 0), 0);
+    } else {
+        total = monthWalks.reduce((sum, e) => sum + (parseInt(e.steps) || 0), 0);
+    }
+
+    const remaining = goal - total;
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const daysLeft = daysInMonth - now.getDate() + 1; // כולל היום
+    const daysLeft = daysInMonth - now.getDate() + 1;
     
-    let msg = '';
     statusBox.classList.remove('d-none');
+    const uLabel = unit === 'km' ? 'ק"מ' : 'צעדים';
     
     if (remaining <= 0) {
-        statusBox.innerHTML = `<i class="fas fa-trophy text-warning"></i> <strong>כל הכבוד!</strong> עמדת ביעד החודשי (${totalKm.toFixed(1)} ק"מ)`;
+        statusBox.innerHTML = `<i class="fas fa-trophy text-warning"></i> <strong>כל הכבוד!</strong> עמדת ביעד החודשי (${total.toFixed(1)} ${uLabel})`;
     } else {
         const dailyNeeded = remaining / daysLeft;
         statusBox.innerHTML = `
-            <div>עברת החודש: <strong>${totalKm.toFixed(1)}</strong> מתוך <strong>${goal}</strong> ק"מ</div>
-            <div class="mt-1 text-danger fw-bold">כדי להגיע ליעד: עליך ללכת ${dailyNeeded.toFixed(1)} ק"מ ביום</div>
+            <div>עברת: <strong>${total.toFixed(0)}</strong> מתוך <strong>${goal}</strong> ${uLabel}</div>
+            <div class="mt-1 text-danger fw-bold">כדי להגיע ליעד: עליך ללכת ${dailyNeeded.toFixed(0)} ${uLabel} ביום</div>
         `;
     }
 }
@@ -401,11 +450,9 @@ function saveEntry() {
         const endTime = document.getElementById('f-end-time').value;
         
         if (!dist && !steps) isValid = false;
-        entry.val = parseFloat(dist); // שומרים ק"מ כערך ראשי
+        entry.val = parseFloat(dist); 
         entry.steps = parseInt(steps);
-        entry.endTime = endTime;
-        
-        // עדכון סטטוס יעד לאחר שמירה
+        entry.endTime = endTime; // שמירת שעת סיום
         setTimeout(calcGoalStatus, 500);
     } else {
         c.fields.forEach(f => {
@@ -427,7 +474,6 @@ function saveEntry() {
     resetForm(); renderHistory();
 }
 
-// --- כללי ---
 function renderFilters(containerId, isGraph) {
     const div = document.getElementById(containerId);
     div.innerHTML = FILTERS.map(f => `<button class="btn btn-tool ${currentFilterDays === f.d ? 'active' : ''}" onclick="setFilter(${f.d}, '${containerId}', ${isGraph})">${f.l}</button>`).join('');
@@ -443,13 +489,11 @@ function getFilteredData() {
     let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
     let filtered = db.filter(e => e.metric === currentMetric);
     if (filtered.length === 0) return [];
-    
     const days = currentFilterDays || 7;
     const dates = filtered.map(e => new Date(e.date).getTime());
     const lastDate = new Date(Math.max.apply(null, dates));
     const cutoff = new Date(lastDate);
     cutoff.setDate(lastDate.getDate() - days);
-    
     return filtered.filter(item => new Date(item.date) >= cutoff);
 }
 
@@ -469,18 +513,12 @@ function renderHistory() {
         if (c.type === 'meds') {
             contentStr = `<div class="d-flex align-items-center gap-2"><i class="fas fa-pills small"></i><span>${item.med} ${item.mg?item.mg:''} (${item.takeTime})</span></div>`;
         } else if (c.type === 'walk') {
-            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : item.time;
-            contentStr = `<span>${item.val} ק"מ</span> <span class="text-muted small ms-1">(${item.steps} צעדים)</span>`;
-            // דריסה של השעה לתצוגת טווח אם יש
-            return `
-            <div class="history-row" style="border-right-color: ${c.color}">
-                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${timeRange}</div></div>
-                <div class="h-data">${contentStr}</div>
-                <div class="h-actions">
-                    <i class="fas fa-pencil-alt icon-edit p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
-                    <i class="fas fa-trash icon-trash p-2" onclick="deleteEntry(${item.id})"></i>
-                </div>
-            </div>`;
+            // תצוגת הליכה: שעת התחלה וסיום במרכז אם יש
+            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : '';
+            contentStr = `<div class="d-flex flex-column align-items-center small">
+                            <span class="fs-6">${item.val} ק"מ</span>
+                            <span class="text-muted" style="font-size:0.8rem">${item.steps} צעדים ${timeRange ? '| '+timeRange : ''}</span>
+                          </div>`;
         } else {
             contentStr = c.fields.map(f => {
                 const val = item[f.id];
@@ -496,6 +534,7 @@ function renderHistory() {
             }).join('');
         }
 
+        // היסטוריה להליכה: בצד שמאל רק תאריך ושעת התחלה
         return `
             <div class="history-row ${rowColor}" style="border-right-color: ${c.color}">
                 <div class="h-meta text-center"><div>${dateStr}</div><div>${item.time}</div></div>
@@ -508,13 +547,11 @@ function renderHistory() {
     }).join('');
 }
 
-// לוגיקת עריכה ומחיקה זהה לגרסאות קודמות (כולל מילוי שדות הליכה)
 function editEntry(item) {
     document.getElementById('edit-id').value = item.id;
     document.getElementById('f-date').value = item.date;
     document.getElementById('f-time').value = item.time;
     if(item.endTime) document.getElementById('f-end-time').value = item.endTime;
-
     const c = CONFIG[item.metric];
     if (c.type === 'meds') {
         document.getElementById('inp-med').value = item.med;
@@ -540,7 +577,7 @@ function deleteEntry(id) {
             let db = JSON.parse(localStorage.getItem('healthDB')||'[]');
             localStorage.setItem('healthDB', JSON.stringify(db.filter(e=>e.id!==id)));
             renderHistory();
-            calcGoalStatus(); // עדכון יעד אם נמחק
+            if(currentMetric==='walk') calcGoalStatus();
         }
     });
 }
@@ -550,9 +587,7 @@ function resetForm() {
     document.getElementById('edit-id').value = '';
     setDateTimeNow();
     document.getElementById('cancel-edit-btn').classList.add('d-none');
-    document.querySelectorAll('.form-control').forEach(el => {
-         if(!el.id.includes('monthly')) el.className = 'form-control text-end'; // לא לאפס עיצוב שדה יעד
-    });
+    document.querySelectorAll('.form-control').forEach(el => { if(!el.id.includes('monthly')) el.className = 'form-control text-end'; });
 }
 
 function validateInput(el, min, max, metricKey, fieldId) {
@@ -569,7 +604,6 @@ function validateInput(el, min, max, metricKey, fieldId) {
     }
 }
 
-// פונקציות גרף, הגדרות, ויצוא זהות לגרסה 7
 function openGraphView() {
     const c = CONFIG[currentMetric];
     document.getElementById('graph-header').style.backgroundColor = c.color;
@@ -593,7 +627,10 @@ function updateChart() {
             { label: 'דופק', data: rawData.map(i => i.pulse), borderColor: '#ff3b30', borderDash: [5, 5], tension: 0.3 }
         ];
     } else if (currentMetric === 'walk') {
-         datasets = [{ label: 'ק"מ', data: rawData.map(i => i.val), borderColor: c.color, backgroundColor: c.color+'20', fill: true }];
+         // גרף הליכה: ק"מ או צעדים לפי בחירת המשתמש
+         const isSteps = appSettings.walkUnit === 'steps';
+         const data = rawData.map(i => isSteps ? i.steps : i.val);
+         datasets = [{ label: isSteps ? 'צעדים' : 'ק"מ', data: data, borderColor: c.color, backgroundColor: c.color+'20', fill: true }];
     } else {
         const field = c.fields[0];
         datasets = [{ label: field.label, data: rawData.map(i => i.val), borderColor: c.color, backgroundColor: c.color+'20', fill: true }];
