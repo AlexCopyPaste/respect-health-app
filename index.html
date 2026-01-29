@@ -17,144 +17,97 @@
             --border-color: #e5e5ea;
             
             /* סקאלת צבעים */
-            --c-low: #ffe6f2;      
-            --c-norm: #ffffff;     
-            --c-high: #ffb3d9;     
-            --c-border: #ff80bf;   
-            --c-danger: #ffcccc;   
+            --c-low: #ffe6f2; --c-norm: #ffffff; --c-high: #ffb3d9; --c-border: #ff80bf; --c-danger: #ffcccc;   
         }
 
-        /* מצב כהה */
         body.dark-mode {
-            --main-bg: #000000;
-            --card-bg: #1c1c1e;
-            --text-color: #ffffff;
-            --border-color: #38383a;
-            --c-norm: #2c2c2e;
+            --main-bg: #000000; --card-bg: #1c1c1e; --text-color: #ffffff; --border-color: #38383a; --c-norm: #2c2c2e;
         }
-
-        /* גופן גדול (מופעל מהגדרות) */
-        body.font-large {
-            font-size: 115%; /* הגדלה גורפת */
-        }
-        body.font-large .metric-card i { font-size: 2.5rem; } /* הגדלת אייקונים בהתאם */
-        body.font-large .h-val { font-size: 1.2rem; }
+        body.font-large { font-size: 115%; }
 
         body {
-            background-color: var(--main-bg);
-            color: var(--text-color);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding-bottom: 80px;
-            transition: all 0.3s;
+            background-color: var(--main-bg); color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 80px; transition: all 0.3s;
         }
 
-        /* כותרת ראשית מתוקנת - שורה אחת */
-        .main-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            padding: 20px 0;
-            margin-bottom: 10px;
+        /* שדות קלט - צמוד לימין ופלייסהולדר חיוור */
+        .form-control, .form-select {
+            text-align: right !important; /* אילוץ הצמדה לימין */
+            direction: rtl;
         }
-        .main-header i { font-size: 2rem; color: #ff3b30; }
-        .main-header h1 { 
-            font-weight: 800; 
-            font-size: 1.8rem; 
-            margin: 0; 
-            letter-spacing: -0.5px; 
-            line-height: 1;
+        ::placeholder {
+            color: #d1d1d6 !important; /* אפור חיוור מאוד */
+            opacity: 1;
         }
+        
+        /* כותרת ראשית */
+        .main-header { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 20px 0; margin-bottom: 10px; }
+        .main-header i { font-size: 2rem; color: #5856d6; /* סגול כחול חדש */ }
+        .main-header h1 { font-weight: 800; font-size: 1.8rem; margin: 0; line-height: 1; }
 
         /* דשבורד */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 10px;
-        }
-
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 10px; }
         .metric-card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 15px 5px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            cursor: pointer;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 110px;
+            background: var(--card-bg); border-radius: 18px; padding: 15px 5px; text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px;
         }
-
         .metric-card:active { transform: scale(0.95); opacity: 0.8; }
         .metric-card i { font-size: 2rem; margin-bottom: 8px; }
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
         /* דפים פנימיים */
         .page-header {
-            padding: 15px 20px;
-            border-radius: 0 0 25px 25px;
-            color: white;
-            margin-bottom: 20px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            padding: 15px 20px; border-radius: 0 0 25px 25px; color: white;
+            margin-bottom: 20px; text-align: center; position: sticky; top: 0; z-index: 100;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        /* שורת הגדרה בסגנון אפל */
-        .settings-row {
-            background: var(--card-bg);
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .settings-row:first-child { border-top-left-radius: 12px; border-top-right-radius: 12px; }
-        .settings-row:last-child { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; border-bottom: none; }
-        
-        .settings-group {
-            margin-bottom: 25px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border-radius: 12px;
-        }
-
-        .form-switch .form-check-input {
-            width: 3em; height: 1.7em; cursor: pointer;
-            background-color: #e9e9ea; border: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
-        }
-        .form-switch .form-check-input:checked { background-color: #34c759; }
-        .form-switch .form-check-input:focus { box-shadow: none; }
-
-        /* כפתור וואטסאפ */
-        .whatsapp-btn {
-            position: fixed; bottom: 20px; left: 20px;
-            background: #25d366; color: white;
-            width: 55px; height: 55px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1000; text-decoration: none;
-        }
-
-        /* היסטוריה ועיצוב כללי */
-        .history-row {
-            background: var(--card-bg); border-radius: 12px;
-            padding: 12px; margin-bottom: 8px;
+        /* סרגל כלים (אקסל ופילטרים) */
+        .toolbar {
+            background: var(--card-bg); border-radius: 12px; padding: 8px;
             display: flex; justify-content: space-between; align-items: center;
-            border-right: 5px solid transparent; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
+        .filter-group { display: flex; gap: 5px; }
+        .btn-tool {
+            border: 1px solid var(--border-color); background: transparent;
+            color: var(--text-color); border-radius: 8px; padding: 5px 10px; font-size: 0.9rem;
+        }
+        .btn-tool.active { background: #007aff; color: white; border-color: #007aff; }
+        .btn-excel { color: #198754; border-color: #198754; font-size: 1.2rem; }
+
+        /* היסטוריה - שורה אחת */
+        .history-row {
+            background: var(--card-bg); border-radius: 12px; padding: 12px; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex-wrap: nowrap; /* מניעת שבירת שורה */
+        }
+        .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.2; min-width: 50px; }
+        .h-data { 
+            display: flex; gap: 12px; font-weight: bold; font-size: 1.1rem; 
+            align-items: center; flex-grow: 1; justify-content: center;
+        }
+        .h-data i { font-size: 0.9rem; opacity: 0.6; margin-left: 3px; }
+        .h-actions { display: flex; gap: 5px; }
+        
+        /* וואטסאפ מוקטן */
+        .whatsapp-btn {
+            position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white;
+            width: 45px; height: 45px; border-radius: 50%; /* הוקטן */
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000; text-decoration: none;
+            display: none; /* מוסתר כברירת מחדל */
+        }
+
         .app-page { display: none; animation: fadeIn 0.2s; }
         .app-page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* מצבי צבע */
+        /* צבעים */
         .bg-low { background-color: var(--c-low) !important; color: #000; }
         .bg-norm { background-color: var(--c-norm) !important; }
         .bg-high { background-color: var(--c-high) !important; color: #000;}
@@ -174,7 +127,6 @@
             <i class="fas fa-heartbeat"></i>
             <h1>חיים רק פעם אחת...</h1>
         </div>
-
         <div class="dashboard-grid" id="main-grid"></div>
     </div>
 </div>
@@ -191,17 +143,15 @@
     </div>
 
     <div class="container pt-3">
-        <div class="card shadow-sm border-0 rounded-4 p-3 mb-4" style="background: var(--card-bg);">
+        <div class="card shadow-sm border-0 rounded-4 p-3 mb-3" style="background: var(--card-bg);">
             <form id="entry-form">
                 <input type="hidden" id="edit-id">
                 <div class="row g-2 align-items-end">
-                    <div class="col-7">
-                        <label class="small fw-bold text-muted">תאריך</label>
-                        <input type="date" id="f-date" class="form-control">
+                    <div class="col-6">
+                        <input type="date" id="f-date" class="form-control text-end">
                     </div>
-                    <div class="col-5">
-                        <label class="small fw-bold text-muted">שעה</label>
-                        <input type="time" id="f-time" class="form-control">
+                    <div class="col-6">
+                        <input type="time" id="f-time" class="form-control text-end">
                     </div>
                 </div>
                 <div id="dynamic-fields" class="mt-3 row g-3"></div>
@@ -211,12 +161,15 @@
                 </div>
             </form>
         </div>
-        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
-            <h5 class="fw-bold m-0 opacity-75">היסטוריה</h5>
-            <button class="btn btn-sm btn-success rounded-pill px-3" onclick="exportTopicExcel()">
-                <i class="fas fa-file-excel"></i> אקסל
+
+        <div class="toolbar">
+            <button class="btn btn-tool btn-excel" onclick="exportTopicExcel()">
+                <i class="fas fa-file-excel"></i>
             </button>
+            <div class="filter-group">
+                <button class="btn btn-tool" onclick="setFilter('week', this)">7</button> <button class="btn btn-tool" onclick="setFilter('month', this)">30</button> <button class="btn btn-tool" onclick="setFilter('half', this)">½</button> <button class="btn btn-tool active" onclick="setFilter('all', this)">∞</button> </div>
         </div>
+
         <div id="history-list"></div>
     </div>
 </div>
@@ -233,82 +186,52 @@
     </div>
 
     <div class="container pt-3">
-        <label class="text-muted small ms-2 mb-1 fw-bold">תצוגה</label>
-        <div class="settings-group">
-            <div class="settings-row">
-                <div class="d-flex align-items-center gap-3">
-                    <i class="fas fa-moon fs-4 text-primary"></i>
-                    <span class="fw-bold">מצב לילה (כהה)</span>
-                </div>
-                <div class="form-check form-switch m-0">
-                    <input class="form-check-input" type="checkbox" id="toggle-dark-mode" onchange="toggleSetting('darkMode')">
-                </div>
-            </div>
-            <div class="settings-row">
-                <div class="d-flex align-items-center gap-3">
-                    <i class="fas fa-text-height fs-4 text-secondary"></i>
-                    <span class="fw-bold">גופן גדול</span>
-                </div>
-                <div class="form-check form-switch m-0">
-                    <input class="form-check-input" type="checkbox" id="toggle-font-size" onchange="toggleSetting('largeFont')">
-                </div>
-            </div>
+        <div class="settings-row">
+            <div class="d-flex align-items-center gap-3"><i class="fas fa-moon fs-4 text-primary"></i><span class="fw-bold">מצב כהה</span></div>
+            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="toggle-dark-mode" onchange="toggleSetting('darkMode')"></div>
         </div>
-
-        <label class="text-muted small ms-2 mb-1 fw-bold">מערכת</label>
-        <div class="settings-group">
-            <div class="settings-row">
-                <div class="d-flex align-items-center gap-3">
-                    <i class="fas fa-trash-alt fs-4 text-danger"></i>
-                    <span class="fw-bold text-danger">מחיקת כל המידע</span>
-                </div>
-                <div class="form-check form-switch m-0">
-                    <input class="form-check-input" type="checkbox" id="toggle-reset-data" onchange="handleResetToggle()">
-                </div>
-            </div>
+        <div class="settings-row">
+            <div class="d-flex align-items-center gap-3"><i class="fas fa-text-height fs-4 text-secondary"></i><span class="fw-bold">גופן גדול</span></div>
+            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="toggle-font-size" onchange="toggleSetting('largeFont')"></div>
         </div>
-
-        <label class="text-muted small ms-2 mb-1 fw-bold">אישי (אופציונלי)</label>
-        <div class="settings-group">
-            <div class="settings-row">
-                <div class="w-100">
-                    <label class="small text-muted mb-1">שם הרופא / הערות</label>
-                    <input type="text" id="doctor-name" class="form-control border-0 bg-transparent p-0 fw-bold" 
-                           placeholder="לחץ כאן להזין שם..." onchange="saveDocName()">
-                </div>
-            </div>
+        <div class="settings-row mt-4">
+            <div class="d-flex align-items-center gap-3"><i class="fas fa-trash-alt fs-4 text-danger"></i><span class="fw-bold text-danger">מחיקת הכל</span></div>
+            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="toggle-reset-data" onchange="handleResetToggle()"></div>
         </div>
         
-        <div class="text-center mt-4">
-            <p class="text-muted small">גרסה 4.0</p>
-        </div>
+        <div class="settings-row mt-3">
+             <input type="text" id="doctor-name" class="form-control border-0 bg-transparent p-0 fw-bold text-end" 
+                    placeholder="שם הרופא (אופציונלי)..." onchange="saveDocName()">
+         </div>
     </div>
 </div>
 
 <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
 
 <script>
+// --- הגדרות שדות מעודכנות ---
 const CONFIG = {
-    bp: { name: 'לחץ דם', icon: 'fa-heart-pulse', color: '#ff3b30', 
+    bp: { name: 'לחץ דם ודופק', icon: 'fa-heart-pulse', color: '#ff3b30', 
           fields: [
-            { id: 'sys', label: 'סיסטולי', min: 60, max: 250, ranges: { low: 90, high: 120, border: 140, extreme: 180 } },
-            { id: 'dia', label: 'דיאסטולי', min: 30, max: 150, ranges: { low: 60, high: 80, border: 90, extreme: 110 } },
-            { id: 'pulse', label: 'דופק', min: 30, max: 220, ranges: { low: 50, high: 100, border: 120, extreme: 150 } }
+            // טקסטים קצרים וברורים
+            { id: 'sys', label: 'גבוה', unit: '', min: 60, max: 250, ranges: { low: 90, high: 120, border: 140, extreme: 180 }, icon: 'fa-arrow-up' },
+            { id: 'dia', label: 'נמוך', unit: '', min: 30, max: 150, ranges: { low: 60, high: 80, border: 90, extreme: 110 }, icon: 'fa-arrow-down' },
+            { id: 'pulse', label: 'דופק', unit: '', min: 30, max: 220, ranges: { low: 50, high: 100, border: 120, extreme: 150 }, icon: 'fa-heart' }
           ]},
     sugar: { name: 'סוכר', icon: 'fa-droplet', color: '#ff9500', 
-             fields: [{ id: 'val', label: 'רמת סוכר', unit: 'mg/dL', min: 20, max: 800, ranges: { low: 70, high: 140, border: 200, extreme: 300 } }]},
+             fields: [{ id: 'val', label: 'ערך', unit: '', min: 20, max: 800, ranges: { low: 70, high: 140, border: 200, extreme: 300 }, icon: 'fa-droplet' }]},
     weight: { name: 'משקל', icon: 'fa-weight-scale', color: '#007aff', 
-              fields: [{ id: 'val', label: 'משקל', unit: 'kg', min: 30, max: 300, ranges: { low: 50, high: 100, border: 150, extreme: 200 } }]},
+              fields: [{ id: 'val', label: 'ק"ג', unit: '', min: 30, max: 300, ranges: { low: 50, high: 100, border: 150, extreme: 200 }, icon: 'fa-weight-scale' }]},
     pills: { name: 'תרופות', icon: 'fa-pills', color: '#34c759', type: 'meds' },
-    walk: { name: 'הליכה', icon: 'fa-person-walking', color: '#5856d6', fields: [{ id: 'val', label: 'מרחק', unit: 'km', min: 0, max: 100 }] },
-    gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', fields: [{ id: 'val', label: 'זמן', unit: 'min', min: 0, max: 300 }] },
-    water: { name: 'מים', icon: 'fa-glass-water', color: '#5ac8fa', fields: [{ id: 'val', label: 'כמות', unit: 'ml', min: 0, max: 5000 }] },
-    // הגדרות - רקע רגיל, אייקון אפור
+    walk: { name: 'הליכה', icon: 'fa-person-walking', color: '#5856d6', fields: [{ id: 'val', label: 'ק"מ', unit: '', min: 0, max: 100, icon: 'fa-person-walking' }] },
+    gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', fields: [{ id: 'val', label: 'דקות', unit: '', min: 0, max: 300, icon: 'fa-clock' }] },
+    water: { name: 'מים', icon: 'fa-glass-water', color: '#5ac8fa', fields: [{ id: 'val', label: 'מ"ל', unit: '', min: 0, max: 5000, icon: 'fa-glass-water' }] },
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
 
 const MY_PHONE = "972500000000"; 
 let currentMetric = null;
+let currentFilter = 'all'; // all, week, month, half
 let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": ""}');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -333,12 +256,7 @@ function initDashboard() {
         const div = document.createElement('div');
         div.className = 'metric-card';
         div.onclick = () => c.isSettings ? showPage('settings-page') : openMetric(key);
-        
-        // צבע אייקון רגיל לכולם (כולל הגדרות שיהיה אפור)
-        div.innerHTML = `
-            <i class="fas ${c.icon}" style="color: ${c.color}"></i>
-            <div class="title">${c.name}</div>
-        `;
+        div.innerHTML = `<i class="fas ${c.icon}" style="color: ${key==='settings'?'#8e8e93':c.color}"></i><div class="title">${c.name}</div>`;
         grid.appendChild(div);
     });
 }
@@ -346,53 +264,37 @@ function initDashboard() {
 function showPage(id) {
     document.querySelectorAll('.app-page').forEach(el => el.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    
+    // הצגת וואטסאפ רק בדף הבית
+    const wa = document.getElementById('wa-link');
+    if(id === 'home-page') wa.style.display = 'flex';
+    else wa.style.display = 'none';
+    
     window.scrollTo(0,0);
 }
 
-// ניהול הגדרות
-function toggleSetting(key) {
-    appSettings[key] = document.getElementById(key === 'darkMode' ? 'toggle-dark-mode' : 'toggle-font-size').checked;
-    localStorage.setItem('appSettings', JSON.stringify(appSettings));
-    applySettings();
+// לוגיקת סינון
+function setFilter(type, btn) {
+    currentFilter = type;
+    document.querySelectorAll('.btn-tool').forEach(b => {
+        if(!b.classList.contains('btn-excel')) b.classList.remove('active');
+    });
+    btn.classList.add('active');
+    renderHistory();
 }
 
-function applySettings() {
-    document.body.classList.toggle('dark-mode', appSettings.darkMode);
-    document.body.classList.toggle('font-large', appSettings.largeFont);
-    document.getElementById('toggle-dark-mode').checked = appSettings.darkMode;
-    document.getElementById('toggle-font-size').checked = appSettings.largeFont;
+function filterHistory(db) {
+    if (currentFilter === 'all') return db;
+    const now = new Date();
+    const cutoff = new Date();
+    
+    if (currentFilter === 'week') cutoff.setDate(now.getDate() - 7);
+    if (currentFilter === 'month') cutoff.setDate(now.getDate() - 30);
+    if (currentFilter === 'half') cutoff.setMonth(now.getMonth() - 6);
+    
+    return db.filter(item => new Date(item.date) >= cutoff);
 }
 
-function saveDocName() {
-    appSettings.docName = document.getElementById('doctor-name').value;
-    localStorage.setItem('appSettings', JSON.stringify(appSettings));
-}
-
-// מנגנון איפוס עם בורר
-function handleResetToggle() {
-    const toggle = document.getElementById('toggle-reset-data');
-    if (toggle.checked) {
-        Swal.fire({
-            title: 'אזהרה חמורה!',
-            html: "כל המידע בכל הנושאים יימחק <b>לצמיתות</b>.<br>מומלץ לבצע ייצוא לקבצים לפני פעולה זו.<br>האם להמשיך?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'כן, מחק הכל',
-            cancelButtonText: 'ביטול'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                localStorage.removeItem('healthDB');
-                location.reload();
-            } else {
-                toggle.checked = false; // החזרת המתג למצב כבוי אם התחרט
-            }
-        });
-    }
-}
-
-// לוגיקה עסקית (זהה לגרסה קודמת)
 function openMetric(key) {
     currentMetric = key;
     const c = CONFIG[key];
@@ -409,21 +311,21 @@ function renderForm(c) {
     div.innerHTML = '';
     if (c.type === 'meds') {
         div.innerHTML = `
-            <div class="col-12"><input type="text" id="inp-med" class="form-control" placeholder="שם התרופה"></div>
-            <div class="col-6"><input type="number" id="inp-mg" class="form-control" placeholder='מ"ג'></div>
-            <div class="col-6"><select id="inp-time" class="form-select"><option>בוקר</option><option>צהריים</option><option>ערב</option><option>לילה</option></select></div>
+            <div class="col-12"><input type="text" id="inp-med" class="form-control text-end" placeholder="שם התרופה"></div>
+            <div class="col-6"><input type="number" id="inp-mg" class="form-control text-end" placeholder='מ"ג'></div>
+            <div class="col-6"><select id="inp-time" class="form-select text-end"><option>בוקר</option><option>צהריים</option><option>ערב</option><option>לילה</option></select></div>
         `;
     } else {
         c.fields.forEach(f => {
-            div.innerHTML += `<div class="col-12"><label class="small text-muted fw-bold">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg" placeholder="${f.min}-${f.max} ${f.unit}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
+            // Placeholder עדין מאוד ללא המילה undefined
+            div.innerHTML += `<div class="col-12"><label class="small text-muted fw-bold">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg text-end" placeholder="${f.min}-${f.max}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
         });
     }
 }
 
 function validateInput(el, min, max, metricKey, fieldId) {
     let val = parseFloat(el.value);
-    if (val < 0) el.value = '';
-    el.className = 'form-control form-control-lg'; 
+    el.className = 'form-control form-control-lg text-end'; 
     if (isNaN(val)) return;
     const ranges = CONFIG[metricKey].fields.find(f => f.id === fieldId).ranges;
     if (ranges) {
@@ -433,7 +335,6 @@ function validateInput(el, min, max, metricKey, fieldId) {
         else if (val <= ranges.extreme) el.classList.add('bg-border');
         else el.classList.add('bg-danger-custom');
     }
-    if (val > max) el.classList.add('is-invalid');
 }
 
 function saveEntry() {
@@ -449,54 +350,64 @@ function saveEntry() {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
             const val = parseFloat(el.value);
-            if (isNaN(val) || val < f.min || val > f.max) isValid = false;
+            if (isNaN(val)) isValid = false; // ויתרנו על אכיפת טווח קשיחה בשמירה כדי לא לחסום, רק צבע
             entry[f.id] = val;
         });
     }
-    if (!isValid) return Swal.fire('שגיאה', 'נתונים לא תקינים', 'error');
+    if (!isValid && c.type !== 'meds') return Swal.fire('שגיאה', 'יש להזין מספרים', 'error');
+    if (!isValid && c.type === 'meds') return Swal.fire('שגיאה', 'שם תרופה חובה', 'error');
     
     let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
     const existingIdx = db.findIndex(e => e.id == entry.id);
     if (existingIdx !== -1) db[existingIdx] = entry; else db.unshift(entry);
     localStorage.setItem('healthDB', JSON.stringify(db));
     
-    Swal.fire({ icon: 'success', title: 'נשמר!', timer: 900, showConfirmButton: false });
+    Swal.fire({ icon: 'success', title: 'נשמר!', timer: 800, showConfirmButton: false });
     resetForm(); renderHistory();
 }
 
+// --- היסטוריה משודרגת: שורה אחת + אייקונים ---
 function renderHistory() {
-    const db = JSON.parse(localStorage.getItem('healthDB') || '[]');
-    const filtered = db.filter(e => e.metric === currentMetric).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
+    let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
+    let filtered = db.filter(e => e.metric === currentMetric);
+    filtered = filterHistory(filtered); // סינון זמן
+    filtered.sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
+    
     const list = document.getElementById('history-list');
-    if (!filtered.length) { list.innerHTML = '<div class="text-center text-muted mt-4 small">אין נתונים</div>'; return; }
+    if (!filtered.length) { list.innerHTML = '<div class="text-center text-muted mt-4 small">אין נתונים בתקופה זו</div>'; return; }
     
     list.innerHTML = filtered.map(item => {
         const c = CONFIG[item.metric];
         const dObj = new Date(item.date);
         const dateStr = `${String(dObj.getDate()).padStart(2,'0')}/${String(dObj.getMonth()+1).padStart(2,'0')}`;
+        
         let contentStr = '', rowColor = '';
         
-        if (c.type === 'meds') contentStr = `${item.med} ${item.mg?item.mg:''} (${item.takeTime})`;
-        else {
-            const f0 = c.fields[0];
-            const val = item[f0.id];
-            contentStr = c.fields.map(f => `${f.label}:${item[f.id]}`).join(' | ');
-            if (f0.ranges) {
-                if (val > f0.ranges.extreme) rowColor = 'bg-danger-custom';
-                else if (val > f0.ranges.border) rowColor = 'bg-border';
-                else if (val > f0.ranges.high) rowColor = 'bg-high';
-                else if (val < f0.ranges.low) rowColor = 'bg-low';
-            }
+        if (c.type === 'meds') {
+            contentStr = `<div class="d-flex align-items-center gap-2"><i class="fas fa-pills small"></i><span>${item.med} ${item.mg?item.mg:''} (${item.takeTime})</span></div>`;
+        } else {
+            // יצירת מחרוזת עם אייקונים
+            contentStr = c.fields.map(f => {
+                const val = item[f.id];
+                // בדיקת צבע שורה לפי הערך הראשון (או הראשי)
+                if (f.id === 'sys' || f.id === 'val') { 
+                     if (f.ranges && val > f.ranges.extreme) rowColor = 'bg-danger-custom'; 
+                     else if (f.ranges && val < f.ranges.low) rowColor = 'bg-low';
+                }
+                return `<span class="text-nowrap ms-2"><i class="fas ${f.icon}"></i> ${val}</span>`;
+            }).join('');
         }
+
         return `
             <div class="history-row ${rowColor}" style="border-right-color: ${c.color}">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="text-center lh-1"><div class="h-date">${dateStr}</div><div class="small">${item.time}</div></div>
-                    <div class="h-val">${contentStr}</div>
+                <div class="h-meta text-center">
+                    <div>${dateStr}</div>
+                    <div>${item.time}</div>
                 </div>
-                <div>
-                    <i class="fas fa-pencil-alt text-primary mx-2" onclick='editEntry(${JSON.stringify(item)})'></i>
-                    <i class="fas fa-trash text-danger" onclick="deleteEntry(${item.id})"></i>
+                <div class="h-data">${contentStr}</div>
+                <div class="h-actions">
+                    <i class="fas fa-pencil-alt text-primary p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash text-danger p-2" onclick="deleteEntry(${item.id})"></i>
                 </div>
             </div>`;
     }).join('');
@@ -537,13 +448,15 @@ function resetForm() {
     document.getElementById('edit-id').value = '';
     setDateTimeNow();
     document.getElementById('cancel-edit-btn').classList.add('d-none');
-    document.querySelectorAll('.form-control').forEach(el => el.className = 'form-control form-control-lg');
+    document.querySelectorAll('.form-control').forEach(el => el.className = 'form-control text-end');
 }
 
 function exportTopicExcel() {
-    const db = JSON.parse(localStorage.getItem('healthDB') || '[]');
-    const filtered = db.filter(e => e.metric === currentMetric);
-    if (!filtered.length) return Swal.fire('אין נתונים', '', 'info');
+    let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
+    let filtered = db.filter(e => e.metric === currentMetric);
+    filtered = filterHistory(filtered); // מייצא רק מה שבמסנן
+    
+    if (!filtered.length) return Swal.fire('אין נתונים לייצוא', '', 'info');
     let csv = "\uFEFFתאריך,שעה,נושא,מידע\n";
     const c = CONFIG[currentMetric];
     filtered.forEach(i => {
@@ -553,6 +466,37 @@ function exportTopicExcel() {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
     a.download = `${c.name}.csv`; a.click();
+}
+
+function toggleSetting(key) {
+    appSettings[key] = document.getElementById(key === 'darkMode' ? 'toggle-dark-mode' : 'toggle-font-size').checked;
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    applySettings();
+}
+
+function applySettings() {
+    document.body.classList.toggle('dark-mode', appSettings.darkMode);
+    document.body.classList.toggle('font-large', appSettings.largeFont);
+    document.getElementById('toggle-dark-mode').checked = appSettings.darkMode;
+    document.getElementById('toggle-font-size').checked = appSettings.largeFont;
+}
+
+function saveDocName() {
+    appSettings.docName = document.getElementById('doctor-name').value;
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+}
+
+function handleResetToggle() {
+    const toggle = document.getElementById('toggle-reset-data');
+    if (toggle.checked) {
+        Swal.fire({
+            title: 'אזהרה חמורה!', html: "כל המידע יימחק <b>לצמיתות</b>.<br>האם להמשיך?", icon: 'warning',
+            showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'מחק הכל', cancelButtonText: 'ביטול'
+        }).then((result) => {
+            if (result.isConfirmed) { localStorage.removeItem('healthDB'); location.reload(); } 
+            else { toggle.checked = false; }
+        });
+    }
 }
 </script>
 </body>
