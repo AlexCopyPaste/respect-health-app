@@ -13,8 +13,7 @@
     <style>
         :root {
             --main-bg: #f2f2f7; --card-bg: #ffffff; --text-color: #000000; --border-color: #e5e5ea;
-            --c-norm: #ffffff; 
-            --c-danger: #ffebeb; 
+            --c-norm: #ffffff; --c-danger: #ffebeb; 
             --primary-color: #5856d6; --ios-gray: #7676801f;
         }
         body.dark-mode { --main-bg: #000000; --card-bg: #1c1c1e; --text-color: #ffffff; --border-color: #38383a; --c-norm: #2c2c2e; --ios-gray: #7676803d; --c-danger: #3a0b0b; }
@@ -22,10 +21,10 @@
         body { background-color: var(--main-bg); color: var(--text-color); font-family: -apple-system, system-ui, sans-serif; padding-bottom: 90px; transition: all 0.3s; }
         
         .form-control, .form-select { text-align: right !important; direction: rtl; }
-        .red-placeholder::placeholder { color: #ff3b30 !important; opacity: 0.7; font-weight: 300; font-size: 0.9rem; }
+        .red-placeholder::placeholder { color: #ff3b30 !important; opacity: 0.8; font-weight: 500; font-size: 0.95rem; }
         ::placeholder { color: #d1d1d6 !important; opacity: 0.7; font-weight: 300; }
         
-        .main-header { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 20px 0; margin-bottom: 10px; }
+        .main-header { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 20px 0 10px; margin-bottom: 5px; }
         .main-header i { font-size: 2rem; color: var(--primary-color); }
         .main-header h1 { font-weight: 800; font-size: 1.8rem; margin: 0; line-height: 1; }
 
@@ -40,32 +39,20 @@
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
         /* רדיו */
-        .radio-row {
-            background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s;
-        }
+        .radio-row { background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s; }
         .radio-playing { border: 2px solid #34c759; background-color: #f0fff4; }
         body.dark-mode .radio-playing { background-color: #052e16; }
-        
         .radio-logo { width: 32px; height: 32px; border-radius: 6px; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; font-size: 0.7rem; flex-shrink: 0; }
         .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
         .radio-name { font-weight: bold; font-size: 0.95rem; }
         .radio-freq { font-size: 0.8rem; color: #888; }
-        
         .btn-radio { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; transition: all 0.2s; }
         .btn-play { background: #e9e9ea; color: #000; }
         .btn-play.playing { background: #34c759; color: white; }
         .btn-info { background: transparent; color: #007aff; font-size: 1rem; }
-        
         .btn-star { background: transparent; border: none; font-size: 1.3rem; color: #d1d1d6; padding: 0 8px; cursor: pointer; transition: transform 0.2s; }
         .btn-star.active { color: #ffc107; transform: scale(1.1); }
-        
-        .radio-separator {
-            height: 2px; background: linear-gradient(90deg, transparent, #e5e5ea, transparent);
-            margin: 15px 0 5px; text-align: center; font-size: 0.75rem; color: #8e8e93; font-weight: 600; letter-spacing: 1px;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .radio-separator { height: 2px; background: linear-gradient(90deg, transparent, #e5e5ea, transparent); margin: 15px 0 5px; text-align: center; font-size: 0.75rem; color: #8e8e93; font-weight: 600; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; }
         .radio-separator span { background: var(--main-bg); padding: 0 10px; }
 
         /* כללי */
@@ -78,22 +65,34 @@
         .h-data { display: flex; gap: 10px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
         .h-walk-container { display: flex; align-items: center; gap: 8px; width: 100%; }
         .h-walk-val { font-weight: bold; font-size: 1rem; }
-        
         .bg-danger-custom { background-color: var(--c-danger) !important; color: #ff3b30 !important; font-weight: bold; }
         
-        /* iOS Segments */
-        .ios-segment { background-color: var(--ios-gray); border-radius: 9px; padding: 2px; display: flex; position: relative; width: 100%; height: 36px; }
-        .segment-btn { flex: 1; text-align: center; font-size: 0.85rem; font-weight: 500; line-height: 32px; cursor: pointer; z-index: 2; transition: all 0.3s ease; color: var(--text-color); opacity: 0.5; }
+        /* iOS Segments (2 & 3 states) */
+        .ios-segment { background-color: var(--ios-gray); border-radius: 9px; padding: 2px; display: flex; position: relative; width: 100%; height: 32px; }
+        .segment-btn { flex: 1; text-align: center; font-size: 0.8rem; font-weight: 500; line-height: 28px; cursor: pointer; z-index: 2; transition: all 0.3s ease; color: var(--text-color); opacity: 0.5; }
         .segment-btn.active { opacity: 1; font-weight: 700; }
-        .segment-bg { position: absolute; top: 2px; bottom: 2px; width: 50%; background-color: var(--card-bg); border-radius: 7px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.3s ease; z-index: 1; }
-        .segment-left { transform: translateX(0); }
-        [dir="rtl"] .segment-right { transform: translateX(-100%); }
+        .segment-bg { position: absolute; top: 2px; bottom: 2px; background-color: var(--card-bg); border-radius: 7px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); z-index: 1; }
+        
+        /* 2-State logic (Walk Units) */
+        .seg-2 .segment-bg { width: 50%; }
+        .seg-2 .segment-left { transform: translateX(0); }
+        [dir="rtl"] .seg-2 .segment-right { transform: translateX(-100%); }
+
+        /* 3-State logic (Walk Type) */
+        .seg-3 .segment-bg { width: 33.33%; }
+        .seg-3 .pos-0 { transform: translateX(0); } /* ימין */
+        .seg-3 .pos-1 { transform: translateX(-100%); } /* אמצע */
+        .seg-3 .pos-2 { transform: translateX(-200%); } /* שמאל */
+        
+        /* מתג הגדרות */
         .form-switch .form-check-input { width: 3.2em; height: 1.8em; flex-shrink: 0; cursor: pointer; background-color: #e9e9ea; border: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e"); }
         .form-switch .form-check-input:checked { background-color: #34c759; }
 
         .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
-        
         audio { display: none; }
+        
+        /* כותרות שדות */
+        .lbl-center { text-align: center; font-size: 0.8rem; font-weight: 700; color: #666; margin-bottom: 2px; display: block; }
     </style>
 </head>
 <body>
@@ -102,6 +101,12 @@
     <div class="container">
         <div class="main-header"><i class="fas fa-heartbeat"></i><h1>חיים רק פעם אחת...</h1></div>
         <div class="dashboard-grid" id="main-grid"></div>
+        
+        <div class="text-center mt-5">
+            <p class="text-muted small fw-bold mb-0">גרסה 18.0</p>
+            <p class="text-muted small" style="font-size: 0.75rem;">כל הזכויות שמורות ל-Aiex</p>
+        </div>
+
         <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
     </div>
 </div>
@@ -116,11 +121,22 @@
     </div>
 
     <div class="container pt-3">
+        
+        <div id="walk-type-container" class="d-none mb-3 d-flex justify-content-between align-items-center">
+            <div class="ios-segment seg-3" style="width: 65%;">
+                <div id="type-bg" class="segment-bg pos-0"></div>
+                <div id="type-0" class="segment-btn active" onclick="setWalkType(0)">רגילה</div>
+                <div id="type-1" class="segment-btn" onclick="setWalkType(1)">מהירה</div>
+                <div id="type-2" class="segment-btn" onclick="setWalkType(2)">ריצה</div>
+            </div>
+            <span class="fw-bold small ms-2">בחרו סוג הליכה:</span>
+        </div>
+
         <div id="walk-goal-container" class="d-none mb-3">
-            <div class="card shadow-sm border-0 rounded-4 p-2 px-3" style="background: var(--card-bg);">
+            <div class="card shadow-sm rounded-4 p-2 px-3" style="background: var(--card-bg); border: 1px solid var(--primary-color);">
                 <div class="row align-items-center g-2">
                     <div class="col-5">
-                         <div class="ios-segment">
+                         <div class="ios-segment seg-2">
                              <div id="seg-bg" class="segment-bg segment-left"></div>
                              <div id="btn-km" class="segment-btn active" onclick="toggleWalkUnit('km')">ק"מ</div>
                              <div id="btn-steps" class="segment-btn" onclick="toggleWalkUnit('steps')">צעדים</div>
@@ -141,22 +157,23 @@
         <div class="card shadow-sm border-0 rounded-4 p-3 mb-3" style="background: var(--card-bg);">
             <form id="entry-form">
                 <input type="hidden" id="edit-id">
-                <div class="row g-1 mb-3 align-items-end" id="time-row">
-                    <div class="col-4">
-                        <label class="small text-muted mb-0">תאריך</label>
+                
+                <div class="row g-1 mb-2 align-items-end" id="time-row">
+                    <div class="col-5">
+                        <label class="lbl-center">תאריך</label>
                         <input type="date" id="f-date" class="form-control form-control-sm text-center px-0">
                     </div>
-                    <div class="col-4">
-                        <label class="small text-muted mb-0">התחלה</label>
+                    <div class="col-3">
+                        <label class="lbl-center">התחלה</label>
                         <input type="time" id="f-time" class="form-control form-control-sm text-center px-0">
                     </div>
                     <div class="col-4" id="end-time-col">
-                        <label class="small text-muted mb-0">סיום</label>
+                        <label class="lbl-center">סיום</label>
                         <input type="time" id="f-end-time" class="form-control form-control-sm text-center px-0">
                     </div>
                 </div>
-                <div id="dynamic-fields" class="mt-2 row g-3"></div>
-                <div class="mt-3 d-flex gap-2">
+
+                <div id="dynamic-fields" class="mt-0 row g-3"></div> <div class="mt-3 d-flex gap-2">
                     <button type="button" class="btn btn-primary flex-grow-1 py-2 rounded-3" onclick="saveEntry()">שמור</button>
                     <button type="button" id="cancel-edit-btn" class="btn btn-secondary d-none rounded-3" onclick="resetForm()">ביטול</button>
                 </div>
@@ -242,28 +259,21 @@
                 <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="toggle-reset-data" onchange="handleResetToggle()"></div>
             </div>
         </div>
-        <div class="text-center mt-4 text-muted small fw-bold" style="opacity: 0.5;">
-             גרסה 17.0
-        </div>
     </div>
 </div>
 
 <script>
-// --- תחנות רדיו אמינות (Raw Stream URLs) ---
+// --- תחנות רדיו אמינות ---
 const DEFAULT_STATIONS = [
     { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
     { name: 'אקו 99', freq: '99', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
     { name: 'כאן 88', freq: '88', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
     { name: 'רדיוס', freq: '100', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' },
-    
-    // מפריד קטגוריה
     { isSeparator: true, label: 'חדשות ודיבורים' },
     { name: 'גל"צ', freq: '96.6', logo: 'גלצ', desc: 'חדשות וצבא', url: 'https://glzwizzlv.bynetcdn.com/glz_mp3' },
     { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
     { name: '103FM', freq: '103', logo: '103', desc: 'רדיו ללא הפסקה', url: 'https://cdn.cybercdn.live/103fm/103fm/icecast.audio' },
     { name: 'כאן מורשת', freq: '90.5', logo: 'מ', desc: 'מסורת', url: 'https://kanliveicy.media.kan.org.il/icy/kanmoreshet_mp3' },
-    
-    // מפריד ספיישלים
     { isSeparator: true, label: 'ספיישלים ופודקאסטים' },
     { name: 'כאן 80s', freq: 'WEB', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
     { name: 'כאן נוסטלגיה', freq: 'WEB', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
@@ -290,15 +300,12 @@ const CONFIG = {
 };
 
 const FILTERS = [ {l:'7D',d:7}, {l:'1M',d:30}, {l:'3M',d:90}, {l:'6M',d:180}, {l:'1Y',d:365}, {l:'2Y',d:730}, {l:'3Y',d:1095} ];
-// המספר החדש שביקשת
 const MY_PHONE = "972547565000"; 
 let currentMetric = null;
 let currentFilterDays = 0; 
 let chartInstance = null;
-let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": "", "walkUnit": "km"}');
-// מיזוג שמורות עם ברירת מחדל
+let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": "", "walkUnit": "km", "walkType": 0}');
 let savedStations = JSON.parse(localStorage.getItem('userStations'));
-// אם אין שמורות או אם הגרסה השתנתה, נטען את החדשות
 let userStations = savedStations && savedStations.length > 0 ? savedStations : DEFAULT_STATIONS;
 const STEPS_PER_KM = 1312;
 
@@ -340,7 +347,7 @@ function showPage(id, isRadio) {
     window.scrollTo(0,0);
 }
 
-// --- לוגיקת רדיו מועדפים משופרת ---
+// --- לוגיקת רדיו מועדפים ---
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
 let isLoading = false;
@@ -349,11 +356,9 @@ function renderRadioList() {
     const list = document.getElementById('radio-list');
     list.innerHTML = '';
     
-    // מיון: מועדפים קודם
     const favorites = userStations.filter(s => s.isFavorite && !s.isSeparator);
     const others = userStations.filter(s => !s.isFavorite);
     
-    // רנדור מועדפים
     if(favorites.length > 0) {
         favorites.forEach((s) => list.appendChild(createRadioRow(s)));
         const sep = document.createElement('div');
@@ -362,7 +367,6 @@ function renderRadioList() {
         list.appendChild(sep);
     }
     
-    // רנדור השאר עם הפרדות קטגוריה
     others.forEach((s) => {
         if(s.isSeparator) {
             const sep = document.createElement('div');
@@ -383,7 +387,6 @@ function createRadioRow(s) {
     let btnIcon = 'fa-play';
     if (isPlaying) btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
     
-    // אייקון כוכב
     const starIcon = s.isFavorite ? 'fas fa-star' : 'far fa-star';
     const starClass = s.isFavorite ? 'active' : '';
 
@@ -425,13 +428,11 @@ function togglePlay(url, name) {
         playingUrl = url;
         isLoading = true; 
         renderRadioList(); 
-        
         currentAudio.src = url;
         currentAudio.play().catch(e => {
             isLoading = false; playingUrl = null;
             Swal.fire('שגיאה', 'לא ניתן לנגן כרגע', 'error'); renderRadioList();
         });
-        
         currentAudio.onplaying = () => { isLoading = false; document.getElementById('now-playing-bar').classList.remove('d-none'); document.getElementById('np-name').innerText = name; renderRadioList(); };
         currentAudio.onwaiting = () => { isLoading = true; renderRadioList(); };
     }
@@ -451,11 +452,13 @@ function openMetric(key) {
 
     const isWalk = (key === 'walk');
     document.getElementById('walk-goal-container').classList.toggle('d-none', !isWalk);
+    document.getElementById('walk-type-container').classList.toggle('d-none', !isWalk);
     document.getElementById('time-row').classList.toggle('d-none', c.type === 'meds'); 
     document.getElementById('end-time-col').style.visibility = isWalk ? 'visible' : 'hidden';
 
     if(isWalk) {
         toggleWalkUnit(appSettings.walkUnit || 'km', true); 
+        setWalkType(appSettings.walkType || 0);
         document.getElementById('monthly-goal-input').value = appSettings.walkGoal || '';
         calcGoalStatus();
     }
@@ -465,6 +468,20 @@ function openMetric(key) {
     renderFilters('filter-container-list', false);
     renderHistory();
     showPage('metric-page');
+}
+
+// ניהול סוג הליכה (3 מצבים)
+function setWalkType(typeIdx) {
+    appSettings.walkType = typeIdx;
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    
+    // UI Logic
+    document.querySelectorAll('.seg-3 .segment-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === typeIdx);
+    });
+    
+    const bg = document.getElementById('type-bg');
+    bg.className = `segment-bg pos-${typeIdx}`;
 }
 
 function toggleWalkUnit(unit, skipConversion) {
@@ -511,13 +528,13 @@ function renderForm(c) {
     } else if (c.type === 'walk') {
         const isSteps = appSettings.walkUnit === 'steps';
         if (isSteps) {
-             div.innerHTML = `<div class="col-12"><label class="small text-muted fw-bold">צעדים</label><input type="number" id="walk-val" class="form-control text-center" placeholder="הזן צעדים"></div>`;
+             div.innerHTML = `<div class="col-12"><input type="number" id="walk-val" class="form-control text-center" placeholder="הזן צעדים"></div>`;
         } else {
-             div.innerHTML = `<div class="col-12"><label class="small text-muted fw-bold">מרחק (ק"מ)</label><input type="number" id="walk-val" class="form-control text-center" placeholder="הזן מרחק"></div>`;
+             div.innerHTML = `<div class="col-12"><input type="number" id="walk-val" class="form-control text-center" placeholder="הזן מרחק"></div>`;
         }
     } else {
         c.fields.forEach(f => {
-            div.innerHTML += `<div class="col-12"><label class="small text-muted fw-bold">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg text-end" placeholder="${f.min}-${f.max}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
+            div.innerHTML += `<div class="col-12"><label class="lbl-center">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg text-end" placeholder="${f.min}-${f.max}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
         });
     }
 }
@@ -584,6 +601,7 @@ function saveEntry() {
         if (!val) isValid = false;
         entry.val = parseFloat(val);
         entry.unit = appSettings.walkUnit; 
+        entry.walkType = appSettings.walkType; // שמירת סוג ההליכה
         entry.endTime = endTime; 
     } else {
         c.fields.forEach(f => {
@@ -807,8 +825,7 @@ function applySettings() {
     document.getElementById('toggle-font-size').checked = appSettings.largeFont;
 }
 function saveDocName() {
-    appSettings.docName = document.getElementById('doctor-name').value;
-    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    // Empty function for compatibility
 }
 function handleResetToggle() {
     if (document.getElementById('toggle-reset-data').checked) {
