@@ -13,22 +13,22 @@
     <style>
         :root {
             --main-bg: #f2f2f7; --card-bg: #ffffff; --text-color: #000000; --border-color: #e5e5ea;
-            --c-low: #ffe6f2; --c-norm: #ffffff; --c-high: #ffb3d9; --c-border: #ff80bf; --c-danger: #ffcccc;   
+            --c-norm: #ffffff; 
+            --c-danger: #ffebeb; 
             --primary-color: #5856d6; --ios-gray: #7676801f;
         }
-        body.dark-mode { --main-bg: #000000; --card-bg: #1c1c1e; --text-color: #ffffff; --border-color: #38383a; --c-norm: #2c2c2e; --ios-gray: #7676803d; }
+        body.dark-mode { --main-bg: #000000; --card-bg: #1c1c1e; --text-color: #ffffff; --border-color: #38383a; --c-norm: #2c2c2e; --ios-gray: #7676803d; --c-danger: #3a0b0b; }
         body.font-large { font-size: 115%; }
         body { background-color: var(--main-bg); color: var(--text-color); font-family: -apple-system, system-ui, sans-serif; padding-bottom: 90px; transition: all 0.3s; }
         
         .form-control, .form-select { text-align: right !important; direction: rtl; }
+        .red-placeholder::placeholder { color: #ff3b30 !important; opacity: 0.7; font-weight: 300; font-size: 0.9rem; }
         ::placeholder { color: #d1d1d6 !important; opacity: 0.7; font-weight: 300; }
         
-        /* כותרת */
         .main-header { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 20px 0; margin-bottom: 10px; }
         .main-header i { font-size: 2rem; color: var(--primary-color); }
         .main-header h1 { font-weight: 800; font-size: 1.8rem; margin: 0; line-height: 1; }
 
-        /* דשבורד */
         .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 10px; }
         .metric-card {
             background: var(--card-bg); border-radius: 18px; padding: 15px 5px; text-align: center;
@@ -39,53 +39,47 @@
         .metric-card i { font-size: 2rem; margin-bottom: 8px; }
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
-        /* רדיו - עיצוב שורות קומפקטי */
+        /* רדיו - עיצוב קומפקטי */
         .radio-row {
-            background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 8px;
+            background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px;
             display: flex; align-items: center; justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s;
         }
         .radio-playing { border: 2px solid #34c759; background-color: #f0fff4; }
-        body.dark-mode .radio-playing { background-color: #052e16; }
-        
-        .radio-logo { 
-            width: 35px; height: 35px; border-radius: 8px; background: #eee; 
-            display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555;
-            font-size: 0.75rem; flex-shrink: 0;
-        }
-        .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; white-space: nowrap; display: flex; align-items: baseline; gap: 8px; }
-        .radio-name { font-weight: bold; font-size: 1rem; }
+        .radio-logo { width: 32px; height: 32px; border-radius: 6px; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; font-size: 0.7rem; flex-shrink: 0; }
+        .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+        .radio-name { font-weight: bold; font-size: 0.95rem; }
         .radio-freq { font-size: 0.8rem; color: #888; }
         
-        .btn-radio { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; transition: all 0.2s; }
+        .btn-radio { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; transition: all 0.2s; }
         .btn-play { background: #e9e9ea; color: #000; }
         .btn-play.playing { background: #34c759; color: white; }
-        .btn-info { background: transparent; color: #007aff; font-size: 1.1rem; }
+        .btn-info { background: transparent; color: #007aff; font-size: 1rem; }
         
-        .order-controls { display: flex; flex-direction: column; gap: 0; margin-left: 5px; }
-        .btn-move { background: transparent; border: none; color: #8e8e93; padding: 0; font-size: 0.9rem; line-height: 1; }
-
-        /* נגן מוסתר */
-        audio { display: none; }
+        .order-controls { display: flex; flex-direction: column; margin-left: 8px; }
+        .btn-move { background: transparent; border: none; color: #8e8e93; padding: 0; font-size: 0.8rem; line-height: 1; }
+        
+        .radio-separator {
+            height: 2px; background: linear-gradient(90deg, transparent, #ffc107, transparent);
+            margin: 8px 0; text-align: center; font-size: 0.7rem; color: #ffc107; font-weight: bold; letter-spacing: 1px;
+        }
 
         /* כללי */
         .app-page { display: none; animation: fadeIn 0.2s; } .app-page.active { display: block; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .page-header { padding: 15px 20px; border-radius: 0 0 25px 25px; color: white; margin-bottom: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* היסטוריה קומפקטית */
-        .history-row { background: var(--card-bg); border-radius: 12px; padding: 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        /* היסטוריה */
+        .history-row { background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.1; min-width: 45px; text-align: center; }
-        /* עבור הליכה - תצוגה בשורה אחת */
-        .h-data-walk { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 1rem; flex-grow: 1; justify-content: flex-start; padding-right: 10px; }
         .h-data { display: flex; gap: 10px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
         
-        /* צבעי ולידציה */
-        .bg-low { background-color: var(--c-low) !important; color: #000; } .bg-norm { background-color: var(--c-norm) !important; }
-        .bg-high { background-color: var(--c-high) !important; color: #000;} .bg-border { background-color: var(--c-border) !important; color: #000;}
-        .bg-danger-custom { background-color: var(--c-danger) !important; color: #000;}
-        body.dark-mode .form-control, body.dark-mode .form-select { background-color: #2c2c2e; border-color: #3a3a3c; color: white; }
-
-        /* iOS Segment & Switch */
+        /* היסטוריה הליכה */
+        .h-walk-container { display: flex; align-items: center; gap: 8px; width: 100%; }
+        .h-walk-val { font-weight: bold; font-size: 1rem; }
+        
+        .bg-danger-custom { background-color: var(--c-danger) !important; color: #ff3b30 !important; font-weight: bold; }
+        
+        /* iOS Segments */
         .ios-segment { background-color: var(--ios-gray); border-radius: 9px; padding: 2px; display: flex; position: relative; width: 100%; height: 36px; }
         .segment-btn { flex: 1; text-align: center; font-size: 0.85rem; font-weight: 500; line-height: 32px; cursor: pointer; z-index: 2; transition: all 0.3s ease; color: var(--text-color); opacity: 0.5; }
         .segment-btn.active { opacity: 1; font-weight: 700; }
@@ -96,6 +90,7 @@
         .form-switch .form-check-input:checked { background-color: #34c759; }
 
         .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
+        audio { display: none; }
     </style>
 </head>
 <body>
@@ -118,10 +113,9 @@
     </div>
 
     <div class="container pt-3">
-        <div id="walk-goal-container" class="d-none">
-            <label class="small text-muted fw-bold mb-1">קביעת יעד חודשי</label>
-            <div class="card shadow-sm border-0 rounded-4 p-3 mb-3" style="background: var(--card-bg);">
-                <div class="row align-items-center">
+        <div id="walk-goal-container" class="d-none mb-3">
+            <div class="card shadow-sm border-0 rounded-4 p-2 px-3" style="background: var(--card-bg);">
+                <div class="row align-items-center g-2">
                     <div class="col-5">
                          <div class="ios-segment">
                              <div id="seg-bg" class="segment-bg segment-left"></div>
@@ -129,32 +123,36 @@
                              <div id="btn-steps" class="segment-btn" onclick="toggleWalkUnit('steps')">צעדים</div>
                          </div>
                     </div>
-                    <div class="col-7">
-                        <input type="number" id="monthly-goal-input" class="form-control text-center fs-5 fw-bold" placeholder="הזן יעד..." oninput="if(this.value.length>6) this.value=this.value.slice(0,6); calcGoalStatus();">
+                    <div class="col-1 text-center"><i class="fas fa-long-arrow-alt-left text-danger"></i></div>
+                    <div class="col-6">
+                        <input type="number" id="monthly-goal-input" class="form-control text-center red-placeholder fw-bold" 
+                               placeholder="קבעו יעד חודשי" 
+                               style="background: transparent; border: none; border-bottom: 1px solid #eee; border-radius: 0;"
+                               oninput="if(this.value.length>6) this.value=this.value.slice(0,6); calcGoalStatus();">
                     </div>
                 </div>
             </div>
-            <div id="goal-status-box" class="goal-card d-none" style="background: #e3f2fd; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #90caf9; color: #0d47a1;"></div>
+            <div id="goal-status-box" class="goal-card d-none mt-2 p-2 rounded-3 text-center border" style="background: #e3f2fd; border-color: #90caf9; color: #0d47a1; font-size: 0.9rem;"></div>
         </div>
 
         <div class="card shadow-sm border-0 rounded-4 p-3 mb-3" style="background: var(--card-bg);">
             <form id="entry-form">
                 <input type="hidden" id="edit-id">
-                <div class="mb-2">
-                    <label class="small text-muted fw-bold">תאריך</label>
-                    <input type="date" id="f-date" class="form-control text-end">
-                </div>
-                <div class="row g-2 align-items-end">
-                    <div class="col-6">
-                        <label class="small text-muted fw-bold">שעת סיום</label>
-                        <input type="time" id="f-end-time" class="form-control text-center">
+                <div class="row g-1 mb-3 align-items-end" id="time-row">
+                    <div class="col-4">
+                        <label class="small text-muted mb-0">תאריך</label>
+                        <input type="date" id="f-date" class="form-control form-control-sm text-center px-0">
                     </div>
-                    <div class="col-6">
-                        <label class="small text-muted fw-bold">שעת התחלה</label>
-                        <input type="time" id="f-time" class="form-control text-center">
+                    <div class="col-4">
+                        <label class="small text-muted mb-0">התחלה</label>
+                        <input type="time" id="f-time" class="form-control form-control-sm text-center px-0">
+                    </div>
+                    <div class="col-4" id="end-time-col">
+                        <label class="small text-muted mb-0">סיום</label>
+                        <input type="time" id="f-end-time" class="form-control form-control-sm text-center px-0">
                     </div>
                 </div>
-                <div id="dynamic-fields" class="mt-3 row g-3"></div>
+                <div id="dynamic-fields" class="mt-2 row g-3"></div>
                 <div class="mt-3 d-flex gap-2">
                     <button type="button" class="btn btn-primary flex-grow-1 py-2 rounded-3" onclick="saveEntry()">שמור</button>
                     <button type="button" id="cancel-edit-btn" class="btn btn-secondary d-none rounded-3" onclick="resetForm()">ביטול</button>
@@ -188,7 +186,7 @@
         
         <div id="now-playing-bar" class="d-none card p-3 mb-3 shadow-sm border-0 bg-dark text-white text-center">
             <div class="small opacity-75">מנגן כעת:</div>
-            <div id="np-name" class="fw-bold fs-5">שם תחנה</div>
+            <div id="np-name" class="fw-bold fs-5"></div>
             <div class="mt-2">
                 <button class="btn btn-light rounded-circle btn-lg" onclick="stopRadio()"><i class="fas fa-stop"></i></button>
             </div>
@@ -279,14 +277,17 @@ const CONFIG = {
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
 
-// רשימת תחנות אמינות יותר (HLS/Direct)
+// רשימת תחנות אמינות יותר (Icecast/HLS)
 const DEFAULT_STATIONS = [
     { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'דיווחי תנועה ומוזיקה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
-    { name: 'כאן 88', freq: '88fm', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
+    { name: 'כאן 88', freq: '88', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
     { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
-    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/gimel_mp3' },
-    { name: 'אקו 99', freq: '99fm', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
-    { name: 'רדיוס', freq: '100fm', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' }
+    { isSeparator: true },
+    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kangimmel_mp3' },
+    { name: 'כאן תרבות', freq: '104', logo: 'ת', desc: 'תרבות ורוח', url: 'https://kanliveicy.media.kan.org.il/icy/kantarbut_mp3' },
+    { name: 'כאן מורשת', freq: '90.5', logo: 'מ', desc: 'מסורת', url: 'https://kanliveicy.media.kan.org.il/icy/kanmoreshet_mp3' },
+    { name: 'אקו 99', freq: '99', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
+    { name: 'רדיוס', freq: '100', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' }
 ];
 
 const FILTERS = [ {l:'7D',d:7}, {l:'1M',d:30}, {l:'3M',d:90}, {l:'6M',d:180}, {l:'1Y',d:365}, {l:'2Y',d:730}, {l:'3Y',d:1095} ];
@@ -337,7 +338,7 @@ function showPage(id, isRadio) {
     window.scrollTo(0,0);
 }
 
-// --- לוגיקת רדיו משופרת ---
+// --- רדיו ---
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
 let isLoading = false;
@@ -348,6 +349,19 @@ function renderRadioList() {
     list.innerHTML = '';
     
     userStations.forEach((s, index) => {
+        if(s.isSeparator) {
+            const sep = document.createElement('div');
+            sep.className = 'radio-separator';
+            sep.innerText = 'מועדפים מעל הקו';
+            if(isEdit) {
+                const moveControls = document.createElement('div');
+                moveControls.innerHTML = `<button class="btn-move me-2" onclick="moveStation(${index}, -1)"><i class="fas fa-chevron-up"></i></button> <button class="btn-move" onclick="moveStation(${index}, 1)"><i class="fas fa-chevron-down"></i></button>`;
+                sep.appendChild(moveControls);
+            }
+            list.appendChild(sep);
+            return;
+        }
+
         const isPlaying = (playingUrl === s.url);
         const row = document.createElement('div');
         row.className = `radio-row ${isPlaying ? 'radio-playing' : ''}`;
@@ -362,24 +376,23 @@ function renderRadioList() {
             `;
         }
 
-        // אייקון כפתור: אם טוען - ספינר, אם מנגן - פוס, אחרת - פליי
         let btnIcon = 'fa-play';
-        if (isPlaying) {
-            btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
-        }
+        if (isPlaying) btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
 
         row.innerHTML = `
-            ${orderBtns}
-            <div class="radio-logo ms-2">${s.logo}</div>
-            <div class="radio-info">
-                <span class="radio-name">${s.name}</span>
-                <span class="radio-freq">(${s.freq})</span>
-            </div>
-            <div class="d-flex">
-                <button class="btn-radio btn-info" onclick="Swal.fire('${s.name}', '${s.desc}', 'info')"><i class="fas fa-info-circle"></i></button>
-                <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')">
-                    <i class="fas ${btnIcon}"></i>
-                </button>
+            <div class="d-flex align-items-center" style="width:100%">
+                ${orderBtns}
+                <div class="radio-logo ms-1">${s.logo}</div>
+                <div class="radio-info ms-2">
+                    <span class="radio-name">${s.name}</span>
+                    <span class="radio-freq">(${s.freq})</span>
+                </div>
+                <div class="d-flex">
+                    <button class="btn-radio btn-info" onclick="Swal.fire('${s.name}', '${s.desc}', 'info')"><i class="fas fa-info-circle"></i></button>
+                    <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')">
+                        <i class="fas ${btnIcon}"></i>
+                    </button>
+                </div>
             </div>
         `;
         list.appendChild(row);
@@ -390,42 +403,25 @@ function togglePlay(url, name) {
     if (playingUrl === url) {
         stopRadio();
     } else {
-        stopRadio(); // עצור קודם אם יש
+        stopRadio(); 
         playingUrl = url;
-        isLoading = true; // התחלת טעינה
-        renderRadioList(); // עדכון לספינר
+        isLoading = true; 
+        renderRadioList(); 
         
         currentAudio.src = url;
         currentAudio.play().catch(e => {
-            console.error("Radio Error", e);
-            isLoading = false;
-            playingUrl = null;
-            Swal.fire('שגיאה', 'לא ניתן לנגן תחנה זו כרגע', 'error');
-            renderRadioList();
+            isLoading = false; playingUrl = null;
+            Swal.fire('שגיאה', 'לא ניתן לנגן', 'error'); renderRadioList();
         });
         
-        // אירועי אודיו
-        currentAudio.onplaying = () => {
-            isLoading = false;
-            document.getElementById('now-playing-bar').classList.remove('d-none');
-            document.getElementById('np-name').innerText = name;
-            renderRadioList(); // עדכון לפוס
-        };
-        
-        currentAudio.onwaiting = () => {
-            isLoading = true;
-            renderRadioList();
-        };
+        currentAudio.onplaying = () => { isLoading = false; document.getElementById('now-playing-bar').classList.remove('d-none'); document.getElementById('np-name').innerText = name; renderRadioList(); };
+        currentAudio.onwaiting = () => { isLoading = true; renderRadioList(); };
     }
 }
 
 function stopRadio() {
-    currentAudio.pause();
-    currentAudio.src = "";
-    playingUrl = null;
-    isLoading = false;
-    document.getElementById('now-playing-bar').classList.add('d-none');
-    renderRadioList();
+    currentAudio.pause(); currentAudio.src = ""; playingUrl = null; isLoading = false;
+    document.getElementById('now-playing-bar').classList.add('d-none'); renderRadioList();
 }
 
 function moveStation(index, direction) {
@@ -448,7 +444,9 @@ function openMetric(key) {
 
     const isWalk = (key === 'walk');
     document.getElementById('walk-goal-container').classList.toggle('d-none', !isWalk);
-    
+    document.getElementById('time-row').classList.toggle('d-none', c.type === 'meds'); 
+    document.getElementById('end-time-col').style.visibility = isWalk ? 'visible' : 'hidden';
+
     if(isWalk) {
         toggleWalkUnit(appSettings.walkUnit || 'km', true); 
         document.getElementById('monthly-goal-input').value = appSettings.walkGoal || '';
@@ -497,8 +495,6 @@ function renderForm(c) {
     const div = document.getElementById('dynamic-fields');
     div.innerHTML = '';
     
-    document.getElementById('f-end-time').parentElement.parentElement.classList.toggle('d-none', c.type === 'meds');
-
     if (c.type === 'meds') {
         div.innerHTML = `
             <div class="col-12"><input type="text" id="inp-med" class="form-control text-end" placeholder="שם התרופה"></div>
@@ -506,45 +502,16 @@ function renderForm(c) {
             <div class="col-6"><select id="inp-time" class="form-select text-end"><option>בוקר</option><option>צהריים</option><option>ערב</option><option>לילה</option></select></div>
         `;
     } else if (c.type === 'walk') {
-        const isKmActive = appSettings.walkUnit === 'km';
-        let kmOpts = '<option value="">בחר מרחק...</option>';
-        for(let i=0.5; i<=15; i+=0.5) kmOpts += `<option value="${i}">${i} ק"מ</option>`;
-        
-        div.innerHTML = `
-            <div class="col-6" style="opacity: ${isKmActive ? 1 : 0.4}">
-                <label class="small text-muted fw-bold">מרחק (ק"מ)</label>
-                <select id="walk-dist" class="form-select text-center" onchange="syncStepsToDist()" ${!isKmActive ? 'disabled' : ''}>${kmOpts}</select>
-            </div>
-            <div class="col-6" style="opacity: ${!isKmActive ? 1 : 0.4}">
-                 <label class="small text-muted fw-bold">צעדים (משוער)</label>
-                 <input type="number" id="walk-steps" class="form-control text-center" placeholder="הזן צעדים" oninput="if(this.value.length>6) this.value=this.value.slice(0,6); syncDistToSteps()" ${isKmActive ? 'readonly' : ''}>
-            </div>
-        `;
+        const isSteps = appSettings.walkUnit === 'steps';
+        if (isSteps) {
+             div.innerHTML = `<div class="col-12"><label class="small text-muted fw-bold">צעדים</label><input type="number" id="walk-val" class="form-control text-center" placeholder="הזן צעדים"></div>`;
+        } else {
+             div.innerHTML = `<div class="col-12"><label class="small text-muted fw-bold">מרחק (ק"מ)</label><input type="number" id="walk-val" class="form-control text-center" placeholder="הזן מרחק"></div>`;
+        }
     } else {
         c.fields.forEach(f => {
             div.innerHTML += `<div class="col-12"><label class="small text-muted fw-bold">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg text-end" placeholder="${f.min}-${f.max}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
         });
-    }
-}
-
-function syncStepsToDist() {
-    const dist = parseFloat(document.getElementById('walk-dist').value);
-    if (!isNaN(dist)) document.getElementById('walk-steps').value = Math.round(dist * STEPS_PER_KM);
-    else document.getElementById('walk-steps').value = '';
-}
-
-function syncDistToSteps() {
-    const steps = parseFloat(document.getElementById('walk-steps').value);
-    const select = document.getElementById('walk-dist');
-    if (!isNaN(steps) && steps > 0) {
-        const calcDist = steps / STEPS_PER_KM;
-        let closest = 0.5;
-        let minDiff = Infinity;
-        for(let i=0.5; i<=15; i+=0.5) {
-            let diff = Math.abs(calcDist - i);
-            if(diff < minDiff) { minDiff = diff; closest = i; }
-        }
-        select.value = closest;
     }
 }
 
@@ -564,14 +531,12 @@ function calcGoalStatus() {
     
     const monthWalks = db.filter(e => {
         if (e.metric !== 'walk') return false;
+        if (e.unit !== unit) return false; 
         const d = new Date(e.date);
         return d.getMonth() === currentMonth && d.getFullYear() === now.getFullYear();
     });
 
-    let total = 0;
-    if (unit === 'km') total = monthWalks.reduce((sum, e) => sum + (parseFloat(e.val) || 0), 0);
-    else total = monthWalks.reduce((sum, e) => sum + (parseInt(e.steps) || 0), 0);
-
+    const total = monthWalks.reduce((sum, e) => sum + (parseFloat(e.val) || 0), 0);
     const remaining = goal - total;
     const daysInMonth = new Date(now.getFullYear(), currentMonth + 1, 0).getDate();
     const daysLeft = daysInMonth - now.getDate() + 1;
@@ -607,18 +572,16 @@ function saveEntry() {
         entry.takeTime = document.getElementById('inp-time').value;
         if (!entry.med) isValid = false;
     } else if (c.type === 'walk') {
-        const dist = document.getElementById('walk-dist').value;
-        const steps = document.getElementById('walk-steps').value;
+        const val = document.getElementById('walk-val').value;
         const endTime = document.getElementById('f-end-time').value;
-        if (!dist && !steps) isValid = false;
-        entry.val = parseFloat(dist); 
-        entry.steps = parseInt(steps);
+        if (!val) isValid = false;
+        entry.val = parseFloat(val);
+        entry.unit = appSettings.walkUnit; 
         entry.endTime = endTime; 
     } else {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
             const val = parseFloat(el.value);
-            // בדיקת תקינות קשיחה!
             if (isNaN(val) || val === '') { isValid = false; errorMessage = "מספר לא תקין"; }
             if (val < f.min || val > f.max) { isValid = false; errorMessage = `${f.label} חורג מהטווח המותר (${f.min}-${f.max})`; }
             entry[f.id] = val;
@@ -653,6 +616,10 @@ function getFilteredData() {
     let filtered = db.filter(e => e.metric === currentMetric);
     if (filtered.length === 0) return [];
     
+    if (currentMetric === 'walk') {
+        filtered = filtered.filter(e => e.unit === appSettings.walkUnit);
+    }
+
     const days = currentFilterDays || 7;
     const dates = filtered.map(e => new Date(e.date).getTime());
     const lastDate = new Date(Math.max.apply(null, dates));
@@ -678,27 +645,28 @@ function renderHistory() {
         if (c.type === 'meds') {
             contentStr = `<div class="d-flex align-items-center gap-2"><i class="fas fa-pills small"></i><span>${item.med} ${item.mg?item.mg:''} (${item.takeTime})</span></div>`;
         } else if (c.type === 'walk') {
-            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : item.time;
-            // הליכה: שורה אחת קומפקטית
+            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : '';
+            const unitLabel = item.unit === 'km' ? 'km' : '';
+            const icon = item.unit === 'km' ? '' : '<i class="fas fa-shoe-prints"></i>';
+            // הליכה: שורה אחת קומפקטית מאוד
             return `
             <div class="history-row" style="border-right-color: ${c.color}">
-                <div class="h-meta"><div>${dateStr}</div></div>
-                <div class="h-data-walk">
-                     <span class="text-primary small" style="min-width:70px">${timeRange}</span>
-                     <span>${item.val} km</span>
-                     <span class="text-muted small d-flex align-items-center"><i class="fas fa-shoe-prints mx-1"></i> ${item.steps}</span>
+                <div class="h-meta text-center"><div>${dateStr}</div></div>
+                <div class="h-walk-container">
+                     <span class="text-muted small">${item.time} ${timeRange ? '-'+item.endTime : ''}</span>
+                     <div class="flex-grow-1 border-bottom border-secondary opacity-25 mx-2"></div>
+                     <span class="h-walk-val">${item.val} ${unitLabel} ${icon}</span>
                 </div>
-                <div class="h-actions d-flex gap-1">
-                    <i class="fas fa-pencil-alt icon-edit p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
-                    <i class="fas fa-trash icon-trash p-2" onclick="deleteEntry(${item.id})"></i>
+                <div class="h-actions ms-2">
+                    <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
                 </div>
             </div>`;
         } else {
             contentStr = c.fields.map(f => {
                 const val = item[f.id];
-                if (f.id === 'sys' || f.id === 'val') { 
-                     if (f.ranges && val > f.ranges.extreme) rowColor = 'bg-danger-custom'; 
-                     else if (f.ranges && val < f.ranges.low) rowColor = 'bg-low';
+                if ((f.id === 'sys' || f.id === 'val') && f.ranges) { 
+                     if (val > f.ranges.extreme || val < f.ranges.low) rowColor = 'bg-danger-custom'; 
                 }
                 let iconClass = '';
                 if (f.icon === 'fa-arrow-up') iconClass = 'icon-up';
@@ -712,8 +680,8 @@ function renderHistory() {
                 <div class="h-meta text-center"><div>${dateStr}</div><div>${item.time}</div></div>
                 <div class="h-data">${contentStr}</div>
                 <div class="h-actions">
-                    <i class="fas fa-pencil-alt icon-edit p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
-                    <i class="fas fa-trash icon-trash p-2" onclick="deleteEntry(${item.id})"></i>
+                    <i class="fas fa-pencil-alt text-warning p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash text-secondary p-2" onclick="deleteEntry(${item.id})"></i>
                 </div>
             </div>`;
         }
@@ -731,8 +699,7 @@ function editEntry(item) {
         document.getElementById('inp-mg').value = item.mg;
         document.getElementById('inp-time').value = item.takeTime;
     } else if (c.type === 'walk') {
-        document.getElementById('walk-dist').value = item.val;
-        document.getElementById('walk-steps').value = item.steps;
+        document.getElementById('walk-val').value = item.val;
     } else {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
@@ -760,9 +727,6 @@ function resetForm() {
     document.getElementById('edit-id').value = '';
     setDateTimeNow();
     document.getElementById('cancel-edit-btn').classList.add('d-none');
-    document.querySelectorAll('.form-control').forEach(el => {
-         if(!el.id.includes('monthly')) el.className = 'form-control text-end'; 
-    });
 }
 
 function validateInput(el, min, max, metricKey, fieldId) {
@@ -771,11 +735,9 @@ function validateInput(el, min, max, metricKey, fieldId) {
     if (isNaN(val)) return;
     const ranges = CONFIG[metricKey].fields.find(f => f.id === fieldId).ranges;
     if (ranges) {
-        if (val < ranges.low) el.classList.add('bg-low');
+        if (val < ranges.low || val > ranges.extreme) el.classList.add('bg-danger-custom'); 
         else if (val <= ranges.high) el.classList.add('bg-norm');
-        else if (val <= ranges.border) el.classList.add('bg-high');
-        else if (val <= ranges.extreme) el.classList.add('bg-border');
-        else el.classList.add('bg-danger-custom');
+        else el.classList.add('bg-high'); 
     }
 }
 
@@ -802,9 +764,7 @@ function updateChart() {
             { label: 'דופק', data: rawData.map(i => i.pulse), borderColor: '#ff3b30', borderDash: [5, 5], tension: 0.3 }
         ];
     } else if (currentMetric === 'walk') {
-         const isSteps = appSettings.walkUnit === 'steps';
-         const data = rawData.map(i => isSteps ? i.steps : i.val);
-         datasets = [{ label: isSteps ? 'צעדים' : 'ק"מ', data: data, borderColor: c.color, backgroundColor: c.color+'20', fill: true }];
+         datasets = [{ label: appSettings.walkUnit, data: rawData.map(i => i.val), borderColor: c.color, backgroundColor: c.color+'20', fill: true }];
     } else {
         const field = c.fields[0];
         datasets = [{ label: field.label, data: rawData.map(i => i.val), borderColor: c.color, backgroundColor: c.color+'20', fill: true }];
@@ -820,7 +780,7 @@ function exportTopicExcel() {
     filtered.forEach(i => {
         let val = '';
         if(c.type==='meds') val = `${i.med} ${i.mg} (${i.takeTime})`;
-        else if(c.type==='walk') val = `${i.val} km (${i.steps} steps)`;
+        else if(c.type==='walk') val = `${i.val} ${i.unit}`;
         else val = c.fields.map(f=>`${f.label}:${i[f.id]}`).join(' ');
         csv += `${i.date},${i.time},${c.name},"${val}"\n`;
     });
