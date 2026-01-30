@@ -39,30 +39,39 @@
         .metric-card i { font-size: 2rem; margin-bottom: 8px; }
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
-        /* רדיו - עיצוב קומפקטי */
+        /* רדיו - עיצוב חדש */
         .radio-row {
-            background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px;
+            background: var(--card-bg); border-radius: 12px; padding: 10px; margin-bottom: 8px;
             display: flex; align-items: center; justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s;
         }
         .radio-playing { border: 2px solid #34c759; background-color: #f0fff4; }
-        .radio-logo { width: 32px; height: 32px; border-radius: 6px; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; font-size: 0.7rem; flex-shrink: 0; }
-        .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
-        .radio-name { font-weight: bold; font-size: 0.95rem; }
+        body.dark-mode .radio-playing { background-color: #052e16; }
+        
+        .radio-logo { width: 35px; height: 35px; border-radius: 8px; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; font-size: 0.75rem; flex-shrink: 0; }
+        .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+        .radio-name { font-weight: bold; font-size: 1rem; }
         .radio-freq { font-size: 0.8rem; color: #888; }
         
-        .btn-radio { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; transition: all 0.2s; }
+        .btn-radio { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; transition: all 0.2s; }
         .btn-play { background: #e9e9ea; color: #000; }
         .btn-play.playing { background: #34c759; color: white; }
-        .btn-info { background: transparent; color: #007aff; font-size: 1rem; }
+        .btn-info { background: transparent; color: #007aff; font-size: 1.1rem; }
         
-        .order-controls { display: flex; flex-direction: column; margin-left: 8px; }
-        .btn-move { background: transparent; border: none; color: #8e8e93; padding: 0; font-size: 0.8rem; line-height: 1; }
+        /* כוכב מועדפים */
+        .btn-star { background: transparent; border: none; font-size: 1.3rem; color: #d1d1d6; padding: 0 8px; cursor: pointer; transition: transform 0.2s; }
+        .btn-star.active { color: #ffc107; transform: scale(1.1); }
         
-        .radio-separator {
-            height: 2px; background: linear-gradient(90deg, transparent, #ffc107, transparent);
-            margin: 8px 0; text-align: center; font-size: 0.7rem; color: #ffc107; font-weight: bold; letter-spacing: 1px;
+        /* קו הפרדה למועדפים */
+        .fav-separator {
+            display: flex; align-items: center; text-align: center; color: #8e8e93; font-size: 0.75rem; margin: 15px 0; font-weight: 600;
         }
+        .fav-separator::before, .fav-separator::after {
+            content: ''; flex: 1; border-bottom: 1px solid #e5e5ea;
+        }
+        .fav-separator::before { margin-left: .5em; }
+        .fav-separator::after { margin-right: .5em; }
+        body.dark-mode .fav-separator::before, body.dark-mode .fav-separator::after { border-color: #38383a; }
 
         /* כללי */
         .app-page { display: none; animation: fadeIn 0.2s; } .app-page.active { display: block; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -72,8 +81,6 @@
         .history-row { background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.1; min-width: 45px; text-align: center; }
         .h-data { display: flex; gap: 10px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
-        
-        /* היסטוריה הליכה */
         .h-walk-container { display: flex; align-items: center; gap: 8px; width: 100%; }
         .h-walk-val { font-weight: bold; font-size: 1rem; }
         
@@ -193,18 +200,6 @@
         </div>
 
         <div id="radio-list"></div>
-
-        <div class="mt-4 p-3 card border-0 shadow-sm" style="background: var(--card-bg);">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="fas fa-sort text-secondary"></i>
-                    <span class="fw-bold">שנה סדר תחנות</span>
-                </div>
-                <div class="form-check form-switch m-0">
-                    <input class="form-check-input" type="checkbox" id="toggle-edit-radio" onchange="renderRadioList()">
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -258,6 +253,18 @@
 </div>
 
 <script>
+// --- כאן מגדירים את תחנות הרדיו ---
+// *** ערוך קישורים כאן ***
+const DEFAULT_STATIONS = [
+    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
+    { name: 'כאן 88', freq: '88fm', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
+    { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
+    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/gimel_mp3' },
+    { name: 'אקו 99', freq: '99fm', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
+    { name: 'רדיוס', freq: '100fm', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' },
+    { name: 'כאן תרבות', freq: '104', logo: 'ת', desc: 'תרבות', url: 'https://kanliveicy.media.kan.org.il/icy/kantarbut_mp3' }
+];
+
 const CONFIG = {
     bp: { name: 'לחץ דם ודופק', icon: 'fa-heart-pulse', color: '#ff3b30', 
           fields: [
@@ -277,26 +284,15 @@ const CONFIG = {
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
 
-// רשימת תחנות אמינות יותר (Icecast/HLS)
-const DEFAULT_STATIONS = [
-    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'דיווחי תנועה ומוזיקה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
-    { name: 'כאן 88', freq: '88', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
-    { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
-    { isSeparator: true },
-    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kangimmel_mp3' },
-    { name: 'כאן תרבות', freq: '104', logo: 'ת', desc: 'תרבות ורוח', url: 'https://kanliveicy.media.kan.org.il/icy/kantarbut_mp3' },
-    { name: 'כאן מורשת', freq: '90.5', logo: 'מ', desc: 'מסורת', url: 'https://kanliveicy.media.kan.org.il/icy/kanmoreshet_mp3' },
-    { name: 'אקו 99', freq: '99', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
-    { name: 'רדיוס', freq: '100', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' }
-];
-
 const FILTERS = [ {l:'7D',d:7}, {l:'1M',d:30}, {l:'3M',d:90}, {l:'6M',d:180}, {l:'1Y',d:365}, {l:'2Y',d:730}, {l:'3Y',d:1095} ];
 const MY_PHONE = "972500000000"; 
 let currentMetric = null;
 let currentFilterDays = 0; 
 let chartInstance = null;
 let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": "", "walkUnit": "km"}');
-let userStations = JSON.parse(localStorage.getItem('userStations')) || DEFAULT_STATIONS;
+// מיזוג שמורות עם ברירת מחדל כדי להחיל שינויים
+let savedStations = JSON.parse(localStorage.getItem('userStations'));
+let userStations = savedStations && savedStations.length > 0 ? savedStations : DEFAULT_STATIONS;
 const STEPS_PER_KM = 1312;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -338,65 +334,75 @@ function showPage(id, isRadio) {
     window.scrollTo(0,0);
 }
 
-// --- רדיו ---
+// --- לוגיקת רדיו מועדפים ---
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
 let isLoading = false;
 
 function renderRadioList() {
     const list = document.getElementById('radio-list');
-    const isEdit = document.getElementById('toggle-edit-radio').checked;
     list.innerHTML = '';
     
-    userStations.forEach((s, index) => {
-        if(s.isSeparator) {
+    // מיון: מועדפים קודם
+    const favorites = userStations.filter(s => s.isFavorite);
+    const others = userStations.filter(s => !s.isFavorite);
+    
+    // רנדור מועדפים
+    if(favorites.length > 0) {
+        favorites.forEach((s) => list.appendChild(createRadioRow(s)));
+        // קו הפרדה
+        if(others.length > 0) {
             const sep = document.createElement('div');
-            sep.className = 'radio-separator';
-            sep.innerText = 'מועדפים מעל הקו';
-            if(isEdit) {
-                const moveControls = document.createElement('div');
-                moveControls.innerHTML = `<button class="btn-move me-2" onclick="moveStation(${index}, -1)"><i class="fas fa-chevron-up"></i></button> <button class="btn-move" onclick="moveStation(${index}, 1)"><i class="fas fa-chevron-down"></i></button>`;
-                sep.appendChild(moveControls);
-            }
+            sep.className = 'fav-separator';
+            sep.innerHTML = 'מועדפים';
             list.appendChild(sep);
-            return;
         }
+    }
+    
+    // רנדור השאר
+    others.forEach((s) => list.appendChild(createRadioRow(s)));
+}
 
-        const isPlaying = (playingUrl === s.url);
-        const row = document.createElement('div');
-        row.className = `radio-row ${isPlaying ? 'radio-playing' : ''}`;
-        
-        let orderBtns = '';
-        if(isEdit) {
-            orderBtns = `
-                <div class="order-controls me-2">
-                    <button class="btn-move" onclick="moveStation(${index}, -1)" ${index===0?'disabled':''}><i class="fas fa-chevron-up"></i></button>
-                    <button class="btn-move" onclick="moveStation(${index}, 1)" ${index===userStations.length-1?'disabled':''}><i class="fas fa-chevron-down"></i></button>
-                </div>
-            `;
-        }
+function createRadioRow(s) {
+    const isPlaying = (playingUrl === s.url);
+    const row = document.createElement('div');
+    row.className = `radio-row ${isPlaying ? 'radio-playing' : ''}`;
+    
+    let btnIcon = 'fa-play';
+    if (isPlaying) btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
+    
+    // אייקון כוכב
+    const starIcon = s.isFavorite ? 'fas fa-star' : 'far fa-star';
+    const starClass = s.isFavorite ? 'active' : '';
 
-        let btnIcon = 'fa-play';
-        if (isPlaying) btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
-
-        row.innerHTML = `
-            <div class="d-flex align-items-center" style="width:100%">
-                ${orderBtns}
-                <div class="radio-logo ms-1">${s.logo}</div>
-                <div class="radio-info ms-2">
-                    <span class="radio-name">${s.name}</span>
-                    <span class="radio-freq">(${s.freq})</span>
-                </div>
-                <div class="d-flex">
-                    <button class="btn-radio btn-info" onclick="Swal.fire('${s.name}', '${s.desc}', 'info')"><i class="fas fa-info-circle"></i></button>
-                    <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')">
-                        <i class="fas ${btnIcon}"></i>
-                    </button>
-                </div>
+    row.innerHTML = `
+        <div class="d-flex align-items-center" style="width:100%">
+            <button class="btn-star ${starClass}" onclick="toggleFavorite('${s.name}')">
+                <i class="${starIcon}"></i>
+            </button>
+            <div class="radio-logo ms-2">${s.logo}</div>
+            <div class="radio-info ms-2">
+                <span class="radio-name">${s.name}</span>
+                <span class="radio-freq">(${s.freq})</span>
             </div>
-        `;
-        list.appendChild(row);
-    });
+            <div class="d-flex">
+                <button class="btn-radio btn-info" onclick="Swal.fire('${s.name}', '${s.desc}', 'info')"><i class="fas fa-info-circle"></i></button>
+                <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')">
+                    <i class="fas ${btnIcon}"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    return row;
+}
+
+function toggleFavorite(stationName) {
+    const idx = userStations.findIndex(s => s.name === stationName);
+    if(idx !== -1) {
+        userStations[idx].isFavorite = !userStations[idx].isFavorite;
+        localStorage.setItem('userStations', JSON.stringify(userStations));
+        renderRadioList();
+    }
 }
 
 function togglePlay(url, name) {
@@ -411,7 +417,7 @@ function togglePlay(url, name) {
         currentAudio.src = url;
         currentAudio.play().catch(e => {
             isLoading = false; playingUrl = null;
-            Swal.fire('שגיאה', 'לא ניתן לנגן', 'error'); renderRadioList();
+            Swal.fire('שגיאה', 'לא ניתן לנגן כרגע', 'error'); renderRadioList();
         });
         
         currentAudio.onplaying = () => { isLoading = false; document.getElementById('now-playing-bar').classList.remove('d-none'); document.getElementById('np-name').innerText = name; renderRadioList(); };
@@ -422,17 +428,6 @@ function togglePlay(url, name) {
 function stopRadio() {
     currentAudio.pause(); currentAudio.src = ""; playingUrl = null; isLoading = false;
     document.getElementById('now-playing-bar').classList.add('d-none'); renderRadioList();
-}
-
-function moveStation(index, direction) {
-    const newIndex = index + direction;
-    if (newIndex >= 0 && newIndex < userStations.length) {
-        const temp = userStations[index];
-        userStations[index] = userStations[newIndex];
-        userStations[newIndex] = temp;
-        localStorage.setItem('userStations', JSON.stringify(userStations));
-        renderRadioList();
-    }
 }
 
 function openMetric(key) {
@@ -645,15 +640,14 @@ function renderHistory() {
         if (c.type === 'meds') {
             contentStr = `<div class="d-flex align-items-center gap-2"><i class="fas fa-pills small"></i><span>${item.med} ${item.mg?item.mg:''} (${item.takeTime})</span></div>`;
         } else if (c.type === 'walk') {
-            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : '';
+            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : item.time;
             const unitLabel = item.unit === 'km' ? 'km' : '';
             const icon = item.unit === 'km' ? '' : '<i class="fas fa-shoe-prints"></i>';
-            // הליכה: שורה אחת קומפקטית מאוד
             return `
             <div class="history-row" style="border-right-color: ${c.color}">
                 <div class="h-meta text-center"><div>${dateStr}</div></div>
                 <div class="h-walk-container">
-                     <span class="text-muted small">${item.time} ${timeRange ? '-'+item.endTime : ''}</span>
+                     <span class="text-muted small">${timeRange}</span>
                      <div class="flex-grow-1 border-bottom border-secondary opacity-25 mx-2"></div>
                      <span class="h-walk-val">${item.val} ${unitLabel} ${icon}</span>
                 </div>
