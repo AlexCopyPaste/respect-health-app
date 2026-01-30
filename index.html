@@ -39,39 +39,34 @@
         .metric-card i { font-size: 2rem; margin-bottom: 8px; }
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
-        /* רדיו - עיצוב חדש */
+        /* רדיו */
         .radio-row {
-            background: var(--card-bg); border-radius: 12px; padding: 10px; margin-bottom: 8px;
+            background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px;
             display: flex; align-items: center; justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s;
         }
         .radio-playing { border: 2px solid #34c759; background-color: #f0fff4; }
         body.dark-mode .radio-playing { background-color: #052e16; }
         
-        .radio-logo { width: 35px; height: 35px; border-radius: 8px; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; font-size: 0.75rem; flex-shrink: 0; }
-        .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
-        .radio-name { font-weight: bold; font-size: 1rem; }
+        .radio-logo { width: 32px; height: 32px; border-radius: 6px; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; font-size: 0.7rem; flex-shrink: 0; }
+        .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+        .radio-name { font-weight: bold; font-size: 0.95rem; }
         .radio-freq { font-size: 0.8rem; color: #888; }
         
-        .btn-radio { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; transition: all 0.2s; }
+        .btn-radio { width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; transition: all 0.2s; }
         .btn-play { background: #e9e9ea; color: #000; }
         .btn-play.playing { background: #34c759; color: white; }
-        .btn-info { background: transparent; color: #007aff; font-size: 1.1rem; }
+        .btn-info { background: transparent; color: #007aff; font-size: 1rem; }
         
-        /* כוכב מועדפים */
         .btn-star { background: transparent; border: none; font-size: 1.3rem; color: #d1d1d6; padding: 0 8px; cursor: pointer; transition: transform 0.2s; }
         .btn-star.active { color: #ffc107; transform: scale(1.1); }
         
-        /* קו הפרדה למועדפים */
-        .fav-separator {
-            display: flex; align-items: center; text-align: center; color: #8e8e93; font-size: 0.75rem; margin: 15px 0; font-weight: 600;
+        .radio-separator {
+            height: 2px; background: linear-gradient(90deg, transparent, #e5e5ea, transparent);
+            margin: 15px 0 5px; text-align: center; font-size: 0.75rem; color: #8e8e93; font-weight: 600; letter-spacing: 1px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .fav-separator::before, .fav-separator::after {
-            content: ''; flex: 1; border-bottom: 1px solid #e5e5ea;
-        }
-        .fav-separator::before { margin-left: .5em; }
-        .fav-separator::after { margin-right: .5em; }
-        body.dark-mode .fav-separator::before, body.dark-mode .fav-separator::after { border-color: #38383a; }
+        .radio-separator span { background: var(--main-bg); padding: 0 10px; }
 
         /* כללי */
         .app-page { display: none; animation: fadeIn 0.2s; } .app-page.active { display: block; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -246,23 +241,32 @@
                 <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="toggle-reset-data" onchange="handleResetToggle()"></div>
             </div>
         </div>
-        <div class="mt-3 px-2">
-             <input type="text" id="doctor-name" class="form-control border-0 bg-transparent p-0 fw-bold text-end" placeholder="שם הרופא (אופציונלי)..." onchange="saveDocName()">
+        <div class="text-center mt-4 text-muted small fw-bold" style="opacity: 0.5;">
+             גרסה 16.0
         </div>
     </div>
 </div>
 
 <script>
 // --- כאן מגדירים את תחנות הרדיו ---
-// *** ערוך קישורים כאן ***
 const DEFAULT_STATIONS = [
-    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
-    { name: 'כאן 88', freq: '88fm', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
-    { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
-    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/gimel_mp3' },
+    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'דיווחי תנועה ומוזיקה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
     { name: 'אקו 99', freq: '99fm', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
-    { name: 'רדיוס', freq: '100fm', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' },
-    { name: 'כאן תרבות', freq: '104', logo: 'ת', desc: 'תרבות', url: 'https://kanliveicy.media.kan.org.il/icy/kantarbut_mp3' }
+    { name: 'כאן 88', freq: '88', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
+    { name: 'רדיוס', freq: '100', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' },
+    
+    // מפריד קטגוריה
+    { isSeparator: true, label: 'חדשות ודיבורים' },
+    { name: 'רשת ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
+    { name: 'גל"צ', freq: '96.6', logo: 'גלצ', desc: 'חדשות וצבא', url: 'https://glzwizzlv.bynetcdn.com/glz_mp3' },
+    { name: '103FM', freq: '103', logo: '103', desc: 'רדיו ללא הפסקה', url: 'https://radio103.icast.co.il/stream' },
+    { name: 'כאן מורשת', freq: '90.5', logo: 'מ', desc: 'מסורת', url: 'https://kanliveicy.media.kan.org.il/icy/kanmoreshet_mp3' },
+    
+    // מפריד ספיישלים
+    { isSeparator: true, label: 'ספיישלים ופודקאסטים' },
+    { name: 'כאן 80s', freq: 'WEB', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
+    { name: 'כאן נוסטלגיה', freq: 'WEB', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
+    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kangimmel_mp3' }
 ];
 
 const CONFIG = {
@@ -290,7 +294,7 @@ let currentMetric = null;
 let currentFilterDays = 0; 
 let chartInstance = null;
 let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": "", "walkUnit": "km"}');
-// מיזוג שמורות עם ברירת מחדל כדי להחיל שינויים
+// מיזוג שמורות עם ברירת מחדל
 let savedStations = JSON.parse(localStorage.getItem('userStations'));
 let userStations = savedStations && savedStations.length > 0 ? savedStations : DEFAULT_STATIONS;
 const STEPS_PER_KM = 1312;
@@ -300,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
     applySettings();
     document.getElementById('wa-link').href = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent("המלצה לאפליקציה:")}`;
     setDateTimeNow();
-    document.getElementById('doctor-name').value = appSettings.docName || "";
 });
 
 function setDateTimeNow() {
@@ -334,7 +337,7 @@ function showPage(id, isRadio) {
     window.scrollTo(0,0);
 }
 
-// --- לוגיקת רדיו מועדפים ---
+// --- לוגיקת רדיו מועדפים משופרת ---
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
 let isLoading = false;
@@ -344,23 +347,29 @@ function renderRadioList() {
     list.innerHTML = '';
     
     // מיון: מועדפים קודם
-    const favorites = userStations.filter(s => s.isFavorite);
+    const favorites = userStations.filter(s => s.isFavorite && !s.isSeparator);
     const others = userStations.filter(s => !s.isFavorite);
     
     // רנדור מועדפים
     if(favorites.length > 0) {
         favorites.forEach((s) => list.appendChild(createRadioRow(s)));
-        // קו הפרדה
-        if(others.length > 0) {
-            const sep = document.createElement('div');
-            sep.className = 'fav-separator';
-            sep.innerHTML = 'מועדפים';
-            list.appendChild(sep);
-        }
+        const sep = document.createElement('div');
+        sep.className = 'radio-separator';
+        sep.innerHTML = '<span>מועדפים</span>';
+        list.appendChild(sep);
     }
     
-    // רנדור השאר
-    others.forEach((s) => list.appendChild(createRadioRow(s)));
+    // רנדור השאר עם הפרדות קטגוריה
+    others.forEach((s) => {
+        if(s.isSeparator) {
+            const sep = document.createElement('div');
+            sep.className = 'radio-separator';
+            sep.innerHTML = `<span>${s.label || '---'}</span>`;
+            list.appendChild(sep);
+        } else {
+            list.appendChild(createRadioRow(s));
+        }
+    });
 }
 
 function createRadioRow(s) {
