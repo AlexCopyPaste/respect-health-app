@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root {
             --main-bg: #f2f2f7; --card-bg: #ffffff; --text-color: #000000; --border-color: #e5e5ea;
@@ -38,9 +39,9 @@
         .metric-card i { font-size: 2rem; margin-bottom: 8px; }
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
-        /* רדיו - עיצוב שורות */
+        /* רדיו - עיצוב שורות קומפקטי */
         .radio-row {
-            background: var(--card-bg); border-radius: 12px; padding: 10px; margin-bottom: 8px;
+            background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 8px;
             display: flex; align-items: center; justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s;
         }
@@ -48,24 +49,21 @@
         body.dark-mode .radio-playing { background-color: #052e16; }
         
         .radio-logo { 
-            width: 40px; height: 40px; border-radius: 8px; background: #eee; 
+            width: 35px; height: 35px; border-radius: 8px; background: #eee; 
             display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555;
-            font-size: 0.8rem;
+            font-size: 0.75rem; flex-shrink: 0;
         }
-        .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; }
-        .radio-name { font-weight: bold; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .radio-freq { font-size: 0.75rem; color: #888; }
+        .radio-info { flex-grow: 1; margin-right: 10px; overflow: hidden; white-space: nowrap; display: flex; align-items: baseline; gap: 8px; }
+        .radio-name { font-weight: bold; font-size: 1rem; }
+        .radio-freq { font-size: 0.8rem; color: #888; }
         
-        /* כפתורי שליטה רדיו */
-        .btn-radio { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; }
+        .btn-radio { width: 35px; height: 35px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; margin-left: 5px; transition: all 0.2s; }
         .btn-play { background: #e9e9ea; color: #000; }
         .btn-play.playing { background: #34c759; color: white; }
-        .btn-info { background: transparent; color: #007aff; font-size: 1.2rem; }
+        .btn-info { background: transparent; color: #007aff; font-size: 1.1rem; }
         
-        /* אזור עריכת סדר */
-        .order-controls { display: flex; flex-direction: column; gap: 2px; margin-left: 5px; }
-        .btn-move { background: transparent; border: none; color: #8e8e93; padding: 2px; font-size: 1rem; }
-        .btn-move:active { color: var(--primary-color); }
+        .order-controls { display: flex; flex-direction: column; gap: 0; margin-left: 5px; }
+        .btn-move { background: transparent; border: none; color: #8e8e93; padding: 0; font-size: 0.9rem; line-height: 1; }
 
         /* נגן מוסתר */
         audio { display: none; }
@@ -74,10 +72,12 @@
         .app-page { display: none; animation: fadeIn 0.2s; } .app-page.active { display: block; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .page-header { padding: 15px 20px; border-radius: 0 0 25px 25px; color: white; margin-bottom: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* היסטוריה וכרטיסים */
-        .history-row { background: var(--card-bg); border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.2; min-width: 50px; text-align: center; }
-        .h-data { display: flex; gap: 12px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
+        /* היסטוריה קומפקטית */
+        .history-row { background: var(--card-bg); border-radius: 12px; padding: 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.1; min-width: 45px; text-align: center; }
+        /* עבור הליכה - תצוגה בשורה אחת */
+        .h-data-walk { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 1rem; flex-grow: 1; justify-content: flex-start; padding-right: 10px; }
+        .h-data { display: flex; gap: 10px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
         
         /* צבעי ולידציה */
         .bg-low { background-color: var(--c-low) !important; color: #000; } .bg-norm { background-color: var(--c-norm) !important; }
@@ -92,10 +92,9 @@
         .segment-bg { position: absolute; top: 2px; bottom: 2px; width: 50%; background-color: var(--card-bg); border-radius: 7px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.3s ease; z-index: 1; }
         .segment-left { transform: translateX(0); }
         [dir="rtl"] .segment-right { transform: translateX(-100%); }
-        .form-switch .form-check-input { width: 3.2em; height: 1.8em; cursor: pointer; background-color: #e9e9ea; border: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e"); }
+        .form-switch .form-check-input { width: 3.2em; height: 1.8em; flex-shrink: 0; cursor: pointer; background-color: #e9e9ea; border: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e"); }
         .form-switch .form-check-input:checked { background-color: #34c759; }
 
-        /* וואטסאפ מוקטן */
         .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
     </style>
 </head>
@@ -211,32 +210,6 @@
     </div>
 </div>
 
-<div id="news-page" class="app-page">
-    <div class="page-header" style="background-color: #d32f2f;">
-        <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-link text-white p-0" onclick="showPage('home-page')"><i class="fas fa-chevron-right fs-2"></i></button>
-            <h3 class="m-0 fw-bold">מוקד חדשות</h3>
-            <div style="width: 30px;"></div>
-        </div>
-    </div>
-    <div class="container text-center pt-5">
-        <i class="fas fa-newspaper text-secondary mb-3" style="font-size: 3rem;"></i>
-        <p class="mb-4">עבור למקורות המידע המועדפים עליך בלחיצת כפתור:</p>
-        <div class="d-grid gap-3">
-            <a href="https://www.ynet.co.il/news/category/184" target="_blank" class="btn btn-outline-dark btn-lg py-3 rounded-4 shadow-sm fw-bold">
-                <span class="text-danger">Ynet</span> מבזקים
-            </a>
-            <a href="https://www.mako.co.il/news-israel?partner=online" target="_blank" class="btn btn-outline-dark btn-lg py-3 rounded-4 shadow-sm fw-bold">
-                <span style="color:#6f42c1">N12</span> חדשות
-            </a>
-            <a href="https://t.me/abualiexpress" target="_blank" class="btn btn-outline-dark btn-lg py-3 rounded-4 shadow-sm fw-bold">
-                <i class="fab fa-telegram text-primary"></i> אבו עלי אקספרס
-            </a>
-        </div>
-        <p class="mt-5 small text-muted">המעבר יפתח חלון חדש בדפדפן</p>
-    </div>
-</div>
-
 <div id="graph-page" class="app-page">
     <div id="graph-header" class="page-header">
         <div class="d-flex justify-content-between align-items-center">
@@ -303,18 +276,17 @@ const CONFIG = {
     gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', fields: [{ id: 'val', label: 'דקות', min: 0, max: 300, icon: 'fa-clock' }] },
     water: { name: 'מים', icon: 'fa-glass-water', color: '#5ac8fa', fields: [{ id: 'val', label: 'מ"ל', min: 0, max: 5000, icon: 'fa-glass-water' }] },
     radio: { name: 'רדיו', icon: 'fa-radio', color: '#673ab7', type: 'radio' },
-    news: { name: 'מבזקים', icon: 'fa-newspaper', color: '#d32f2f', type: 'news' },
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
 
-// רשימת תחנות ברירת מחדל
+// רשימת תחנות אמינות יותר (HLS/Direct)
 const DEFAULT_STATIONS = [
-    { name: 'גלגלצ', freq: '91.8fm', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
-    { name: 'כאן 88', freq: '88fm', logo: '88', desc: 'מוזיקה אלטרנטיבית ואיכותית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
-    { name: 'כאן ב', freq: '95.5fm', logo: 'ב', desc: 'אקטואליה וחדשות', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
-    { name: 'כאן גימל', freq: '97.8fm', logo: 'ג', desc: 'מוזיקה ישראלית בלבד', url: 'https://kanliveicy.media.kan.org.il/icy/gimel_mp3' },
-    { name: 'רדיוס', freq: '100fm', logo: '100', desc: 'להיטים מכל הזמנים', url: 'https://radius.live/radio/radius' },
-    { name: 'אקו 99', freq: '99fm', logo: '99', desc: 'מוזיקה שכיף לשמוע', url: 'https://eco99live. Hadar-team.co.il/eco99fm' }
+    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'דיווחי תנועה ומוזיקה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
+    { name: 'כאן 88', freq: '88fm', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
+    { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
+    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/gimel_mp3' },
+    { name: 'אקו 99', freq: '99fm', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
+    { name: 'רדיוס', freq: '100fm', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' }
 ];
 
 const FILTERS = [ {l:'7D',d:7}, {l:'1M',d:30}, {l:'3M',d:90}, {l:'6M',d:180}, {l:'1Y',d:365}, {l:'2Y',d:730}, {l:'3Y',d:1095} ];
@@ -350,7 +322,6 @@ function initDashboard() {
         div.onclick = () => {
             if(c.isSettings) showPage('settings-page');
             else if(c.type === 'radio') showPage('radio-page', true);
-            else if(c.type === 'news') showPage('news-page');
             else openMetric(key);
         };
         div.innerHTML = `<i class="fas ${c.icon}" style="color: ${key==='settings'?'#8e8e93':c.color}"></i><div class="title">${c.name}</div>`;
@@ -366,9 +337,10 @@ function showPage(id, isRadio) {
     window.scrollTo(0,0);
 }
 
-// --- לוגיקת רדיו ---
+// --- לוגיקת רדיו משופרת ---
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
+let isLoading = false;
 
 function renderRadioList() {
     const list = document.getElementById('radio-list');
@@ -380,31 +352,34 @@ function renderRadioList() {
         const row = document.createElement('div');
         row.className = `radio-row ${isPlaying ? 'radio-playing' : ''}`;
         
-        // בקרת סדר
         let orderBtns = '';
         if(isEdit) {
             orderBtns = `
-                <div class="order-controls">
+                <div class="order-controls me-2">
                     <button class="btn-move" onclick="moveStation(${index}, -1)" ${index===0?'disabled':''}><i class="fas fa-chevron-up"></i></button>
                     <button class="btn-move" onclick="moveStation(${index}, 1)" ${index===userStations.length-1?'disabled':''}><i class="fas fa-chevron-down"></i></button>
                 </div>
             `;
         }
 
+        // אייקון כפתור: אם טוען - ספינר, אם מנגן - פוס, אחרת - פליי
+        let btnIcon = 'fa-play';
+        if (isPlaying) {
+            btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
+        }
+
         row.innerHTML = `
-            <div class="d-flex align-items-center w-100">
-                ${orderBtns}
-                <div class="radio-logo ms-2">${s.logo}</div>
-                <div class="radio-info">
-                    <div class="radio-name">${s.name}</div>
-                    <div class="radio-freq">${s.freq}</div>
-                </div>
-                <div class="d-flex">
-                    <button class="btn-radio btn-info" onclick="Swal.fire('${s.name}', '${s.desc}', 'info')"><i class="fas fa-info-circle"></i></button>
-                    <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')">
-                        <i class="fas ${isPlaying ? 'fa-pause' : 'fa-play'}"></i>
-                    </button>
-                </div>
+            ${orderBtns}
+            <div class="radio-logo ms-2">${s.logo}</div>
+            <div class="radio-info">
+                <span class="radio-name">${s.name}</span>
+                <span class="radio-freq">(${s.freq})</span>
+            </div>
+            <div class="d-flex">
+                <button class="btn-radio btn-info" onclick="Swal.fire('${s.name}', '${s.desc}', 'info')"><i class="fas fa-info-circle"></i></button>
+                <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')">
+                    <i class="fas ${btnIcon}"></i>
+                </button>
             </div>
         `;
         list.appendChild(row);
@@ -415,12 +390,32 @@ function togglePlay(url, name) {
     if (playingUrl === url) {
         stopRadio();
     } else {
+        stopRadio(); // עצור קודם אם יש
         playingUrl = url;
+        isLoading = true; // התחלת טעינה
+        renderRadioList(); // עדכון לספינר
+        
         currentAudio.src = url;
-        currentAudio.play();
-        document.getElementById('now-playing-bar').classList.remove('d-none');
-        document.getElementById('np-name').innerText = name;
-        renderRadioList();
+        currentAudio.play().catch(e => {
+            console.error("Radio Error", e);
+            isLoading = false;
+            playingUrl = null;
+            Swal.fire('שגיאה', 'לא ניתן לנגן תחנה זו כרגע', 'error');
+            renderRadioList();
+        });
+        
+        // אירועי אודיו
+        currentAudio.onplaying = () => {
+            isLoading = false;
+            document.getElementById('now-playing-bar').classList.remove('d-none');
+            document.getElementById('np-name').innerText = name;
+            renderRadioList(); // עדכון לפוס
+        };
+        
+        currentAudio.onwaiting = () => {
+            isLoading = true;
+            renderRadioList();
+        };
     }
 }
 
@@ -428,6 +423,7 @@ function stopRadio() {
     currentAudio.pause();
     currentAudio.src = "";
     playingUrl = null;
+    isLoading = false;
     document.getElementById('now-playing-bar').classList.add('d-none');
     renderRadioList();
 }
@@ -435,11 +431,9 @@ function stopRadio() {
 function moveStation(index, direction) {
     const newIndex = index + direction;
     if (newIndex >= 0 && newIndex < userStations.length) {
-        // החלפה
         const temp = userStations[index];
         userStations[index] = userStations[newIndex];
         userStations[newIndex] = temp;
-        // שמירה
         localStorage.setItem('userStations', JSON.stringify(userStations));
         renderRadioList();
     }
@@ -607,7 +601,6 @@ function saveEntry() {
     let isValid = true;
     let errorMessage = "יש למלא את השדות";
 
-    // --- ולידציה קשיחה ---
     if (c.type === 'meds') {
         entry.med = document.getElementById('inp-med').value;
         entry.mg = document.getElementById('inp-mg').value;
@@ -625,16 +618,9 @@ function saveEntry() {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
             const val = parseFloat(el.value);
-            
-            // חסימה מוחלטת לערכים לא הגיוניים
-            if (isNaN(val) || val === '') {
-                 isValid = false; 
-                 errorMessage = "יש להזין מספר תקין";
-            }
-            if (val < f.min || val > f.max) {
-                 isValid = false;
-                 errorMessage = `ערך ${f.label} לא הגיוני (חייב להיות בין ${f.min} ל-${f.max})`;
-            }
+            // בדיקת תקינות קשיחה!
+            if (isNaN(val) || val === '') { isValid = false; errorMessage = "מספר לא תקין"; }
+            if (val < f.min || val > f.max) { isValid = false; errorMessage = `${f.label} חורג מהטווח המותר (${f.min}-${f.max})`; }
             entry[f.id] = val;
         });
     }
@@ -651,7 +637,6 @@ function saveEntry() {
     resetForm(); renderHistory();
 }
 
-// --- כללי ---
 function renderFilters(containerId, isGraph) {
     const div = document.getElementById(containerId);
     div.innerHTML = FILTERS.map(f => `<button class="btn btn-tool ${currentFilterDays === f.d ? 'active' : ''}" style="flex:1" onclick="setFilter(${f.d}, '${containerId}', ${isGraph})">${f.l}</button>`).join('');
@@ -693,15 +678,17 @@ function renderHistory() {
         if (c.type === 'meds') {
             contentStr = `<div class="d-flex align-items-center gap-2"><i class="fas fa-pills small"></i><span>${item.med} ${item.mg?item.mg:''} (${item.takeTime})</span></div>`;
         } else if (c.type === 'walk') {
-            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : '';
+            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : item.time;
+            // הליכה: שורה אחת קומפקטית
             return `
             <div class="history-row" style="border-right-color: ${c.color}">
-                <div class="h-meta text-center"><div>${dateStr}</div><div class="text-primary fw-bold">${item.time}</div></div>
-                <div class="h-data d-flex flex-column align-items-start ps-3">
-                     <div class="fs-6">${item.val} ק"מ</div>
-                     <div class="text-muted small">${item.steps} צעדים ${timeRange ? ' | '+timeRange : ''}</div>
+                <div class="h-meta"><div>${dateStr}</div></div>
+                <div class="h-data-walk">
+                     <span class="text-primary small" style="min-width:70px">${timeRange}</span>
+                     <span>${item.val} km</span>
+                     <span class="text-muted small d-flex align-items-center"><i class="fas fa-shoe-prints mx-1"></i> ${item.steps}</span>
                 </div>
-                <div class="h-actions">
+                <div class="h-actions d-flex gap-1">
                     <i class="fas fa-pencil-alt icon-edit p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
                     <i class="fas fa-trash icon-trash p-2" onclick="deleteEntry(${item.id})"></i>
                 </div>
@@ -833,7 +820,7 @@ function exportTopicExcel() {
     filtered.forEach(i => {
         let val = '';
         if(c.type==='meds') val = `${i.med} ${i.mg} (${i.takeTime})`;
-        else if(c.type==='walk') val = `${i.val} ק"מ (${i.steps} צעדים)`;
+        else if(c.type==='walk') val = `${i.val} km (${i.steps} steps)`;
         else val = c.fields.map(f=>`${f.label}:${i[f.id]}`).join(' ');
         csv += `${i.date},${i.time},${c.name},"${val}"\n`;
     });
