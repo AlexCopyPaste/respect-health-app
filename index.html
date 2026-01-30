@@ -92,6 +92,7 @@
         .form-switch .form-check-input:checked { background-color: #34c759; }
 
         .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
+        
         audio { display: none; }
     </style>
 </head>
@@ -242,31 +243,31 @@
             </div>
         </div>
         <div class="text-center mt-4 text-muted small fw-bold" style="opacity: 0.5;">
-             גרסה 16.0
+             גרסה 17.0
         </div>
     </div>
 </div>
 
 <script>
-// --- כאן מגדירים את תחנות הרדיו ---
+// --- תחנות רדיו אמינות (Raw Stream URLs) ---
 const DEFAULT_STATIONS = [
-    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'דיווחי תנועה ומוזיקה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
-    { name: 'אקו 99', freq: '99fm', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
+    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
+    { name: 'אקו 99', freq: '99', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
     { name: 'כאן 88', freq: '88', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
     { name: 'רדיוס', freq: '100', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' },
     
     // מפריד קטגוריה
     { isSeparator: true, label: 'חדשות ודיבורים' },
-    { name: 'רשת ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
     { name: 'גל"צ', freq: '96.6', logo: 'גלצ', desc: 'חדשות וצבא', url: 'https://glzwizzlv.bynetcdn.com/glz_mp3' },
-    { name: '103FM', freq: '103', logo: '103', desc: 'רדיו ללא הפסקה', url: 'https://radio103.icast.co.il/stream' },
+    { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
+    { name: '103FM', freq: '103', logo: '103', desc: 'רדיו ללא הפסקה', url: 'https://cdn.cybercdn.live/103fm/103fm/icecast.audio' },
     { name: 'כאן מורשת', freq: '90.5', logo: 'מ', desc: 'מסורת', url: 'https://kanliveicy.media.kan.org.il/icy/kanmoreshet_mp3' },
     
     // מפריד ספיישלים
     { isSeparator: true, label: 'ספיישלים ופודקאסטים' },
     { name: 'כאן 80s', freq: 'WEB', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
     { name: 'כאן נוסטלגיה', freq: 'WEB', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
-    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kangimmel_mp3' }
+    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kan_gimel_mp3' }
 ];
 
 const CONFIG = {
@@ -289,13 +290,15 @@ const CONFIG = {
 };
 
 const FILTERS = [ {l:'7D',d:7}, {l:'1M',d:30}, {l:'3M',d:90}, {l:'6M',d:180}, {l:'1Y',d:365}, {l:'2Y',d:730}, {l:'3Y',d:1095} ];
-const MY_PHONE = "972500000000"; 
+// המספר החדש שביקשת
+const MY_PHONE = "972547565000"; 
 let currentMetric = null;
 let currentFilterDays = 0; 
 let chartInstance = null;
 let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": "", "walkUnit": "km"}');
 // מיזוג שמורות עם ברירת מחדל
 let savedStations = JSON.parse(localStorage.getItem('userStations'));
+// אם אין שמורות או אם הגרסה השתנתה, נטען את החדשות
 let userStations = savedStations && savedStations.length > 0 ? savedStations : DEFAULT_STATIONS;
 const STEPS_PER_KM = 1312;
 
