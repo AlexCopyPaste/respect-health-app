@@ -38,7 +38,7 @@
         .metric-card i { font-size: 2rem; margin-bottom: 8px; }
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
-        /* רדיו */
+        /* רדיו/מוזיקה */
         .radio-row { background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s; }
         .radio-playing { border: 2px solid #34c759; background-color: #f0fff4; }
         body.dark-mode .radio-playing { background-color: #052e16; }
@@ -60,38 +60,33 @@
         .page-header { padding: 15px 20px; border-radius: 0 0 25px 25px; color: white; margin-bottom: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
         /* היסטוריה */
-        .history-row { background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .h-meta { font-size: 0.75rem; color: #8e8e93; line-height: 1.1; min-width: 45px; text-align: center; }
-        .h-data { display: flex; gap: 10px; font-weight: bold; font-size: 1.1rem; align-items: center; flex-grow: 1; justify-content: center; }
+        .history-row { background: var(--card-bg); border-radius: 12px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .h-meta { font-size: 0.7rem; color: #8e8e93; line-height: 1.1; min-width: 40px; text-align: center; }
+        .h-data { display: flex; gap: 8px; font-weight: bold; font-size: 0.95rem; align-items: center; flex-grow: 1; justify-content: center; }
+        .h-data i { font-size: 0.8rem; opacity: 0.7; }
+        
         .h-walk-container { display: flex; align-items: center; gap: 8px; width: 100%; }
         .h-walk-val { font-weight: bold; font-size: 1rem; }
         .bg-danger-custom { background-color: var(--c-danger) !important; color: #ff3b30 !important; font-weight: bold; }
         
-        /* iOS Segments (2 & 3 states) */
+        /* iOS Segments */
         .ios-segment { background-color: var(--ios-gray); border-radius: 9px; padding: 2px; display: flex; position: relative; width: 100%; height: 32px; }
         .segment-btn { flex: 1; text-align: center; font-size: 0.8rem; font-weight: 500; line-height: 28px; cursor: pointer; z-index: 2; transition: all 0.3s ease; color: var(--text-color); opacity: 0.5; }
         .segment-btn.active { opacity: 1; font-weight: 700; }
         .segment-bg { position: absolute; top: 2px; bottom: 2px; background-color: var(--card-bg); border-radius: 7px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); z-index: 1; }
-        
-        /* 2-State logic (Walk Units) */
         .seg-2 .segment-bg { width: 50%; }
         .seg-2 .segment-left { transform: translateX(0); }
         [dir="rtl"] .seg-2 .segment-right { transform: translateX(-100%); }
-
-        /* 3-State logic (Walk Type) */
         .seg-3 .segment-bg { width: 33.33%; }
-        .seg-3 .pos-0 { transform: translateX(0); } /* ימין */
-        .seg-3 .pos-1 { transform: translateX(-100%); } /* אמצע */
-        .seg-3 .pos-2 { transform: translateX(-200%); } /* שמאל */
+        .seg-3 .pos-0 { transform: translateX(0); }
+        .seg-3 .pos-1 { transform: translateX(-100%); }
+        .seg-3 .pos-2 { transform: translateX(-200%); }
         
-        /* מתג הגדרות */
         .form-switch .form-check-input { width: 3.2em; height: 1.8em; flex-shrink: 0; cursor: pointer; background-color: #e9e9ea; border: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e"); }
         .form-switch .form-check-input:checked { background-color: #34c759; }
 
         .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
         audio { display: none; }
-        
-        /* כותרות שדות */
         .lbl-center { text-align: center; font-size: 0.8rem; font-weight: 700; color: #666; margin-bottom: 2px; display: block; }
     </style>
 </head>
@@ -103,7 +98,7 @@
         <div class="dashboard-grid" id="main-grid"></div>
         
         <div class="text-center mt-5">
-            <p class="text-muted small fw-bold mb-0">גרסה 18.0</p>
+            <p class="text-muted small fw-bold mb-0">גרסה 19.0</p>
             <p class="text-muted small" style="font-size: 0.75rem;">כל הזכויות שמורות ל-Aiex</p>
         </div>
 
@@ -158,22 +153,11 @@
             <form id="entry-form">
                 <input type="hidden" id="edit-id">
                 
-                <div class="row g-1 mb-2 align-items-end" id="time-row">
-                    <div class="col-5">
-                        <label class="lbl-center">תאריך</label>
-                        <input type="date" id="f-date" class="form-control form-control-sm text-center px-0">
-                    </div>
-                    <div class="col-3">
-                        <label class="lbl-center">התחלה</label>
-                        <input type="time" id="f-time" class="form-control form-control-sm text-center px-0">
-                    </div>
-                    <div class="col-4" id="end-time-col">
-                        <label class="lbl-center">סיום</label>
-                        <input type="time" id="f-end-time" class="form-control form-control-sm text-center px-0">
-                    </div>
-                </div>
+                <div id="date-time-area"></div>
 
-                <div id="dynamic-fields" class="mt-0 row g-3"></div> <div class="mt-3 d-flex gap-2">
+                <div id="dynamic-fields" class="mt-0 row g-3"></div>
+                
+                <div class="mt-3 d-flex gap-2">
                     <button type="button" class="btn btn-primary flex-grow-1 py-2 rounded-3" onclick="saveEntry()">שמור</button>
                     <button type="button" id="cancel-edit-btn" class="btn btn-secondary d-none rounded-3" onclick="resetForm()">ביטול</button>
                 </div>
@@ -192,18 +176,17 @@
     </div>
 </div>
 
-<div id="radio-page" class="app-page">
-    <div class="page-header" style="background-color: #673ab7;">
+<div id="music-page" class="app-page">
+    <div class="page-header" style="background-color: #e91e63;">
         <div class="d-flex justify-content-between align-items-center">
             <button class="btn btn-link text-white p-0" onclick="showPage('home-page')"><i class="fas fa-chevron-right fs-2"></i></button>
-            <h3 class="m-0 fw-bold">רדיו ישראל</h3>
+            <h3 class="m-0 fw-bold">מוזיקה ופלייליסטים</h3>
             <div style="width: 30px;"></div>
         </div>
     </div>
 
     <div class="container pt-2">
         <audio id="radio-player"></audio>
-        
         <div id="now-playing-bar" class="d-none card p-3 mb-3 shadow-sm border-0 bg-dark text-white text-center">
             <div class="small opacity-75">מנגן כעת:</div>
             <div id="np-name" class="fw-bold fs-5"></div>
@@ -211,7 +194,6 @@
                 <button class="btn btn-light rounded-circle btn-lg" onclick="stopRadio()"><i class="fas fa-stop"></i></button>
             </div>
         </div>
-
         <div id="radio-list"></div>
     </div>
 </div>
@@ -263,21 +245,15 @@
 </div>
 
 <script>
-// --- תחנות רדיו אמינות ---
+// --- תחנות ופלייליסטים אמינים ---
 const DEFAULT_STATIONS = [
-    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
-    { name: 'אקו 99', freq: '99', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
-    { name: 'כאן 88', freq: '88', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
-    { name: 'רדיוס', freq: '100', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' },
-    { isSeparator: true, label: 'חדשות ודיבורים' },
-    { name: 'גל"צ', freq: '96.6', logo: 'גלצ', desc: 'חדשות וצבא', url: 'https://glzwizzlv.bynetcdn.com/glz_mp3' },
-    { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
-    { name: '103FM', freq: '103', logo: '103', desc: 'רדיו ללא הפסקה', url: 'https://cdn.cybercdn.live/103fm/103fm/icecast.audio' },
-    { name: 'כאן מורשת', freq: '90.5', logo: 'מ', desc: 'מסורת', url: 'https://kanliveicy.media.kan.org.il/icy/kanmoreshet_mp3' },
-    { isSeparator: true, label: 'ספיישלים ופודקאסטים' },
-    { name: 'כאן 80s', freq: 'WEB', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
-    { name: 'כאן נוסטלגיה', freq: 'WEB', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
-    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kan_gimel_mp3' }
+    { name: 'גלגלצ', freq: 'Live', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
+    { isSeparator: true, label: 'פלייליסטים וספיישלים' },
+    { name: 'כאן 80s', freq: '80s', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
+    { name: 'כאן נוסטלגיה', freq: 'Old', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
+    { name: 'כאן ים תיכוני', freq: 'Med', logo: 'ים', desc: 'מוזיקה ים תיכונית', url: 'https://kanliveicy.media.kan.org.il/icy/mizrahit_mp3' },
+    { name: 'כאן גימל', freq: 'Heb', logo: 'ג', desc: 'רק מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kangimmel_mp3' },
+    { name: 'רדיוס פופ', freq: 'Pop', logo: '100', desc: 'להיטים ללא הפסקה', url: 'https://radius.live/radio/radius' }
 ];
 
 const CONFIG = {
@@ -295,7 +271,7 @@ const CONFIG = {
     pills: { name: 'תרופות', icon: 'fa-pills', color: '#34c759', type: 'meds' },
     gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', fields: [{ id: 'val', label: 'דקות', min: 0, max: 300, icon: 'fa-clock' }] },
     water: { name: 'מים', icon: 'fa-glass-water', color: '#5ac8fa', fields: [{ id: 'val', label: 'מ"ל', min: 0, max: 5000, icon: 'fa-glass-water' }] },
-    radio: { name: 'רדיו', icon: 'fa-radio', color: '#673ab7', type: 'radio' },
+    music: { name: 'מוזיקה ופלייליסטים', icon: 'fa-music', color: '#e91e63', type: 'radio' },
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
 
@@ -318,8 +294,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function setDateTimeNow() {
     const now = new Date();
-    document.getElementById('f-date').value = now.toISOString().split('T')[0];
-    document.getElementById('f-time').value = now.toTimeString().slice(0,5);
+    document.getElementById('f-date') && (document.getElementById('f-date').value = now.toISOString().split('T')[0]);
+    document.getElementById('f-time') && (document.getElementById('f-time').value = now.toTimeString().slice(0,5));
 }
 
 function initDashboard() {
@@ -331,7 +307,7 @@ function initDashboard() {
         div.className = 'metric-card';
         div.onclick = () => {
             if(c.isSettings) showPage('settings-page');
-            else if(c.type === 'radio') showPage('radio-page', true);
+            else if(c.type === 'radio') showPage('music-page', true);
             else openMetric(key);
         };
         div.innerHTML = `<i class="fas ${c.icon}" style="color: ${key==='settings'?'#8e8e93':c.color}"></i><div class="title">${c.name}</div>`;
@@ -347,7 +323,7 @@ function showPage(id, isRadio) {
     window.scrollTo(0,0);
 }
 
-// --- לוגיקת רדיו מועדפים ---
+// --- לוגיקת רדיו ---
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
 let isLoading = false;
@@ -383,31 +359,23 @@ function createRadioRow(s) {
     const isPlaying = (playingUrl === s.url);
     const row = document.createElement('div');
     row.className = `radio-row ${isPlaying ? 'radio-playing' : ''}`;
-    
     let btnIcon = 'fa-play';
     if (isPlaying) btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
-    
     const starIcon = s.isFavorite ? 'fas fa-star' : 'far fa-star';
     const starClass = s.isFavorite ? 'active' : '';
 
     row.innerHTML = `
         <div class="d-flex align-items-center" style="width:100%">
-            <button class="btn-star ${starClass}" onclick="toggleFavorite('${s.name}')">
-                <i class="${starIcon}"></i>
-            </button>
+            <button class="btn-star ${starClass}" onclick="toggleFavorite('${s.name}')"><i class="${starIcon}"></i></button>
             <div class="radio-logo ms-2">${s.logo}</div>
             <div class="radio-info ms-2">
                 <span class="radio-name">${s.name}</span>
                 <span class="radio-freq">(${s.freq})</span>
             </div>
             <div class="d-flex">
-                <button class="btn-radio btn-info" onclick="Swal.fire('${s.name}', '${s.desc}', 'info')"><i class="fas fa-info-circle"></i></button>
-                <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')">
-                    <i class="fas ${btnIcon}"></i>
-                </button>
+                <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')"><i class="fas ${btnIcon}"></i></button>
             </div>
-        </div>
-    `;
+        </div>`;
     return row;
 }
 
@@ -424,15 +392,9 @@ function togglePlay(url, name) {
     if (playingUrl === url) {
         stopRadio();
     } else {
-        stopRadio(); 
-        playingUrl = url;
-        isLoading = true; 
-        renderRadioList(); 
+        stopRadio(); playingUrl = url; isLoading = true; renderRadioList(); 
         currentAudio.src = url;
-        currentAudio.play().catch(e => {
-            isLoading = false; playingUrl = null;
-            Swal.fire('שגיאה', 'לא ניתן לנגן כרגע', 'error'); renderRadioList();
-        });
+        currentAudio.play().catch(e => { isLoading = false; playingUrl = null; Swal.fire('שגיאה', 'לא ניתן לנגן', 'error'); renderRadioList(); });
         currentAudio.onplaying = () => { isLoading = false; document.getElementById('now-playing-bar').classList.remove('d-none'); document.getElementById('np-name').innerText = name; renderRadioList(); };
         currentAudio.onwaiting = () => { isLoading = true; renderRadioList(); };
     }
@@ -453,9 +415,7 @@ function openMetric(key) {
     const isWalk = (key === 'walk');
     document.getElementById('walk-goal-container').classList.toggle('d-none', !isWalk);
     document.getElementById('walk-type-container').classList.toggle('d-none', !isWalk);
-    document.getElementById('time-row').classList.toggle('d-none', c.type === 'meds'); 
-    document.getElementById('end-time-col').style.visibility = isWalk ? 'visible' : 'hidden';
-
+    
     if(isWalk) {
         toggleWalkUnit(appSettings.walkUnit || 'km', true); 
         setWalkType(appSettings.walkType || 0);
@@ -470,18 +430,11 @@ function openMetric(key) {
     showPage('metric-page');
 }
 
-// ניהול סוג הליכה (3 מצבים)
 function setWalkType(typeIdx) {
     appSettings.walkType = typeIdx;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
-    
-    // UI Logic
-    document.querySelectorAll('.seg-3 .segment-btn').forEach((btn, idx) => {
-        btn.classList.toggle('active', idx === typeIdx);
-    });
-    
-    const bg = document.getElementById('type-bg');
-    bg.className = `segment-bg pos-${typeIdx}`;
+    document.querySelectorAll('.seg-3 .segment-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === typeIdx));
+    document.getElementById('type-bg').className = `segment-bg pos-${typeIdx}`;
 }
 
 function toggleWalkUnit(unit, skipConversion) {
@@ -518,7 +471,41 @@ function toggleWalkUnit(unit, skipConversion) {
 function renderForm(c) {
     const div = document.getElementById('dynamic-fields');
     div.innerHTML = '';
+    const dateArea = document.getElementById('date-time-area');
+    dateArea.innerHTML = '';
+
+    // בניית אזור תאריך/שעה לפי הקשר
+    if (c.type === 'bp') {
+        // עיצוב מיוחד ללחץ דם (תאריך רחב, שעה צרה)
+        dateArea.innerHTML = `
+            <div class="row g-2 mb-2 align-items-end">
+                <div class="col-8">
+                    <label class="lbl-center">תאריך</label>
+                    <input type="date" id="f-date" class="form-control form-control-sm text-center">
+                </div>
+                <div class="col-4">
+                    <label class="lbl-center">שעה</label>
+                    <input type="time" id="f-time" class="form-control form-control-sm text-center">
+                </div>
+            </div>`;
+    } else if (c.type === 'walk') {
+        // עיצוב הליכה (תאריך, התחלה, סיום)
+        dateArea.innerHTML = `
+            <div class="row g-1 mb-2 align-items-end">
+                <div class="col-5"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center px-0"></div>
+                <div class="col-3"><label class="lbl-center">התחלה</label><input type="time" id="f-time" class="form-control form-control-sm text-center px-0"></div>
+                <div class="col-4"><label class="lbl-center">סיום</label><input type="time" id="f-end-time" class="form-control form-control-sm text-center px-0"></div>
+            </div>`;
+    } else {
+        // ברירת מחדל
+        dateArea.innerHTML = `
+            <div class="row g-2 mb-2 align-items-end">
+                <div class="col-6"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center"></div>
+                <div class="col-6"><label class="lbl-center">שעה</label><input type="time" id="f-time" class="form-control form-control-sm text-center"></div>
+            </div>`;
+    }
     
+    // מילוי שדות דינמיים
     if (c.type === 'meds') {
         div.innerHTML = `
             <div class="col-12"><input type="text" id="inp-med" class="form-control text-end" placeholder="שם התרופה"></div>
@@ -527,59 +514,43 @@ function renderForm(c) {
         `;
     } else if (c.type === 'walk') {
         const isSteps = appSettings.walkUnit === 'steps';
-        if (isSteps) {
-             div.innerHTML = `<div class="col-12"><input type="number" id="walk-val" class="form-control text-center" placeholder="הזן צעדים"></div>`;
-        } else {
-             div.innerHTML = `<div class="col-12"><input type="number" id="walk-val" class="form-control text-center" placeholder="הזן מרחק"></div>`;
-        }
+        div.innerHTML = `<div class="col-12"><input type="number" id="walk-val" class="form-control text-center" placeholder="${isSteps?'הזן צעדים':'הזן מרחק'}"></div>`;
     } else {
         c.fields.forEach(f => {
             div.innerHTML += `<div class="col-12"><label class="lbl-center">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg text-end" placeholder="${f.min}-${f.max}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
         });
     }
+    setDateTimeNow();
 }
 
 function calcGoalStatus() {
     const goal = parseFloat(document.getElementById('monthly-goal-input').value);
     const statusBox = document.getElementById('goal-status-box');
     const unit = appSettings.walkUnit; 
-    
     appSettings.walkGoal = document.getElementById('monthly-goal-input').value;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
-
     if (!goal || goal <= 0) { statusBox.classList.add('d-none'); return; }
-
     const db = JSON.parse(localStorage.getItem('healthDB') || '[]');
     const now = new Date();
-    const currentMonth = now.getMonth();
-    
-    const monthWalks = db.filter(e => {
-        if (e.metric !== 'walk') return false;
-        if (e.unit !== unit) return false; 
-        const d = new Date(e.date);
-        return d.getMonth() === currentMonth && d.getFullYear() === now.getFullYear();
-    });
-
+    const monthWalks = db.filter(e => e.metric === 'walk' && e.unit === unit && new Date(e.date).getMonth() === now.getMonth());
     const total = monthWalks.reduce((sum, e) => sum + (parseFloat(e.val) || 0), 0);
     const remaining = goal - total;
-    const daysInMonth = new Date(now.getFullYear(), currentMonth + 1, 0).getDate();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
     const daysLeft = daysInMonth - now.getDate() + 1;
-    
     statusBox.classList.remove('d-none');
     const uLabel = unit === 'km' ? 'ק"מ' : 'צעדים';
-    
-    if (remaining <= 0) {
-        statusBox.innerHTML = `<i class="fas fa-trophy text-warning"></i> <strong>כל הכבוד!</strong> נכון לעכשיו עברת את היעד (${total.toLocaleString()} ${uLabel})`;
-    } else {
-        const dailyNeeded = remaining / daysLeft;
-        statusBox.innerHTML = `
-            <div>נכון לעכשיו עברת: <strong>${total.toLocaleString()}</strong> מתוך <strong>${goal.toLocaleString()}</strong> ${uLabel}</div>
-            <div class="mt-1 text-danger fw-bold">כדי להגיע ליעד: עליך ללכת ${dailyNeeded.toFixed(0)} ${uLabel} ביום</div>
-        `;
-    }
+    if (remaining <= 0) statusBox.innerHTML = `<i class="fas fa-trophy text-warning"></i> <strong>כל הכבוד!</strong> עמדת ביעד החודשי`;
+    else statusBox.innerHTML = `<div>עברת: <strong>${total.toLocaleString()}</strong> מתוך <strong>${goal.toLocaleString()}</strong></div><div class="mt-1 text-danger fw-bold">יעד יומי: ${(remaining/daysLeft).toFixed(0)} ${uLabel}</div>`;
 }
 
 function saveEntry() {
+    // מנגנון שמירה מוקפד
+    let db = [];
+    try {
+        const stored = localStorage.getItem('healthDB');
+        if (stored) db = JSON.parse(stored);
+    } catch(e) { console.error("DB Error", e); db = []; }
+
     const entry = { 
         id: document.getElementById('edit-id').value || Date.now(), 
         metric: currentMetric, 
@@ -601,21 +572,20 @@ function saveEntry() {
         if (!val) isValid = false;
         entry.val = parseFloat(val);
         entry.unit = appSettings.walkUnit; 
-        entry.walkType = appSettings.walkType; // שמירת סוג ההליכה
+        entry.walkType = appSettings.walkType;
         entry.endTime = endTime; 
     } else {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
             const val = parseFloat(el.value);
             if (isNaN(val) || val === '') { isValid = false; errorMessage = "מספר לא תקין"; }
-            if (val < f.min || val > f.max) { isValid = false; errorMessage = `${f.label} חורג מהטווח המותר (${f.min}-${f.max})`; }
+            if (val < f.min || val > f.max) { isValid = false; errorMessage = `חריגה בערך ${f.label}`; }
             entry[f.id] = val;
         });
     }
 
     if (!isValid) return Swal.fire('שגיאה', errorMessage, 'error');
     
-    let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
     const existingIdx = db.findIndex(e => e.id == entry.id);
     if (existingIdx !== -1) db[existingIdx] = entry; else db.unshift(entry);
     localStorage.setItem('healthDB', JSON.stringify(db));
@@ -640,17 +610,12 @@ function getFilteredData() {
     let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
     let filtered = db.filter(e => e.metric === currentMetric);
     if (filtered.length === 0) return [];
-    
-    if (currentMetric === 'walk') {
-        filtered = filtered.filter(e => e.unit === appSettings.walkUnit);
-    }
-
+    if (currentMetric === 'walk') filtered = filtered.filter(e => e.unit === appSettings.walkUnit);
     const days = currentFilterDays || 7;
     const dates = filtered.map(e => new Date(e.date).getTime());
     const lastDate = new Date(Math.max.apply(null, dates));
     const cutoff = new Date(lastDate);
     cutoff.setDate(lastDate.getDate() - days);
-    
     return filtered.filter(item => new Date(item.date) >= cutoff);
 }
 
@@ -664,7 +629,6 @@ function renderHistory() {
         const c = CONFIG[item.metric];
         const dObj = new Date(item.date);
         const dateStr = `${String(dObj.getDate()).padStart(2,'0')}/${String(dObj.getMonth()+1).padStart(2,'0')}`;
-        
         let contentStr = '', rowColor = '';
         
         if (c.type === 'meds') {
@@ -687,25 +651,26 @@ function renderHistory() {
                 </div>
             </div>`;
         } else {
+            // היסטוריה לחץ דם ושאר - קומפקטי
             contentStr = c.fields.map(f => {
                 const val = item[f.id];
                 if ((f.id === 'sys' || f.id === 'val') && f.ranges) { 
                      if (val > f.ranges.extreme || val < f.ranges.low) rowColor = 'bg-danger-custom'; 
                 }
                 let iconClass = '';
-                if (f.icon === 'fa-arrow-up') iconClass = 'icon-up';
-                if (f.icon === 'fa-arrow-down') iconClass = 'icon-down';
-                if (f.icon === 'fa-heart') iconClass = 'icon-heart';
-                return `<span class="text-nowrap ms-2"><i class="fas ${f.icon} ${iconClass}"></i> ${val}</span>`;
-            }).join('');
+                if (f.icon === 'fa-arrow-up') iconClass = 'text-danger small';
+                if (f.icon === 'fa-arrow-down') iconClass = 'text-primary small';
+                if (f.icon === 'fa-heart') iconClass = 'text-danger small';
+                return `<span class="text-nowrap" style="font-size:0.9rem"><i class="fas ${f.icon} ${iconClass}"></i> ${val}</span>`;
+            }).join(' <span class="text-muted mx-1">|</span> ');
             
              return `
             <div class="history-row ${rowColor}" style="border-right-color: ${c.color}">
-                <div class="h-meta text-center"><div>${dateStr}</div><div>${item.time}</div></div>
+                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${item.time}</div></div>
                 <div class="h-data">${contentStr}</div>
                 <div class="h-actions">
-                    <i class="fas fa-pencil-alt text-warning p-2" onclick='editEntry(${JSON.stringify(item)})'></i>
-                    <i class="fas fa-trash text-secondary p-2" onclick="deleteEntry(${item.id})"></i>
+                    <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
                 </div>
             </div>`;
         }
@@ -781,19 +746,30 @@ function updateChart() {
     const labels = rawData.map(i => `${new Date(i.date).getDate()}/${new Date(i.date).getMonth()+1}`);
     const c = CONFIG[currentMetric];
     let datasets = [];
+    
+    // Bar Chart Logic (Apple Style)
     if (currentMetric === 'bp') {
         datasets = [
-            { label: 'גבוה', data: rawData.map(i => i.sys), borderColor: '#ff3b30', tension: 0.3 },
-            { label: 'נמוך', data: rawData.map(i => i.dia), borderColor: '#007aff', tension: 0.3 },
-            { label: 'דופק', data: rawData.map(i => i.pulse), borderColor: '#ff3b30', borderDash: [5, 5], tension: 0.3 }
+            { label: 'גבוה', data: rawData.map(i => i.sys), backgroundColor: '#ff3b30', borderRadius: 4 },
+            { label: 'נמוך', data: rawData.map(i => i.dia), backgroundColor: '#007aff', borderRadius: 4 },
+            { label: 'דופק', data: rawData.map(i => i.pulse), backgroundColor: '#34c759', borderRadius: 4, type: 'line', tension: 0.4 } // דופק נשאר קו כדי לבלוט
         ];
     } else if (currentMetric === 'walk') {
-         datasets = [{ label: appSettings.walkUnit, data: rawData.map(i => i.val), borderColor: c.color, backgroundColor: c.color+'20', fill: true }];
+         datasets = [{ label: appSettings.walkUnit, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
     } else {
         const field = c.fields[0];
-        datasets = [{ label: field.label, data: rawData.map(i => i.val), borderColor: c.color, backgroundColor: c.color+'20', fill: true }];
+        datasets = [{ label: field.label, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
     }
-    chartInstance = new Chart(ctx, { type: 'line', data: { labels, datasets }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: false } } } });
+    
+    chartInstance = new Chart(ctx, { 
+        type: 'bar', // ברירת מחדל עמודות
+        data: { labels, datasets }, 
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            scales: { x: { grid: { display: false } }, y: { beginAtZero: false } } 
+        } 
+    });
 }
 
 function exportTopicExcel() {
@@ -825,7 +801,7 @@ function applySettings() {
     document.getElementById('toggle-font-size').checked = appSettings.largeFont;
 }
 function saveDocName() {
-    // Empty function for compatibility
+    // Empty
 }
 function handleResetToggle() {
     if (document.getElementById('toggle-reset-data').checked) {
