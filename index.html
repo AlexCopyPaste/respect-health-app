@@ -38,7 +38,20 @@
         .metric-card i { font-size: 2rem; margin-bottom: 8px; }
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
-        /* רדיו/מוזיקה */
+        /* כושר - גריד מכשירים */
+        .gym-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .gym-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: var(--main-bg); border-radius: 12px; padding: 10px 5px; cursor: pointer;
+            transition: all 0.2s; border: 2px solid transparent; min-height: 80px;
+        }
+        .gym-item i { font-size: 1.5rem; margin-bottom: 5px; color: #8e8e93; }
+        .gym-item span { font-size: 0.7rem; text-align: center; line-height: 1.1; font-weight: 600; }
+        .gym-item.active { border-color: var(--primary-color); background: #f0f0ff; }
+        body.dark-mode .gym-item.active { background: #1c1c1e; border-color: #5856d6; }
+        .gym-item.active i { color: var(--primary-color); }
+
+        /* רדיו */
         .radio-row { background: var(--card-bg); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s; }
         .radio-playing { border: 2px solid #34c759; background-color: #f0fff4; }
         body.dark-mode .radio-playing { background-color: #052e16; }
@@ -63,8 +76,6 @@
         .history-row { background: var(--card-bg); border-radius: 12px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .h-meta { font-size: 0.7rem; color: #8e8e93; line-height: 1.1; min-width: 40px; text-align: center; }
         .h-data { display: flex; gap: 8px; font-weight: bold; font-size: 0.95rem; align-items: center; flex-grow: 1; justify-content: center; }
-        .h-data i { font-size: 0.8rem; opacity: 0.7; }
-        
         .h-walk-container { display: flex; align-items: center; gap: 8px; width: 100%; }
         .h-walk-val { font-weight: bold; font-size: 1rem; }
         .bg-danger-custom { background-color: var(--c-danger) !important; color: #ff3b30 !important; font-weight: bold; }
@@ -96,12 +107,10 @@
     <div class="container">
         <div class="main-header"><i class="fas fa-heartbeat"></i><h1>חיים רק פעם אחת...</h1></div>
         <div class="dashboard-grid" id="main-grid"></div>
-        
         <div class="text-center mt-5">
-            <p class="text-muted small fw-bold mb-0">גרסה 19.0</p>
+            <p class="text-muted small fw-bold mb-0">גרסה 20.0</p>
             <p class="text-muted small" style="font-size: 0.75rem;">כל הזכויות שמורות ל-Aiex</p>
         </div>
-
         <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
     </div>
 </div>
@@ -116,7 +125,15 @@
     </div>
 
     <div class="container pt-3">
-        
+        <div id="gym-type-container" class="d-none mb-3">
+            <div class="ios-segment seg-3">
+                <div id="gym-bg" class="segment-bg pos-0"></div>
+                <div id="gym-0" class="segment-btn active" onclick="setGymType(0)">בית</div>
+                <div id="gym-1" class="segment-btn" onclick="setGymType(1)">רחוב</div>
+                <div id="gym-2" class="segment-btn" onclick="setGymType(2)">מכון</div>
+            </div>
+        </div>
+
         <div id="walk-type-container" class="d-none mb-3 d-flex justify-content-between align-items-center">
             <div class="ios-segment seg-3" style="width: 65%;">
                 <div id="type-bg" class="segment-bg pos-0"></div>
@@ -152,10 +169,15 @@
         <div class="card shadow-sm border-0 rounded-4 p-3 mb-3" style="background: var(--card-bg);">
             <form id="entry-form">
                 <input type="hidden" id="edit-id">
-                
                 <div id="date-time-area"></div>
+                
+                <div id="gym-selection-area" class="d-none">
+                    <label class="lbl-center mt-2">בחר תרגיל/מכשיר</label>
+                    <div id="gym-grid" class="gym-grid"></div>
+                    <input type="hidden" id="selected-gym-exercise">
+                </div>
 
-                <div id="dynamic-fields" class="mt-0 row g-3"></div>
+                <div id="dynamic-fields" class="mt-2 row g-3"></div>
                 
                 <div class="mt-3 d-flex gap-2">
                     <button type="button" class="btn btn-primary flex-grow-1 py-2 rounded-3" onclick="saveEntry()">שמור</button>
@@ -184,7 +206,6 @@
             <div style="width: 30px;"></div>
         </div>
     </div>
-
     <div class="container pt-2">
         <audio id="radio-player"></audio>
         <div id="now-playing-bar" class="d-none card p-3 mb-3 shadow-sm border-0 bg-dark text-white text-center">
@@ -245,16 +266,54 @@
 </div>
 
 <script>
-// --- תחנות ופלייליסטים אמינים ---
+// --- נתונים ---
 const DEFAULT_STATIONS = [
-    { name: 'גלגלצ', freq: 'Live', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
-    { isSeparator: true, label: 'פלייליסטים וספיישלים' },
-    { name: 'כאן 80s', freq: '80s', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
-    { name: 'כאן נוסטלגיה', freq: 'Old', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
-    { name: 'כאן ים תיכוני', freq: 'Med', logo: 'ים', desc: 'מוזיקה ים תיכונית', url: 'https://kanliveicy.media.kan.org.il/icy/mizrahit_mp3' },
-    { name: 'כאן גימל', freq: 'Heb', logo: 'ג', desc: 'רק מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kangimmel_mp3' },
-    { name: 'רדיוס פופ', freq: 'Pop', logo: '100', desc: 'להיטים ללא הפסקה', url: 'https://radius.live/radio/radius' }
+    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
+    { name: 'אקו 99', freq: '99', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
+    { name: 'כאן 88', freq: '88', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
+    { name: 'רדיוס', freq: '100', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' },
+    { isSeparator: true, label: 'חדשות ודיבורים' },
+    { name: 'גל"צ', freq: '96.6', logo: 'גלצ', desc: 'חדשות וצבא', url: 'https://glzwizzlv.bynetcdn.com/glz_mp3' },
+    { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
+    { name: '103FM', freq: '103', logo: '103', desc: 'רדיו ללא הפסקה', url: 'https://cdn.cybercdn.live/103fm/103fm/icecast.audio' },
+    { name: 'כאן מורשת', freq: '90.5', logo: 'מ', desc: 'מסורת', url: 'https://kanliveicy.media.kan.org.il/icy/kanmoreshet_mp3' },
+    { isSeparator: true, label: 'ספיישלים ופודקאסטים' },
+    { name: 'כאן 80s', freq: 'WEB', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
+    { name: 'כאן נוסטלגיה', freq: 'WEB', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
+    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kan_gimel_mp3' }
 ];
+
+// תרגילי כושר לפי קטגוריות
+const GYM_EXERCISES = {
+    0: [ // בית
+        { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying' },
+        { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line' },
+        { id: 'plank', name: 'פלאנק', icon: 'fa-minus' },
+        { id: 'squat', name: 'סקוואט', icon: 'fa-person-arrow-down-to-line' },
+        { id: 'dumbbells', name: 'משקולות יד', icon: 'fa-dumbbell' },
+        { id: 'rope', name: 'קפיצה בחבל', icon: 'fa-person-jumping' },
+        { id: 'yoga', name: 'יוגה/מתיחות', icon: 'fa-spa' }
+    ],
+    1: [ // רחוב
+        { id: 'pullups', name: 'מתח', icon: 'fa-grip-lines' },
+        { id: 'dips', name: 'מקבילים', icon: 'fa-pause' },
+        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking' },
+        { id: 'chest_press_out', name: 'לחיצת חזה', icon: 'fa-hands' },
+        { id: 'lat_pull_out', name: 'משיכת פולי', icon: 'fa-arrow-down' },
+        { id: 'abs_bench', name: 'ספסל בטן', icon: 'fa-inbox' },
+        { id: 'steps', name: 'מדרגה', icon: 'fa-stairs' }
+    ],
+    2: [ // מכון
+        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running' },
+        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic' },
+        { id: 'bench_press', name: 'לחיצת חזה', icon: 'fa-dumbbell' },
+        { id: 'leg_press', name: 'לחיצת רגליים', icon: 'fa-layer-group' },
+        { id: 'lat_pulldown', name: 'פולי עליון', icon: 'fa-arrow-down-long' },
+        { id: 'rowing', name: 'מכשיר חתירה', icon: 'fa-water' },
+        { id: 'smith', name: 'סמית משיין', icon: 'fa-bars' },
+        { id: 'cable', name: 'כבלים', icon: 'fa-bezier-curve' }
+    ]
+};
 
 const CONFIG = {
     bp: { name: 'לחץ דם ודופק', icon: 'fa-heart-pulse', color: '#ff3b30', 
@@ -264,14 +323,14 @@ const CONFIG = {
             { id: 'pulse', label: 'דופק', min: 30, max: 220, ranges: { low: 50, high: 100, border: 120, extreme: 150 }, icon: 'fa-heart' }
           ]},
     walk: { name: 'הליכה', icon: 'fa-person-walking', color: '#5856d6', type: 'walk' },
+    gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', type: 'gym' },
     sugar: { name: 'סוכר', icon: 'fa-droplet', color: '#ff9500', 
              fields: [{ id: 'val', label: 'ערך', min: 20, max: 800, ranges: { low: 70, high: 140, border: 200, extreme: 300 }, icon: 'fa-droplet' }]},
     weight: { name: 'משקל', icon: 'fa-weight-scale', color: '#007aff', 
               fields: [{ id: 'val', label: 'ק"ג', min: 30, max: 300, ranges: { low: 50, high: 100, border: 150, extreme: 200 }, icon: 'fa-weight-scale' }]},
     pills: { name: 'תרופות', icon: 'fa-pills', color: '#34c759', type: 'meds' },
-    gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', fields: [{ id: 'val', label: 'דקות', min: 0, max: 300, icon: 'fa-clock' }] },
     water: { name: 'מים', icon: 'fa-glass-water', color: '#5ac8fa', fields: [{ id: 'val', label: 'מ"ל', min: 0, max: 5000, icon: 'fa-glass-water' }] },
-    music: { name: 'מוזיקה ופלייליסטים', icon: 'fa-music', color: '#e91e63', type: 'radio' },
+    radio: { name: 'מוזיקה ופלייליסטים', icon: 'fa-music', color: '#e91e63', type: 'radio' },
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
 
@@ -280,10 +339,11 @@ const MY_PHONE = "972547565000";
 let currentMetric = null;
 let currentFilterDays = 0; 
 let chartInstance = null;
-let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": "", "walkUnit": "km", "walkType": 0}');
+let appSettings = JSON.parse(localStorage.getItem('appSettings') || '{"darkMode": false, "largeFont": false, "docName": "", "walkGoal": "", "walkUnit": "km", "walkType": 0, "gymType": 0}');
 let savedStations = JSON.parse(localStorage.getItem('userStations'));
 let userStations = savedStations && savedStations.length > 0 ? savedStations : DEFAULT_STATIONS;
 const STEPS_PER_KM = 1312;
+let selectedGymExercise = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
@@ -294,8 +354,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function setDateTimeNow() {
     const now = new Date();
-    document.getElementById('f-date') && (document.getElementById('f-date').value = now.toISOString().split('T')[0]);
-    document.getElementById('f-time') && (document.getElementById('f-time').value = now.toTimeString().slice(0,5));
+    if(document.getElementById('f-date')) document.getElementById('f-date').value = now.toISOString().split('T')[0];
+    if(document.getElementById('f-time')) document.getElementById('f-time').value = now.toTimeString().slice(0,5);
 }
 
 function initDashboard() {
@@ -323,7 +383,69 @@ function showPage(id, isRadio) {
     window.scrollTo(0,0);
 }
 
-// --- לוגיקת רדיו ---
+// --- כושר משופר ---
+function setGymType(typeIdx) {
+    appSettings.gymType = typeIdx;
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    
+    document.querySelectorAll('#gym-type-container .segment-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === typeIdx));
+    document.getElementById('gym-bg').className = `segment-bg pos-${typeIdx}`;
+    
+    selectedGymExercise = null;
+    document.getElementById('selected-gym-exercise').value = '';
+    renderGymGrid();
+    renderGymInputs();
+}
+
+function renderGymGrid() {
+    const grid = document.getElementById('gym-grid');
+    const type = appSettings.gymType || 0;
+    const exercises = GYM_EXERCISES[type];
+    
+    // מיון לפי שימוש
+    const db = JSON.parse(localStorage.getItem('healthDB') || '[]');
+    const counts = {};
+    db.filter(e => e.metric === 'gym').forEach(e => {
+        counts[e.exId] = (counts[e.exId] || 0) + 1;
+    });
+    
+    exercises.sort((a,b) => (counts[b.id] || 0) - (counts[a.id] || 0)); // הכי נפוץ למעלה
+
+    grid.innerHTML = exercises.map(ex => `
+        <div class="gym-item ${selectedGymExercise === ex.id ? 'active' : ''}" onclick="selectExercise('${ex.id}')">
+            <i class="fas ${ex.icon}"></i>
+            <span>${ex.name}</span>
+        </div>
+    `).join('');
+}
+
+function selectExercise(id) {
+    selectedGymExercise = id;
+    document.getElementById('selected-gym-exercise').value = id;
+    renderGymGrid(); // לעדכון סימון
+    renderGymInputs();
+}
+
+function renderGymInputs() {
+    const div = document.getElementById('dynamic-fields');
+    if (!selectedGymExercise) {
+        div.innerHTML = '<div class="text-center text-muted small my-3">בחר תרגיל מהרשימה למעלה</div>';
+        return;
+    }
+    div.innerHTML = `
+        <div class="col-6">
+            <label class="lbl-center">כמות (חזרות/דק')</label>
+            <input type="number" id="gym-val" class="form-control text-center" placeholder="0">
+        </div>
+        <div class="col-6">
+            <label class="lbl-center">מידע נוסף (סטים/ק"ג)</label>
+            <input type="text" id="gym-info" class="form-control text-center" placeholder="...">
+        </div>
+    `;
+}
+
+// --- שאר הלוגיקה ---
+// (המשך קוד רדיו, הליכה וגרפים - זהה לקודם עם התיקונים)
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
 let isLoading = false;
@@ -331,23 +453,18 @@ let isLoading = false;
 function renderRadioList() {
     const list = document.getElementById('radio-list');
     list.innerHTML = '';
-    
     const favorites = userStations.filter(s => s.isFavorite && !s.isSeparator);
     const others = userStations.filter(s => !s.isFavorite);
-    
     if(favorites.length > 0) {
         favorites.forEach((s) => list.appendChild(createRadioRow(s)));
         const sep = document.createElement('div');
-        sep.className = 'radio-separator';
-        sep.innerHTML = '<span>מועדפים</span>';
+        sep.className = 'radio-separator'; sep.innerHTML = '<span>מועדפים</span>';
         list.appendChild(sep);
     }
-    
     others.forEach((s) => {
         if(s.isSeparator) {
             const sep = document.createElement('div');
-            sep.className = 'radio-separator';
-            sep.innerHTML = `<span>${s.label || '---'}</span>`;
+            sep.className = 'radio-separator'; sep.innerHTML = `<span>${s.label || '---'}</span>`;
             list.appendChild(sep);
         } else {
             list.appendChild(createRadioRow(s));
@@ -363,7 +480,6 @@ function createRadioRow(s) {
     if (isPlaying) btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
     const starIcon = s.isFavorite ? 'fas fa-star' : 'far fa-star';
     const starClass = s.isFavorite ? 'active' : '';
-
     row.innerHTML = `
         <div class="d-flex align-items-center" style="width:100%">
             <button class="btn-star ${starClass}" onclick="toggleFavorite('${s.name}')"><i class="${starIcon}"></i></button>
@@ -389,21 +505,11 @@ function toggleFavorite(stationName) {
 }
 
 function togglePlay(url, name) {
-    if (playingUrl === url) {
-        stopRadio();
-    } else {
-        stopRadio(); playingUrl = url; isLoading = true; renderRadioList(); 
-        currentAudio.src = url;
-        currentAudio.play().catch(e => { isLoading = false; playingUrl = null; Swal.fire('שגיאה', 'לא ניתן לנגן', 'error'); renderRadioList(); });
-        currentAudio.onplaying = () => { isLoading = false; document.getElementById('now-playing-bar').classList.remove('d-none'); document.getElementById('np-name').innerText = name; renderRadioList(); };
-        currentAudio.onwaiting = () => { isLoading = true; renderRadioList(); };
-    }
+    if (playingUrl === url) { stopRadio(); } 
+    else { stopRadio(); playingUrl = url; isLoading = true; renderRadioList(); currentAudio.src = url; currentAudio.play().catch(e => { isLoading = false; playingUrl = null; Swal.fire('שגיאה', 'לא ניתן לנגן', 'error'); renderRadioList(); }); currentAudio.onplaying = () => { isLoading = false; document.getElementById('now-playing-bar').classList.remove('d-none'); document.getElementById('np-name').innerText = name; renderRadioList(); }; currentAudio.onwaiting = () => { isLoading = true; renderRadioList(); }; }
 }
 
-function stopRadio() {
-    currentAudio.pause(); currentAudio.src = ""; playingUrl = null; isLoading = false;
-    document.getElementById('now-playing-bar').classList.add('d-none'); renderRadioList();
-}
+function stopRadio() { currentAudio.pause(); currentAudio.src = ""; playingUrl = null; isLoading = false; document.getElementById('now-playing-bar').classList.add('d-none'); renderRadioList(); }
 
 function openMetric(key) {
     currentMetric = key;
@@ -412,15 +518,23 @@ function openMetric(key) {
     document.getElementById('header-title').innerText = c.name;
     document.getElementById('btn-show-graph').style.display = (c.type === 'meds') ? 'none' : 'block';
 
-    const isWalk = (key === 'walk');
-    document.getElementById('walk-goal-container').classList.toggle('d-none', !isWalk);
-    document.getElementById('walk-type-container').classList.toggle('d-none', !isWalk);
-    
-    if(isWalk) {
-        toggleWalkUnit(appSettings.walkUnit || 'km', true); 
+    // ניהול תצוגה לפי סוג
+    document.getElementById('walk-goal-container').classList.add('d-none');
+    document.getElementById('walk-type-container').classList.add('d-none');
+    document.getElementById('gym-type-container').classList.add('d-none');
+    document.getElementById('gym-selection-area').classList.add('d-none');
+
+    if (key === 'walk') {
+        document.getElementById('walk-goal-container').classList.remove('d-none');
+        document.getElementById('walk-type-container').classList.remove('d-none');
+        toggleWalkUnit(appSettings.walkUnit || 'km', true);
         setWalkType(appSettings.walkType || 0);
         document.getElementById('monthly-goal-input').value = appSettings.walkGoal || '';
         calcGoalStatus();
+    } else if (key === 'gym') {
+        document.getElementById('gym-type-container').classList.remove('d-none');
+        document.getElementById('gym-selection-area').classList.remove('d-none');
+        setGymType(appSettings.gymType || 0);
     }
 
     renderForm(c);
@@ -433,7 +547,7 @@ function openMetric(key) {
 function setWalkType(typeIdx) {
     appSettings.walkType = typeIdx;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
-    document.querySelectorAll('.seg-3 .segment-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === typeIdx));
+    document.querySelectorAll('#walk-type-container .segment-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === typeIdx));
     document.getElementById('type-bg').className = `segment-bg pos-${typeIdx}`;
 }
 
@@ -441,31 +555,17 @@ function toggleWalkUnit(unit, skipConversion) {
     const prevUnit = appSettings.walkUnit;
     appSettings.walkUnit = unit;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
-    
-    const bg = document.getElementById('seg-bg');
-    const btnKm = document.getElementById('btn-km');
-    const btnSteps = document.getElementById('btn-steps');
-    
-    if (unit === 'steps') {
-        bg.classList.remove('segment-left'); bg.classList.add('segment-right');
-        btnSteps.classList.add('active'); btnKm.classList.remove('active');
-    } else {
-        bg.classList.remove('segment-right'); bg.classList.add('segment-left');
-        btnKm.classList.add('active'); btnSteps.classList.remove('active');
-    }
+    const bg = document.getElementById('seg-bg'); const btnKm = document.getElementById('btn-km'); const btnSteps = document.getElementById('btn-steps');
+    if (unit === 'steps') { bg.classList.remove('segment-left'); bg.classList.add('segment-right'); btnSteps.classList.add('active'); btnKm.classList.remove('active'); } 
+    else { bg.classList.remove('segment-right'); bg.classList.add('segment-left'); btnKm.classList.add('active'); btnSteps.classList.remove('active'); }
     
     const input = document.getElementById('monthly-goal-input');
     let val = parseFloat(input.value);
-    
     if (!skipConversion && val > 0) {
         if (prevUnit === 'km' && unit === 'steps') input.value = Math.round(val * STEPS_PER_KM);
         else if (prevUnit === 'steps' && unit === 'km') input.value = (val / STEPS_PER_KM).toFixed(2);
     }
-    
-    if(currentMetric === 'walk') {
-        renderForm(CONFIG.walk);
-        calcGoalStatus();
-    }
+    if(currentMetric === 'walk') { renderForm(CONFIG.walk); calcGoalStatus(); }
 }
 
 function renderForm(c) {
@@ -474,47 +574,21 @@ function renderForm(c) {
     const dateArea = document.getElementById('date-time-area');
     dateArea.innerHTML = '';
 
-    // בניית אזור תאריך/שעה לפי הקשר
     if (c.type === 'bp') {
-        // עיצוב מיוחד ללחץ דם (תאריך רחב, שעה צרה)
-        dateArea.innerHTML = `
-            <div class="row g-2 mb-2 align-items-end">
-                <div class="col-8">
-                    <label class="lbl-center">תאריך</label>
-                    <input type="date" id="f-date" class="form-control form-control-sm text-center">
-                </div>
-                <div class="col-4">
-                    <label class="lbl-center">שעה</label>
-                    <input type="time" id="f-time" class="form-control form-control-sm text-center">
-                </div>
-            </div>`;
+        dateArea.innerHTML = `<div class="row g-2 mb-2 align-items-end"><div class="col-8"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center"></div><div class="col-4"><label class="lbl-center">שעה</label><input type="time" id="f-time" class="form-control form-control-sm text-center"></div></div>`;
     } else if (c.type === 'walk') {
-        // עיצוב הליכה (תאריך, התחלה, סיום)
-        dateArea.innerHTML = `
-            <div class="row g-1 mb-2 align-items-end">
-                <div class="col-5"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center px-0"></div>
-                <div class="col-3"><label class="lbl-center">התחלה</label><input type="time" id="f-time" class="form-control form-control-sm text-center px-0"></div>
-                <div class="col-4"><label class="lbl-center">סיום</label><input type="time" id="f-end-time" class="form-control form-control-sm text-center px-0"></div>
-            </div>`;
+        dateArea.innerHTML = `<div class="row g-1 mb-2 align-items-end"><div class="col-5"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center px-0"></div><div class="col-3"><label class="lbl-center">התחלה</label><input type="time" id="f-time" class="form-control form-control-sm text-center px-0"></div><div class="col-4"><label class="lbl-center">סיום</label><input type="time" id="f-end-time" class="form-control form-control-sm text-center px-0"></div></div>`;
     } else {
-        // ברירת מחדל
-        dateArea.innerHTML = `
-            <div class="row g-2 mb-2 align-items-end">
-                <div class="col-6"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center"></div>
-                <div class="col-6"><label class="lbl-center">שעה</label><input type="time" id="f-time" class="form-control form-control-sm text-center"></div>
-            </div>`;
+        dateArea.innerHTML = `<div class="row g-2 mb-2 align-items-end"><div class="col-6"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center"></div><div class="col-6"><label class="lbl-center">שעה</label><input type="time" id="f-time" class="form-control form-control-sm text-center"></div></div>`;
     }
     
-    // מילוי שדות דינמיים
     if (c.type === 'meds') {
-        div.innerHTML = `
-            <div class="col-12"><input type="text" id="inp-med" class="form-control text-end" placeholder="שם התרופה"></div>
-            <div class="col-6"><input type="number" id="inp-mg" class="form-control text-end" placeholder='מ"ג'></div>
-            <div class="col-6"><select id="inp-time" class="form-select text-end"><option>בוקר</option><option>צהריים</option><option>ערב</option><option>לילה</option></select></div>
-        `;
+        div.innerHTML = `<div class="col-12"><input type="text" id="inp-med" class="form-control text-end" placeholder="שם התרופה"></div><div class="col-6"><input type="number" id="inp-mg" class="form-control text-end" placeholder='מ"ג'></div><div class="col-6"><select id="inp-time" class="form-select text-end"><option>בוקר</option><option>צהריים</option><option>ערב</option><option>לילה</option></select></div>`;
     } else if (c.type === 'walk') {
         const isSteps = appSettings.walkUnit === 'steps';
         div.innerHTML = `<div class="col-12"><input type="number" id="walk-val" class="form-control text-center" placeholder="${isSteps?'הזן צעדים':'הזן מרחק'}"></div>`;
+    } else if (c.type === 'gym') {
+        renderGymInputs();
     } else {
         c.fields.forEach(f => {
             div.innerHTML += `<div class="col-12"><label class="lbl-center">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg text-end" placeholder="${f.min}-${f.max}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
@@ -544,36 +618,28 @@ function calcGoalStatus() {
 }
 
 function saveEntry() {
-    // מנגנון שמירה מוקפד
     let db = [];
-    try {
-        const stored = localStorage.getItem('healthDB');
-        if (stored) db = JSON.parse(stored);
-    } catch(e) { console.error("DB Error", e); db = []; }
+    try { const stored = localStorage.getItem('healthDB'); if (stored) db = JSON.parse(stored); } catch(e) { db = []; }
 
-    const entry = { 
-        id: document.getElementById('edit-id').value || Date.now(), 
-        metric: currentMetric, 
-        date: document.getElementById('f-date').value, 
-        time: document.getElementById('f-time').value 
-    };
+    const entry = { id: document.getElementById('edit-id').value || Date.now(), metric: currentMetric, date: document.getElementById('f-date').value, time: document.getElementById('f-time').value };
     const c = CONFIG[currentMetric];
     let isValid = true;
     let errorMessage = "יש למלא את השדות";
 
     if (c.type === 'meds') {
-        entry.med = document.getElementById('inp-med').value;
-        entry.mg = document.getElementById('inp-mg').value;
-        entry.takeTime = document.getElementById('inp-time').value;
+        entry.med = document.getElementById('inp-med').value; entry.mg = document.getElementById('inp-mg').value; entry.takeTime = document.getElementById('inp-time').value;
         if (!entry.med) isValid = false;
     } else if (c.type === 'walk') {
         const val = document.getElementById('walk-val').value;
         const endTime = document.getElementById('f-end-time').value;
         if (!val) isValid = false;
-        entry.val = parseFloat(val);
-        entry.unit = appSettings.walkUnit; 
-        entry.walkType = appSettings.walkType;
-        entry.endTime = endTime; 
+        entry.val = parseFloat(val); entry.unit = appSettings.walkUnit; entry.walkType = appSettings.walkType; entry.endTime = endTime; 
+    } else if (c.type === 'gym') {
+        const val = document.getElementById('gym-val').value;
+        if (!selectedGymExercise || !val) isValid = false;
+        entry.exId = selectedGymExercise;
+        entry.val = val;
+        entry.info = document.getElementById('gym-info').value;
     } else {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
@@ -611,6 +677,11 @@ function getFilteredData() {
     let filtered = db.filter(e => e.metric === currentMetric);
     if (filtered.length === 0) return [];
     if (currentMetric === 'walk') filtered = filtered.filter(e => e.unit === appSettings.walkUnit);
+    if (currentMetric === 'gym') filtered = filtered.filter(e => {
+        // בודקים אם התרגיל שייך לקטגוריה הנוכחית
+        const exList = GYM_EXERCISES[appSettings.gymType].map(ex => ex.id);
+        return exList.includes(e.exId);
+    });
     const days = currentFilterDays || 7;
     const dates = filtered.map(e => new Date(e.date).getTime());
     const lastDate = new Date(Math.max.apply(null, dates));
@@ -650,8 +721,23 @@ function renderHistory() {
                     <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
                 </div>
             </div>`;
+        } else if (c.type === 'gym') {
+            // מציאת שם התרגיל
+            let exName = item.exId;
+            Object.values(GYM_EXERCISES).flat().forEach(ex => { if(ex.id === item.exId) exName = ex.name; });
+            return `
+            <div class="history-row" style="border-right-color: ${c.color}">
+                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${item.time}</div></div>
+                <div class="h-data justify-content-start ps-2">
+                     <span>${exName}: ${item.val}</span>
+                     <span class="text-muted small ms-2">${item.info || ''}</span>
+                </div>
+                <div class="h-actions">
+                    <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
+                </div>
+            </div>`;
         } else {
-            // היסטוריה לחץ דם ושאר - קומפקטי
             contentStr = c.fields.map(f => {
                 const val = item[f.id];
                 if ((f.id === 'sys' || f.id === 'val') && f.ranges) { 
@@ -689,6 +775,10 @@ function editEntry(item) {
         document.getElementById('inp-time').value = item.takeTime;
     } else if (c.type === 'walk') {
         document.getElementById('walk-val').value = item.val;
+    } else if (c.type === 'gym') {
+        selectExercise(item.exId);
+        document.getElementById('gym-val').value = item.val;
+        document.getElementById('gym-info').value = item.info;
     } else {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
@@ -716,6 +806,12 @@ function resetForm() {
     document.getElementById('edit-id').value = '';
     setDateTimeNow();
     document.getElementById('cancel-edit-btn').classList.add('d-none');
+    selectedGymExercise = null;
+    if(currentMetric === 'gym') {
+        document.getElementById('selected-gym-exercise').value = '';
+        renderGymGrid();
+        renderGymInputs();
+    }
 }
 
 function validateInput(el, min, max, metricKey, fieldId) {
@@ -747,28 +843,26 @@ function updateChart() {
     const c = CONFIG[currentMetric];
     let datasets = [];
     
-    // Bar Chart Logic (Apple Style)
     if (currentMetric === 'bp') {
         datasets = [
             { label: 'גבוה', data: rawData.map(i => i.sys), backgroundColor: '#ff3b30', borderRadius: 4 },
             { label: 'נמוך', data: rawData.map(i => i.dia), backgroundColor: '#007aff', borderRadius: 4 },
-            { label: 'דופק', data: rawData.map(i => i.pulse), backgroundColor: '#34c759', borderRadius: 4, type: 'line', tension: 0.4 } // דופק נשאר קו כדי לבלוט
+            { label: 'דופק', data: rawData.map(i => i.pulse), backgroundColor: '#34c759', borderRadius: 4, type: 'line', tension: 0.4 }
         ];
     } else if (currentMetric === 'walk') {
          datasets = [{ label: appSettings.walkUnit, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
+    } else if (currentMetric === 'gym') {
+         // גרף לכושר - נציג רק את הכמות (חזרות/דקות)
+         datasets = [{ label: 'כמות', data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
     } else {
         const field = c.fields[0];
         datasets = [{ label: field.label, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
     }
     
     chartInstance = new Chart(ctx, { 
-        type: 'bar', // ברירת מחדל עמודות
+        type: 'bar', 
         data: { labels, datasets }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            scales: { x: { grid: { display: false } }, y: { beginAtZero: false } } 
-        } 
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: false } } } 
     });
 }
 
@@ -781,6 +875,7 @@ function exportTopicExcel() {
         let val = '';
         if(c.type==='meds') val = `${i.med} ${i.mg} (${i.takeTime})`;
         else if(c.type==='walk') val = `${i.val} ${i.unit}`;
+        else if(c.type==='gym') val = `${i.exId}: ${i.val} (${i.info||''})`;
         else val = c.fields.map(f=>`${f.label}:${i[f.id]}`).join(' ');
         csv += `${i.date},${i.time},${c.name},"${val}"\n`;
     });
@@ -800,9 +895,7 @@ function applySettings() {
     document.getElementById('toggle-dark-mode').checked = appSettings.darkMode;
     document.getElementById('toggle-font-size').checked = appSettings.largeFont;
 }
-function saveDocName() {
-    // Empty
-}
+function saveDocName() { /* Empty */ }
 function handleResetToggle() {
     if (document.getElementById('toggle-reset-data').checked) {
         Swal.fire({ title: 'מחיקת הכל?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'כן' }).then(r => {
