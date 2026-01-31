@@ -43,7 +43,7 @@
         .gym-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: var(--main-bg); border-radius: 12px; padding: 10px 5px; cursor: pointer;
-            transition: all 0.2s; border: 2px solid transparent; min-height: 80px;
+            transition: all 0.2s; border: 2px solid transparent; min-height: 90px;
         }
         .gym-item i { font-size: 1.5rem; margin-bottom: 5px; color: #8e8e93; }
         .gym-item span { font-size: 0.65rem; text-align: center; line-height: 1.1; font-weight: 600; }
@@ -76,7 +76,8 @@
         .history-row { background: var(--card-bg); border-radius: 12px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .h-meta { font-size: 0.7rem; color: #8e8e93; line-height: 1.1; min-width: 40px; text-align: center; }
         .h-data { display: flex; gap: 8px; font-weight: bold; font-size: 0.95rem; align-items: center; flex-grow: 1; justify-content: center; }
-        .h-walk-val { font-weight: bold; font-size: 1.1rem; margin: 0 10px; }
+        .h-walk-container { display: flex; align-items: center; gap: 8px; width: 100%; }
+        .h-walk-val { font-weight: bold; font-size: 1rem; }
         .bg-danger-custom { background-color: var(--c-danger) !important; color: #ff3b30 !important; font-weight: bold; }
         
         /* iOS Segments */
@@ -107,7 +108,7 @@
         <div class="main-header"><i class="fas fa-heartbeat"></i><h1>חיים רק פעם אחת...</h1></div>
         <div class="dashboard-grid" id="main-grid"></div>
         <div class="text-center mt-5">
-            <p class="text-muted small fw-bold mb-0">גרסה 21.0</p>
+            <p class="text-muted small fw-bold mb-0">גרסה 22.0</p>
             <p class="text-muted small" style="font-size: 0.75rem;">כל הזכויות שמורות ל-Aiex</p>
         </div>
         <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
@@ -128,8 +129,8 @@
             <div class="ios-segment seg-3">
                 <div id="gym-bg" class="segment-bg pos-0"></div>
                 <div id="gym-0" class="segment-btn active" onclick="setGymType(0)">בית</div>
-                <div id="gym-1" class="segment-btn" onclick="setGymType(1)">רחוב</div>
-                <div id="gym-2" class="segment-btn" onclick="setGymType(2)">מכון</div>
+                <div id="gym-1" class="segment-btn" onclick="setGymType(1)">ציבורי</div>
+                <div id="gym-2" class="segment-btn" onclick="setGymType(2)">חדר כושר</div>
             </div>
         </div>
 
@@ -188,11 +189,7 @@
         <div class="toolbar" style="background: var(--card-bg); border-radius: 12px; padding: 10px; margin-bottom: 10px;">
             <div class="d-flex justify-content-between w-100 mb-2">
                 <button class="btn border" onclick="exportTopicExcel()" style="color:#198754; border-color:#e5e5ea"><i class="fas fa-file-excel"></i></button>
-                
-                <button id="btn-gym-info" class="btn border d-none" onclick="showExerciseInfo()" style="color:#007aff; border-color:#e5e5ea; flex-grow: 1; margin: 0 5px;">
-                    <i class="fas fa-info-circle me-1"></i> איך לבצע?
-                </button>
-
+                <button id="btn-gym-info" class="btn border d-none" onclick="showExerciseInfo()" style="color:#007aff; border-color:#e5e5ea; flex-grow: 1; margin: 0 5px;"><i class="fas fa-info-circle me-1"></i> איך לבצע?</button>
                 <button id="btn-show-graph" class="btn border" onclick="openGraphView()" style="color:#0d6efd; border-color:#e5e5ea"><i class="fas fa-chart-line"></i></button>
             </div>
             <div class="d-flex justify-content-between gap-1 w-100" id="filter-container-list"></div>
@@ -281,29 +278,33 @@ const DEFAULT_STATIONS = [
     { name: 'רדיוס פופ', freq: 'Pop', logo: '100', desc: 'להיטים ללא הפסקה', url: 'https://radius.live/radio/radius' }
 ];
 
-// תרגילי כושר + המלצות בריאותיות (מנחה: אלכס)
+// תרגילי כושר - כולל City Bike Pro
 const GYM_EXERCISES = {
     0: [ // בית
-        { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying', guide: 'ידיים ברוחב כתפיים, גב ישר.', safety: 'לגילאי 60+: מומלץ לבצע כשהברכיים על הרצפה למניעת עומס על הגב. הפסקה של 2 דקות בין סטים.' },
-        { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line', guide: 'שכיבה על הגב, ברכיים כפופות, הרמת שכמות בלבד.', safety: 'זהירות: לא למשוך את הצוואר עם הידיים. למבוגרים: מספיק ניתוק קל של השכמות.' },
-        { id: 'squat', name: 'סקוואט', icon: 'fa-person-arrow-down-to-line', guide: 'פישוק קל, ירידה כאילו מתיישבים על כיסא.', safety: 'חשוב: הברכיים לא עוברות את קו האצבעות. למתקשים: להיעזר בכיסא מאחור.' },
-        { id: 'plank', name: 'פלאנק (בטן סטטי)', icon: 'fa-minus', guide: 'הישענות על אמות וקצות אצבעות, גוף ישר כמו קרש.', safety: 'אם הגב כואב - להפסיק מיד. למתחילים: להתחיל ב-15 שניות בלבד.' },
-        { id: 'dumbbells', name: 'משקולות יד (ידיים)', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים בעמידה או ישיבה.', safety: 'לא לנעול מרפקים ביישור. משקל מומלץ למתחילים: 1-2 ק"ג.' },
-        { id: 'rope', name: 'קפיצה בחבל', icon: 'fa-person-jumping', guide: 'קפיצות קטנות על כריות כף הרגל.', safety: 'לא מומלץ לבעלי בעיות ברכיים או גב. נעלי ספורט חובה.' }
+        { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying', guide: 'ידיים ברוחב כתפיים.', safety: 'לגיל 60+: ברכיים על הרצפה.' },
+        { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line', guide: 'הרמת שכמות קלה.', safety: 'לא למשוך בצוואר.' },
+        { id: 'squat', name: 'סקוואט', icon: 'fa-person-arrow-down-to-line', guide: 'כמו ישיבה על כיסא.', safety: 'ברכיים לא עוברות את האצבעות.' },
+        { id: 'plank', name: 'פלאנק', icon: 'fa-minus', guide: 'גוף ישר כמו קרש.', safety: 'להפסיק אם כואב הגב.' },
+        { id: 'dumbbells', name: 'משקולות יד', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים.', safety: 'לא לנעול מרפקים.' },
+        { id: 'rope', name: 'קפיצה בחבל', icon: 'fa-person-jumping', guide: 'קפיצות קטנות.', safety: 'לא לבעלי בעיות ברכיים.' },
+        { id: 'pullups_home', name: 'מתח', icon: 'fa-grip-lines', guide: 'משיכת הגוף מעלה.', safety: 'זהירות מנפילה.' }
     ],
-    1: [ // רחוב
-        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'תנועת הליכה/ריצה באוויר ללא אימפקט.', safety: 'מצוין למפרקים. לשמור על גב זקוף ולא להגזים במהירות.' },
-        { id: 'chest_press_out', name: 'לחיצת חזה', icon: 'fa-hands', guide: 'דחיפת הידיות קדימה תוך כדי נשיפה.', safety: 'תנועה איטית ומבוקרת. לא "לזרוק" את הידיות.' },
-        { id: 'lat_pull_out', name: 'משיכת פולי', icon: 'fa-arrow-down', guide: 'משיכת הידיות כלפי מטה אל החזה.', safety: 'לשמור גב זקוף. לא למשוך אל מאחורי העורף (מסוכן לצוואר).' },
-        { id: 'abs_bench', name: 'ספסל בטן', icon: 'fa-inbox', guide: 'כפיפות בטן בשיפוע.', safety: 'למתקדמים בלבד. עלול ליצור לחץ על הגב התחתון.' },
-        { id: 'pullups', name: 'מתח', icon: 'fa-grip-lines', guide: 'משיכת הגוף מעלה עד שהסנטר עובר את המוט.', safety: 'תרגיל קשה. להיזהר מנפילה בירידה.' }
+    1: [ // ציבורי
+        { id: 'citybike', name: 'City Bike Pro', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בקצב אחיד.', safety: 'להתחיל בדרגה נמוכה.' },
+        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'הליכה באוויר.', safety: 'לשמור גב זקוף.' },
+        { id: 'skier', name: 'סקי אוויר', icon: 'fa-person-skiing', guide: 'תנועה לצדדים.', safety: 'להחזיק חזק בידיות.' },
+        { id: 'glider', name: 'גליידר', icon: 'fa-person-skating', guide: 'תנועה אליפטית גדולה.', safety: 'שיווי משקל.' },
+        { id: 'chest_press_out', name: 'לחיצת חזה', icon: 'fa-hands', guide: 'דחיפה קדימה.', safety: 'תנועה איטית.' },
+        { id: 'butterfly', name: 'פרפר', icon: 'fa-crow', guide: 'קירוב מרפקים.', safety: 'לא לפתוח יותר מדי לאחור.' },
+        { id: 'rowing_out', name: 'חתירה', icon: 'fa-person-rowing', guide: 'משיכה לבטן.', safety: 'גב ישר.' },
+        { id: 'pullups_pub', name: 'מתח', icon: 'fa-grip-lines', guide: 'משיכה מעלה.', safety: 'זהירות.' }
     ],
-    2: [ // מכון
-        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה או ריצה בקצב קבוע.', safety: 'להתחיל לאט. להשתמש בידיות בטיחות אם צריך. נעליים מתאימות חובה.' },
-        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית המדמה ריצה ללא זעזועים.', safety: 'מצוין לברכיים. לשמור על עקבים צמודים למשטח.' },
-        { id: 'lat_pulldown', name: 'פולי עליון', icon: 'fa-arrow-down-long', guide: 'משיכת מוט לחזה עליון בישיבה.', safety: 'לא למשוך לעורף! לשמור גב ישר.' },
-        { id: 'bench_press', name: 'לחיצת חזה', icon: 'fa-dumbbell', guide: 'לחיצת מוט או משקולות בשכיבה.', safety: 'חובה משגיח במשקלים כבדים. לא להקשית את הגב.' },
-        { id: 'leg_press', name: 'לחיצת רגליים', icon: 'fa-layer-group', guide: 'דחיפת משטח עם הרגליים בישיבה.', safety: 'לא לנעול ברכיים בסוף התנועה! סכנת פציעה חמורה.' }
+    2: [ // חדר כושר
+        { id: 'citybike_gym', name: 'City Bike Pro', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה מקצועית.', safety: 'לכוון מושב לגובה האגן.' },
+        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה/ריצה.', safety: 'שימוש בתפס ביטחון.' },
+        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית.', safety: 'עקבים צמודים.' },
+        { id: 'lat_pulldown', name: 'פולי עליון', icon: 'fa-arrow-down-long', guide: 'משיכה לחזה.', safety: 'לא לעורף.' },
+        { id: 'bench_press', name: 'לחיצת חזה', icon: 'fa-dumbbell', guide: 'דחיקה בשכיבה.', safety: 'משגיח במשקלים כבדים.' }
     ]
 };
 
@@ -411,7 +412,7 @@ function renderGymGrid() {
 function selectExercise(id) {
     selectedGymExercise = id;
     document.getElementById('selected-gym-exercise').value = id;
-    document.getElementById('btn-gym-info').classList.remove('d-none'); // הצגת כפתור מידע
+    document.getElementById('btn-gym-info').classList.remove('d-none');
     renderGymGrid(); 
     renderGymInputs();
 }
@@ -443,19 +444,38 @@ function renderGymInputs() {
         div.innerHTML = '<div class="text-center text-muted small my-3">בחר תרגיל מהרשימה למעלה</div>';
         return;
     }
-    div.innerHTML = `
-        <div class="col-6">
-            <label class="lbl-center">כמות (חזרות/דק')</label>
-            <input type="number" id="gym-val" class="form-control text-center" placeholder="0">
-        </div>
-        <div class="col-6">
-            <label class="lbl-center">מידע נוסף (סטים/ק"ג)</label>
-            <input type="text" id="gym-info" class="form-control text-center" placeholder="...">
-        </div>
-    `;
+    
+    const type = appSettings.gymType || 0;
+    const ex = GYM_EXERCISES[type].find(e => e.id === selectedGymExercise);
+    
+    // בדיקה אם זה מכשיר City Bike (דורש שדות מיוחדים)
+    if (ex.inputType === 'bike') {
+        div.innerHTML = `
+            <div class="col-6">
+                <label class="lbl-center">מרחק (ק"מ)</label>
+                <input type="number" id="gym-val" class="form-control text-center" placeholder="0">
+            </div>
+            <div class="col-6">
+                <label class="lbl-center">קושי (1-10)</label>
+                <input type="number" id="gym-info" class="form-control text-center" placeholder="1-10">
+            </div>
+        `;
+    } else {
+        // ברירת מחדל לשאר המכשירים
+        div.innerHTML = `
+            <div class="col-6">
+                <label class="lbl-center">כמות (חזרות/דק')</label>
+                <input type="number" id="gym-val" class="form-control text-center" placeholder="0">
+            </div>
+            <div class="col-6">
+                <label class="lbl-center">מידע נוסף (סטים/ק"ג)</label>
+                <input type="text" id="gym-info" class="form-control text-center" placeholder="...">
+            </div>
+        `;
+    }
 }
 
-// (המשך קוד זהה לשאר הפונקציות...)
+// (המשך קוד זהה...)
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
 let isLoading = false;
@@ -532,7 +552,7 @@ function openMetric(key) {
     document.getElementById('walk-type-container').classList.add('d-none');
     document.getElementById('gym-type-container').classList.add('d-none');
     document.getElementById('gym-selection-area').classList.add('d-none');
-    document.getElementById('btn-gym-info').classList.add('d-none'); // הסתרת כפתור מידע
+    document.getElementById('btn-gym-info').classList.add('d-none');
 
     if (key === 'walk') {
         document.getElementById('walk-goal-container').classList.remove('d-none');
@@ -650,6 +670,18 @@ function saveEntry() {
         entry.exId = selectedGymExercise;
         entry.val = val;
         entry.info = document.getElementById('gym-info').value;
+        
+        // ולידציה ל-City Bike
+        const type = appSettings.gymType || 0;
+        const ex = GYM_EXERCISES[type].find(e => e.id === selectedGymExercise);
+        if (ex && ex.inputType === 'bike') {
+            const level = parseFloat(entry.info);
+            if(isNaN(level) || level < 1 || level > 10) {
+                isValid = false;
+                errorMessage = "דרגת קושי חייבת להיות בין 1 ל-10";
+                document.getElementById('gym-info').classList.add('bg-danger-custom');
+            }
+        }
     } else {
         c.fields.forEach(f => {
             const el = document.getElementById(`inp-${f.id}`);
@@ -733,10 +765,11 @@ function renderHistory() {
             Object.values(GYM_EXERCISES).flat().forEach(ex => { if(ex.id === item.exId) { exName = ex.name; icon = ex.icon; } });
             return `
             <div class="history-row" style="border-right-color: ${c.color}">
-                <div class="h-meta text-center"><div>${dateStr}</div></div>
+                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${item.time}</div></div>
                 <div class="h-data justify-content-start ps-2">
                      <i class="fas ${icon} text-secondary"></i>
                      <span>${exName}: ${item.val}</span>
+                     ${item.info ? '<span class="text-muted ms-2 small">('+item.info+')</span>' : ''}
                 </div>
                 <div class="h-actions d-flex">
                     <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
