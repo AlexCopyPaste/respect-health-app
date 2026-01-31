@@ -39,14 +39,14 @@
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
         /* כושר - גריד מכשירים */
-        .gym-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .gym-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; max-height: 300px; overflow-y: auto; }
         .gym-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: var(--main-bg); border-radius: 12px; padding: 10px 5px; cursor: pointer;
             transition: all 0.2s; border: 2px solid transparent; min-height: 80px;
         }
         .gym-item i { font-size: 1.5rem; margin-bottom: 5px; color: #8e8e93; }
-        .gym-item span { font-size: 0.7rem; text-align: center; line-height: 1.1; font-weight: 600; }
+        .gym-item span { font-size: 0.65rem; text-align: center; line-height: 1.1; font-weight: 600; }
         .gym-item.active { border-color: var(--primary-color); background: #f0f0ff; }
         body.dark-mode .gym-item.active { background: #1c1c1e; border-color: #5856d6; }
         .gym-item.active i { color: var(--primary-color); }
@@ -76,8 +76,7 @@
         .history-row { background: var(--card-bg); border-radius: 12px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .h-meta { font-size: 0.7rem; color: #8e8e93; line-height: 1.1; min-width: 40px; text-align: center; }
         .h-data { display: flex; gap: 8px; font-weight: bold; font-size: 0.95rem; align-items: center; flex-grow: 1; justify-content: center; }
-        .h-walk-container { display: flex; align-items: center; gap: 8px; width: 100%; }
-        .h-walk-val { font-weight: bold; font-size: 1rem; }
+        .h-walk-val { font-weight: bold; font-size: 1.1rem; margin: 0 10px; }
         .bg-danger-custom { background-color: var(--c-danger) !important; color: #ff3b30 !important; font-weight: bold; }
         
         /* iOS Segments */
@@ -108,7 +107,7 @@
         <div class="main-header"><i class="fas fa-heartbeat"></i><h1>חיים רק פעם אחת...</h1></div>
         <div class="dashboard-grid" id="main-grid"></div>
         <div class="text-center mt-5">
-            <p class="text-muted small fw-bold mb-0">גרסה 20.0</p>
+            <p class="text-muted small fw-bold mb-0">גרסה 21.0</p>
             <p class="text-muted small" style="font-size: 0.75rem;">כל הזכויות שמורות ל-Aiex</p>
         </div>
         <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
@@ -189,6 +188,11 @@
         <div class="toolbar" style="background: var(--card-bg); border-radius: 12px; padding: 10px; margin-bottom: 10px;">
             <div class="d-flex justify-content-between w-100 mb-2">
                 <button class="btn border" onclick="exportTopicExcel()" style="color:#198754; border-color:#e5e5ea"><i class="fas fa-file-excel"></i></button>
+                
+                <button id="btn-gym-info" class="btn border d-none" onclick="showExerciseInfo()" style="color:#007aff; border-color:#e5e5ea; flex-grow: 1; margin: 0 5px;">
+                    <i class="fas fa-info-circle me-1"></i> איך לבצע?
+                </button>
+
                 <button id="btn-show-graph" class="btn border" onclick="openGraphView()" style="color:#0d6efd; border-color:#e5e5ea"><i class="fas fa-chart-line"></i></button>
             </div>
             <div class="d-flex justify-content-between gap-1 w-100" id="filter-container-list"></div>
@@ -266,52 +270,40 @@
 </div>
 
 <script>
-// --- נתונים ---
+// --- נתונים ומידע בריאותי ---
 const DEFAULT_STATIONS = [
-    { name: 'גלגלצ', freq: '91.8', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
-    { name: 'אקו 99', freq: '99', logo: '99', desc: 'מוזיקה טובה', url: 'https://eco99live.hadar-team.co.il/eco99fm' },
-    { name: 'כאן 88', freq: '88', logo: '88', desc: 'מוזיקה אלטרנטיבית', url: 'https://kanliveicy.media.kan.org.il/icy/kan88_mp3' },
-    { name: 'רדיוס', freq: '100', logo: '100', desc: 'להיטים', url: 'https://radius.live/radio/radius' },
-    { isSeparator: true, label: 'חדשות ודיבורים' },
-    { name: 'גל"צ', freq: '96.6', logo: 'גלצ', desc: 'חדשות וצבא', url: 'https://glzwizzlv.bynetcdn.com/glz_mp3' },
-    { name: 'כאן ב', freq: '95.5', logo: 'ב', desc: 'אקטואליה', url: 'https://kanliveicy.media.kan.org.il/icy/kanbet_mp3' },
-    { name: '103FM', freq: '103', logo: '103', desc: 'רדיו ללא הפסקה', url: 'https://cdn.cybercdn.live/103fm/103fm/icecast.audio' },
-    { name: 'כאן מורשת', freq: '90.5', logo: 'מ', desc: 'מסורת', url: 'https://kanliveicy.media.kan.org.il/icy/kanmoreshet_mp3' },
-    { isSeparator: true, label: 'ספיישלים ופודקאסטים' },
-    { name: 'כאן 80s', freq: 'WEB', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
-    { name: 'כאן נוסטלגיה', freq: 'WEB', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
-    { name: 'כאן גימל', freq: '97.8', logo: 'ג', desc: 'מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kan_gimel_mp3' }
+    { name: 'גלגלצ', freq: 'Live', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
+    { isSeparator: true, label: 'פלייליסטים וספיישלים' },
+    { name: 'כאן 80s', freq: '80s', logo: '80', desc: 'להיטי שנות ה-80', url: 'https://kanliveicy.media.kan.org.il/icy/80s_mp3' },
+    { name: 'כאן נוסטלגיה', freq: 'Old', logo: 'נוס', desc: 'שירים של פעם', url: 'https://kanliveicy.media.kan.org.il/icy/nostalgia_mp3' },
+    { name: 'כאן ים תיכוני', freq: 'Med', logo: 'ים', desc: 'מוזיקה ים תיכונית', url: 'https://kanliveicy.media.kan.org.il/icy/mizrahit_mp3' },
+    { name: 'כאן גימל', freq: 'Heb', logo: 'ג', desc: 'רק מוזיקה ישראלית', url: 'https://kanliveicy.media.kan.org.il/icy/kangimmel_mp3' },
+    { name: 'רדיוס פופ', freq: 'Pop', logo: '100', desc: 'להיטים ללא הפסקה', url: 'https://radius.live/radio/radius' }
 ];
 
-// תרגילי כושר לפי קטגוריות
+// תרגילי כושר + המלצות בריאותיות (מנחה: אלכס)
 const GYM_EXERCISES = {
     0: [ // בית
-        { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying' },
-        { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line' },
-        { id: 'plank', name: 'פלאנק', icon: 'fa-minus' },
-        { id: 'squat', name: 'סקוואט', icon: 'fa-person-arrow-down-to-line' },
-        { id: 'dumbbells', name: 'משקולות יד', icon: 'fa-dumbbell' },
-        { id: 'rope', name: 'קפיצה בחבל', icon: 'fa-person-jumping' },
-        { id: 'yoga', name: 'יוגה/מתיחות', icon: 'fa-spa' }
+        { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying', guide: 'ידיים ברוחב כתפיים, גב ישר.', safety: 'לגילאי 60+: מומלץ לבצע כשהברכיים על הרצפה למניעת עומס על הגב. הפסקה של 2 דקות בין סטים.' },
+        { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line', guide: 'שכיבה על הגב, ברכיים כפופות, הרמת שכמות בלבד.', safety: 'זהירות: לא למשוך את הצוואר עם הידיים. למבוגרים: מספיק ניתוק קל של השכמות.' },
+        { id: 'squat', name: 'סקוואט', icon: 'fa-person-arrow-down-to-line', guide: 'פישוק קל, ירידה כאילו מתיישבים על כיסא.', safety: 'חשוב: הברכיים לא עוברות את קו האצבעות. למתקשים: להיעזר בכיסא מאחור.' },
+        { id: 'plank', name: 'פלאנק (בטן סטטי)', icon: 'fa-minus', guide: 'הישענות על אמות וקצות אצבעות, גוף ישר כמו קרש.', safety: 'אם הגב כואב - להפסיק מיד. למתחילים: להתחיל ב-15 שניות בלבד.' },
+        { id: 'dumbbells', name: 'משקולות יד (ידיים)', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים בעמידה או ישיבה.', safety: 'לא לנעול מרפקים ביישור. משקל מומלץ למתחילים: 1-2 ק"ג.' },
+        { id: 'rope', name: 'קפיצה בחבל', icon: 'fa-person-jumping', guide: 'קפיצות קטנות על כריות כף הרגל.', safety: 'לא מומלץ לבעלי בעיות ברכיים או גב. נעלי ספורט חובה.' }
     ],
     1: [ // רחוב
-        { id: 'pullups', name: 'מתח', icon: 'fa-grip-lines' },
-        { id: 'dips', name: 'מקבילים', icon: 'fa-pause' },
-        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking' },
-        { id: 'chest_press_out', name: 'לחיצת חזה', icon: 'fa-hands' },
-        { id: 'lat_pull_out', name: 'משיכת פולי', icon: 'fa-arrow-down' },
-        { id: 'abs_bench', name: 'ספסל בטן', icon: 'fa-inbox' },
-        { id: 'steps', name: 'מדרגה', icon: 'fa-stairs' }
+        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'תנועת הליכה/ריצה באוויר ללא אימפקט.', safety: 'מצוין למפרקים. לשמור על גב זקוף ולא להגזים במהירות.' },
+        { id: 'chest_press_out', name: 'לחיצת חזה', icon: 'fa-hands', guide: 'דחיפת הידיות קדימה תוך כדי נשיפה.', safety: 'תנועה איטית ומבוקרת. לא "לזרוק" את הידיות.' },
+        { id: 'lat_pull_out', name: 'משיכת פולי', icon: 'fa-arrow-down', guide: 'משיכת הידיות כלפי מטה אל החזה.', safety: 'לשמור גב זקוף. לא למשוך אל מאחורי העורף (מסוכן לצוואר).' },
+        { id: 'abs_bench', name: 'ספסל בטן', icon: 'fa-inbox', guide: 'כפיפות בטן בשיפוע.', safety: 'למתקדמים בלבד. עלול ליצור לחץ על הגב התחתון.' },
+        { id: 'pullups', name: 'מתח', icon: 'fa-grip-lines', guide: 'משיכת הגוף מעלה עד שהסנטר עובר את המוט.', safety: 'תרגיל קשה. להיזהר מנפילה בירידה.' }
     ],
     2: [ // מכון
-        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running' },
-        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic' },
-        { id: 'bench_press', name: 'לחיצת חזה', icon: 'fa-dumbbell' },
-        { id: 'leg_press', name: 'לחיצת רגליים', icon: 'fa-layer-group' },
-        { id: 'lat_pulldown', name: 'פולי עליון', icon: 'fa-arrow-down-long' },
-        { id: 'rowing', name: 'מכשיר חתירה', icon: 'fa-water' },
-        { id: 'smith', name: 'סמית משיין', icon: 'fa-bars' },
-        { id: 'cable', name: 'כבלים', icon: 'fa-bezier-curve' }
+        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה או ריצה בקצב קבוע.', safety: 'להתחיל לאט. להשתמש בידיות בטיחות אם צריך. נעליים מתאימות חובה.' },
+        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית המדמה ריצה ללא זעזועים.', safety: 'מצוין לברכיים. לשמור על עקבים צמודים למשטח.' },
+        { id: 'lat_pulldown', name: 'פולי עליון', icon: 'fa-arrow-down-long', guide: 'משיכת מוט לחזה עליון בישיבה.', safety: 'לא למשוך לעורף! לשמור גב ישר.' },
+        { id: 'bench_press', name: 'לחיצת חזה', icon: 'fa-dumbbell', guide: 'לחיצת מוט או משקולות בשכיבה.', safety: 'חובה משגיח במשקלים כבדים. לא להקשית את הגב.' },
+        { id: 'leg_press', name: 'לחיצת רגליים', icon: 'fa-layer-group', guide: 'דחיפת משטח עם הרגליים בישיבה.', safety: 'לא לנעול ברכיים בסוף התנועה! סכנת פציעה חמורה.' }
     ]
 };
 
@@ -383,7 +375,7 @@ function showPage(id, isRadio) {
     window.scrollTo(0,0);
 }
 
-// --- כושר משופר ---
+// --- כושר חכם ---
 function setGymType(typeIdx) {
     appSettings.gymType = typeIdx;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
@@ -393,6 +385,7 @@ function setGymType(typeIdx) {
     
     selectedGymExercise = null;
     document.getElementById('selected-gym-exercise').value = '';
+    document.getElementById('btn-gym-info').classList.add('d-none');
     renderGymGrid();
     renderGymInputs();
 }
@@ -402,14 +395,10 @@ function renderGymGrid() {
     const type = appSettings.gymType || 0;
     const exercises = GYM_EXERCISES[type];
     
-    // מיון לפי שימוש
     const db = JSON.parse(localStorage.getItem('healthDB') || '[]');
     const counts = {};
-    db.filter(e => e.metric === 'gym').forEach(e => {
-        counts[e.exId] = (counts[e.exId] || 0) + 1;
-    });
-    
-    exercises.sort((a,b) => (counts[b.id] || 0) - (counts[a.id] || 0)); // הכי נפוץ למעלה
+    db.filter(e => e.metric === 'gym').forEach(e => { counts[e.exId] = (counts[e.exId] || 0) + 1; });
+    exercises.sort((a,b) => (counts[b.id] || 0) - (counts[a.id] || 0));
 
     grid.innerHTML = exercises.map(ex => `
         <div class="gym-item ${selectedGymExercise === ex.id ? 'active' : ''}" onclick="selectExercise('${ex.id}')">
@@ -422,8 +411,30 @@ function renderGymGrid() {
 function selectExercise(id) {
     selectedGymExercise = id;
     document.getElementById('selected-gym-exercise').value = id;
-    renderGymGrid(); // לעדכון סימון
+    document.getElementById('btn-gym-info').classList.remove('d-none'); // הצגת כפתור מידע
+    renderGymGrid(); 
     renderGymInputs();
+}
+
+function showExerciseInfo() {
+    if (!selectedGymExercise) return;
+    const type = appSettings.gymType || 0;
+    const ex = GYM_EXERCISES[type].find(e => e.id === selectedGymExercise);
+    if (!ex) return;
+
+    Swal.fire({
+        title: ex.name,
+        html: `
+            <div class="text-start">
+                <p><strong>איך מבצעים?</strong><br>${ex.guide}</p>
+                <div class="alert alert-warning p-2 small">
+                    <strong><i class="fas fa-exclamation-triangle"></i> דגשים וזהירות:</strong><br>${ex.safety}
+                </div>
+            </div>
+        `,
+        icon: 'info',
+        confirmButtonText: 'הבנתי, תודה'
+    });
 }
 
 function renderGymInputs() {
@@ -444,8 +455,7 @@ function renderGymInputs() {
     `;
 }
 
-// --- שאר הלוגיקה ---
-// (המשך קוד רדיו, הליכה וגרפים - זהה לקודם עם התיקונים)
+// (המשך קוד זהה לשאר הפונקציות...)
 let currentAudio = document.getElementById('radio-player');
 let playingUrl = null;
 let isLoading = false;
@@ -518,11 +528,11 @@ function openMetric(key) {
     document.getElementById('header-title').innerText = c.name;
     document.getElementById('btn-show-graph').style.display = (c.type === 'meds') ? 'none' : 'block';
 
-    // ניהול תצוגה לפי סוג
     document.getElementById('walk-goal-container').classList.add('d-none');
     document.getElementById('walk-type-container').classList.add('d-none');
     document.getElementById('gym-type-container').classList.add('d-none');
     document.getElementById('gym-selection-area').classList.add('d-none');
+    document.getElementById('btn-gym-info').classList.add('d-none'); // הסתרת כפתור מידע
 
     if (key === 'walk') {
         document.getElementById('walk-goal-container').classList.remove('d-none');
@@ -678,7 +688,6 @@ function getFilteredData() {
     if (filtered.length === 0) return [];
     if (currentMetric === 'walk') filtered = filtered.filter(e => e.unit === appSettings.walkUnit);
     if (currentMetric === 'gym') filtered = filtered.filter(e => {
-        // בודקים אם התרגיל שייך לקטגוריה הנוכחית
         const exList = GYM_EXERCISES[appSettings.gymType].map(ex => ex.id);
         return exList.includes(e.exId);
     });
@@ -705,34 +714,31 @@ function renderHistory() {
         if (c.type === 'meds') {
             contentStr = `<div class="d-flex align-items-center gap-2"><i class="fas fa-pills small"></i><span>${item.med} ${item.mg?item.mg:''} (${item.takeTime})</span></div>`;
         } else if (c.type === 'walk') {
-            const timeRange = item.endTime ? `${item.time}-${item.endTime}` : item.time;
             const unitLabel = item.unit === 'km' ? 'km' : '';
             const icon = item.unit === 'km' ? '' : '<i class="fas fa-shoe-prints"></i>';
             return `
             <div class="history-row" style="border-right-color: ${c.color}">
-                <div class="h-meta text-center"><div>${dateStr}</div></div>
+                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${item.time}</div></div>
                 <div class="h-walk-container">
-                     <span class="text-muted small">${timeRange}</span>
-                     <div class="flex-grow-1 border-bottom border-secondary opacity-25 mx-2"></div>
                      <span class="h-walk-val">${item.val} ${unitLabel} ${icon}</span>
                 </div>
-                <div class="h-actions ms-2">
+                <div class="h-actions ms-2 d-flex">
                     <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
                     <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
                 </div>
             </div>`;
         } else if (c.type === 'gym') {
-            // מציאת שם התרגיל
             let exName = item.exId;
-            Object.values(GYM_EXERCISES).flat().forEach(ex => { if(ex.id === item.exId) exName = ex.name; });
+            let icon = 'fa-dumbbell';
+            Object.values(GYM_EXERCISES).flat().forEach(ex => { if(ex.id === item.exId) { exName = ex.name; icon = ex.icon; } });
             return `
             <div class="history-row" style="border-right-color: ${c.color}">
-                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${item.time}</div></div>
+                <div class="h-meta text-center"><div>${dateStr}</div></div>
                 <div class="h-data justify-content-start ps-2">
+                     <i class="fas ${icon} text-secondary"></i>
                      <span>${exName}: ${item.val}</span>
-                     <span class="text-muted small ms-2">${item.info || ''}</span>
                 </div>
-                <div class="h-actions">
+                <div class="h-actions d-flex">
                     <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
                     <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
                 </div>
@@ -852,7 +858,6 @@ function updateChart() {
     } else if (currentMetric === 'walk') {
          datasets = [{ label: appSettings.walkUnit, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
     } else if (currentMetric === 'gym') {
-         // גרף לכושר - נציג רק את הכמות (חזרות/דקות)
          datasets = [{ label: 'כמות', data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
     } else {
         const field = c.fields[0];
