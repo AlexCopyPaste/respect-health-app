@@ -108,7 +108,7 @@
         <div class="main-header"><i class="fas fa-heartbeat"></i><h1>חיים רק פעם אחת...</h1></div>
         <div class="dashboard-grid" id="main-grid"></div>
         <div class="text-center mt-5">
-            <p class="text-muted small fw-bold mb-0">גרסה 22.0</p>
+            <p class="text-muted small fw-bold mb-0">גרסה 23.0</p>
             <p class="text-muted small" style="font-size: 0.75rem;">כל הזכויות שמורות ל-Aiex</p>
         </div>
         <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
@@ -278,33 +278,43 @@ const DEFAULT_STATIONS = [
     { name: 'רדיוס פופ', freq: 'Pop', logo: '100', desc: 'להיטים ללא הפסקה', url: 'https://radius.live/radio/radius' }
 ];
 
-// תרגילי כושר - כולל City Bike Pro
+// תרגילי כושר - מורחב משמעותית ע"ב התמונות
 const GYM_EXERCISES = {
     0: [ // בית
         { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying', guide: 'ידיים ברוחב כתפיים.', safety: 'לגיל 60+: ברכיים על הרצפה.' },
-        { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line', guide: 'הרמת שכמות קלה.', safety: 'לא למשוך בצוואר.' },
-        { id: 'squat', name: 'סקוואט', icon: 'fa-person-arrow-down-to-line', guide: 'כמו ישיבה על כיסא.', safety: 'ברכיים לא עוברות את האצבעות.' },
-        { id: 'plank', name: 'פלאנק', icon: 'fa-minus', guide: 'גוף ישר כמו קרש.', safety: 'להפסיק אם כואב הגב.' },
-        { id: 'dumbbells', name: 'משקולות יד', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים.', safety: 'לא לנעול מרפקים.' },
-        { id: 'rope', name: 'קפיצה בחבל', icon: 'fa-person-jumping', guide: 'קפיצות קטנות.', safety: 'לא לבעלי בעיות ברכיים.' },
-        { id: 'pullups_home', name: 'מתח', icon: 'fa-grip-lines', guide: 'משיכת הגוף מעלה.', safety: 'זהירות מנפילה.' }
+        { id: 'wall_pushups', name: 'שכיבות סמיכה על קיר', icon: 'fa-hand-spock', guide: 'עמידה מול קיר, דחיפה עם הידיים.', safety: 'מצוין למתחילים ולגיל השלישי. פחות עומס.' },
+        { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line', guide: 'הרמת שכמות קלה בשכיבה.', safety: 'לא למשוך בצוואר.' },
+        { id: 'squat', name: 'סקוואט (ללא משקל)', icon: 'fa-person-arrow-down-to-line', guide: 'כמו ישיבה על כיסא דמיוני.', safety: 'גב ישר, ברכיים לא עוברות אצבעות.' },
+        { id: 'lunges', name: 'מכרעים (Lunges)', icon: 'fa-person-walking-arrow-right', guide: 'צעד קדימה וכפיפת ברך אחורית.', safety: 'לשמור על יציבות. ברך קדמית לא עוברת אצבעות.' },
+        { id: 'plank', name: 'פלאנק (בטן סטטי)', icon: 'fa-minus', guide: 'הישענות על אמות, גוף ישר.', safety: 'להפסיק אם יש כאב גב.' },
+        { id: 'glute_bridge', name: 'גשר אגן', icon: 'fa-bridge', guide: 'שכיבה על הגב, הרמת אגן מעלה.', safety: 'לכווץ ישבן בעלייה. לא להקשית גב יתר על המידה.' },
+        { id: 'jumping_jacks', name: 'קפיצת כוכב', icon: 'fa-child-reaching', guide: 'קפיצה בפישוק ידיים ורגליים.', safety: 'נחיתה רכה על כריות כף הרגל.' },
+        { id: 'dumbbells', name: 'משקולות יד (בייספס)', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים בעמידה/ישיבה.', safety: 'לא לנעול מרפקים ביישור.' },
+        { id: 'stretching', name: 'מתיחת זרועות/כתפיים', icon: 'fa-person-rays', guide: 'מתיחה עדינה של השרירים.', safety: 'לא לבצע בתנועות חדות. עד תחושת מתח קל.' }
     ],
     1: [ // ציבורי
         { id: 'citybike', name: 'City Bike Pro', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בקצב אחיד.', safety: 'להתחיל בדרגה נמוכה.' },
-        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'הליכה באוויר.', safety: 'לשמור גב זקוף.' },
-        { id: 'skier', name: 'סקי אוויר', icon: 'fa-person-skiing', guide: 'תנועה לצדדים.', safety: 'להחזיק חזק בידיות.' },
-        { id: 'glider', name: 'גליידר', icon: 'fa-person-skating', guide: 'תנועה אליפטית גדולה.', safety: 'שיווי משקל.' },
-        { id: 'chest_press_out', name: 'לחיצת חזה', icon: 'fa-hands', guide: 'דחיפה קדימה.', safety: 'תנועה איטית.' },
-        { id: 'butterfly', name: 'פרפר', icon: 'fa-crow', guide: 'קירוב מרפקים.', safety: 'לא לפתוח יותר מדי לאחור.' },
-        { id: 'rowing_out', name: 'חתירה', icon: 'fa-person-rowing', guide: 'משיכה לבטן.', safety: 'גב ישר.' },
-        { id: 'pullups_pub', name: 'מתח', icon: 'fa-grip-lines', guide: 'משיכה מעלה.', safety: 'זהירות.' }
+        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'הליכה באוויר ללא אימפקט.', safety: 'לשמור גב זקוף, לא להגזים בתנועה.' },
+        { id: 'skier', name: 'סקי אוויר (צדדים)', icon: 'fa-person-skiing', guide: 'תנועת גלישה לצדדים.', safety: 'לאחוז חזק בידיות.' },
+        { id: 'chest_press_out', name: 'לחיצת חזה בישיבה', icon: 'fa-hands', guide: 'דחיפת הידיות קדימה.', safety: 'תנועה איטית ומבוקרת בחזרה.' },
+        { id: 'butterfly', name: 'פרפר (קירוב)', icon: 'fa-crow', guide: 'קירוב הידיות זו לזו.', safety: 'לא לפתוח את הידיים יותר מדי לאחור.' },
+        { id: 'rowing_out', name: 'חתירה בישיבה', icon: 'fa-person-rowing', guide: 'משיכת הידיות אל הבטן.', safety: 'לשמור על גב ישר, לחזה החוצה.' },
+        { id: 'pullups_pub', name: 'מתח (רגיל/נמוך)', icon: 'fa-grip-lines', guide: 'משיכת הגוף מעלה אל המוט.', safety: 'למתקדמים. זהירות בירידה.' },
+        { id: 'dips_pub', name: 'מקבילים (Dips)', icon: 'fa-equals', guide: 'כפיפת ויישור מרפקים בין מוטות.', safety: 'עומס גבוה על הכתפיים. לא לרדת נמוך מדי.' },
+        { id: 'step_up', name: 'עליית מדרגה (Step-up)', icon: 'fa-stairs', guide: 'עלייה וירידה מספסל/מדרגה.', safety: 'לוודא שהמדרגה יציבה. להחליף רגליים.' },
+        { id: 'incline_situp', name: 'כפיפות בטן בשיפוע', icon: 'fa-angle-up', guide: 'כפיפות בטן על ספסל משופע.', safety: 'למתקדמים. עלול ליצור עומס על הגב.' }
     ],
     2: [ // חדר כושר
-        { id: 'citybike_gym', name: 'City Bike Pro', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה מקצועית.', safety: 'לכוון מושב לגובה האגן.' },
-        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה/ריצה.', safety: 'שימוש בתפס ביטחון.' },
-        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית.', safety: 'עקבים צמודים.' },
-        { id: 'lat_pulldown', name: 'פולי עליון', icon: 'fa-arrow-down-long', guide: 'משיכה לחזה.', safety: 'לא לעורף.' },
-        { id: 'bench_press', name: 'לחיצת חזה', icon: 'fa-dumbbell', guide: 'דחיקה בשכיבה.', safety: 'משגיח במשקלים כבדים.' }
+        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה או ריצה.', safety: 'להשתמש בתפס ביטחון. להתחיל לאט.' },
+        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית חלקה.', safety: 'לשמור על עקבים צמודים למשטח.' },
+        { id: 'citybike_gym', name: 'אופני כושר', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בישיבה.', safety: 'לכוון את גובה המושב לגובה האגן.' },
+        { id: 'deadlift', name: 'דדליפט (Deadlift)', icon: 'fa-weight-hanging', guide: 'הרמת מוט מהרצפה בגב ישר.', safety: 'קריטי: טכניקה נכונה! עדיף להתחיל עם מדריך/משקל נמוך.' },
+        { id: 'barbell_squat', name: 'סקוואט עם מוט', icon: 'fa-dumbbell', guide: 'סקוואט עם מוט על הכתפיים.', safety: 'לשמור על גב זקוף ומבט קדימה.' },
+        { id: 'bench_press', name: 'לחיצת חזה (מוט/משקולות)', icon: 'fa-dumbbell', guide: 'דחיקת משקל בשכיבה על ספסל.', safety: 'במשקלים כבדים חובה להיעזר במשגיח (ספוטר).' },
+        { id: 'lat_pulldown', name: 'פולי עליון (גב)', icon: 'fa-arrow-down-long', guide: 'משיכת מוט כלפי מטה אל החזה העליון.', safety: 'לא למשוך אל מאחורי העורף.' },
+        { id: 'seated_cable_row', name: 'חתירה בכבל בישיבה', icon: 'fa-anchor', guide: 'משיכת ידית אל הבטן בישיבה.', safety: 'גב ישר, לא להישען אחורה מדי.' },
+        { id: 'shoulder_press_seated', name: 'לחיצת כתפיים בישיבה', icon: 'fa-hands-holding', guide: 'דחיקת משקולות כלפי מעלה מעל הראש.', safety: 'לא להקשית את הגב התחתון.' },
+        { id: 'leg_extension', name: 'פשיטת ברכיים במכונה', icon: 'fa-chair', guide: 'יישור הברכיים כנגד התנגדות.', safety: 'תנועה מבוקרת, לא "לזרוק" את המשקל.' }
     ]
 };
 
@@ -448,7 +458,6 @@ function renderGymInputs() {
     const type = appSettings.gymType || 0;
     const ex = GYM_EXERCISES[type].find(e => e.id === selectedGymExercise);
     
-    // בדיקה אם זה מכשיר City Bike (דורש שדות מיוחדים)
     if (ex.inputType === 'bike') {
         div.innerHTML = `
             <div class="col-6">
@@ -461,7 +470,6 @@ function renderGymInputs() {
             </div>
         `;
     } else {
-        // ברירת מחדל לשאר המכשירים
         div.innerHTML = `
             <div class="col-6">
                 <label class="lbl-center">כמות (חזרות/דק')</label>
@@ -671,7 +679,6 @@ function saveEntry() {
         entry.val = val;
         entry.info = document.getElementById('gym-info').value;
         
-        // ולידציה ל-City Bike
         const type = appSettings.gymType || 0;
         const ex = GYM_EXERCISES[type].find(e => e.id === selectedGymExercise);
         if (ex && ex.inputType === 'bike') {
