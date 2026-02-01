@@ -86,18 +86,16 @@
         .segment-btn.active { opacity: 1; font-weight: 700; }
         .segment-bg { position: absolute; top: 2px; bottom: 2px; background-color: var(--card-bg); border-radius: 7px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); z-index: 1; }
         
-        /* 2-State */
+        /* Variants */
         .seg-2 .segment-bg { width: 50%; }
         .seg-2 .segment-left { transform: translateX(0); }
         [dir="rtl"] .seg-2 .segment-right { transform: translateX(-100%); }
 
-        /* 3-State */
         .seg-3 .segment-bg { width: 33.33%; }
         .seg-3 .pos-0 { transform: translateX(0); }
         .seg-3 .pos-1 { transform: translateX(-100%); }
         .seg-3 .pos-2 { transform: translateX(-200%); }
 
-        /* 4-State (Water People) */
         .seg-4 .segment-bg { width: 25%; }
         .seg-4 .pos-0 { transform: translateX(0); }
         .seg-4 .pos-1 { transform: translateX(-100%); }
@@ -119,7 +117,7 @@
         <div class="main-header"><i class="fas fa-heartbeat"></i><h1>חיים רק פעם אחת...</h1></div>
         <div class="dashboard-grid" id="main-grid"></div>
         <div class="text-center mt-5">
-            <p class="text-muted small fw-bold mb-0">גרסה 24.0</p>
+            <p class="text-muted small fw-bold mb-0">גרסה 26.0</p>
             <p class="text-muted small" style="font-size: 0.75rem;">כל הזכויות שמורות ל-Aiex</p>
         </div>
         <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
@@ -298,7 +296,6 @@
 </div>
 
 <script>
-// --- נתונים ומידע בריאותי ---
 const DEFAULT_STATIONS = [
     { name: 'גלגלצ', freq: 'Live', logo: 'GLZ', desc: 'מוזיקה ודיווחי תנועה', url: 'https://glzwizzlv.bynetcdn.com/glglz_mp3' },
     { isSeparator: true, label: 'פלייליסטים וספיישלים' },
@@ -310,7 +307,7 @@ const DEFAULT_STATIONS = [
 ];
 
 const GYM_EXERCISES = {
-    0: [ // בית
+    0: [
         { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying', guide: 'ידיים ברוחב כתפיים.', safety: 'לגיל 60+: ברכיים על הרצפה.' },
         { id: 'wall_pushups', name: 'שכיבות סמיכה על קיר', icon: 'fa-hand-spock', guide: 'עמידה מול קיר, דחיפה עם הידיים.', safety: 'מצוין למתחילים ולגיל השלישי.' },
         { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line', guide: 'הרמת שכמות קלה בשכיבה.', safety: 'לא למשוך בצוואר.' },
@@ -322,7 +319,7 @@ const GYM_EXERCISES = {
         { id: 'dumbbells', name: 'משקולות יד', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים.', safety: 'לא לנעול מרפקים.' },
         { id: 'stretching', name: 'מתיחות', icon: 'fa-person-rays', guide: 'מתיחה עדינה.', safety: 'לא לבצע בתנועות חדות.' }
     ],
-    1: [ // ציבורי
+    1: [
         { id: 'citybike', name: 'City Bike Pro', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בקצב אחיד.', safety: 'להתחיל בדרגה נמוכה.' },
         { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'הליכה באוויר.', safety: 'לשמור גב זקוף.' },
         { id: 'skier', name: 'סקי אוויר', icon: 'fa-person-skiing', guide: 'תנועה לצדדים.', safety: 'להחזיק חזק.' },
@@ -334,7 +331,7 @@ const GYM_EXERCISES = {
         { id: 'dips_pub', name: 'מקבילים', icon: 'fa-equals', guide: 'כפיפת מרפקים.', safety: 'עומס על הכתפיים.' },
         { id: 'step_up', name: 'עליית מדרגה', icon: 'fa-stairs', guide: 'עלייה וירידה.', safety: 'יציבות.' }
     ],
-    2: [ // חדר כושר
+    2: [
         { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה/ריצה.', safety: 'תפס ביטחון.' },
         { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית.', safety: 'עקבים צמודים.' },
         { id: 'citybike_gym', name: 'אופני כושר', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בישיבה.', safety: 'גובה מושב תקין.' },
@@ -355,7 +352,7 @@ const CONFIG = {
     sugar: { name: 'סוכר', icon: 'fa-droplet', color: '#ff9500', fields: [{id:'val',label:'ערך'}]},
     weight: { name: 'משקל', icon: 'fa-weight-scale', color: '#007aff', fields: [{id:'val',label:'ק"ג'}]},
     pills: { name: 'תרופות', icon: 'fa-pills', color: '#34c759', type: 'meds' },
-    water: { name: 'מים', icon: 'fa-faucet-drip', color: '#5ac8fa', type: 'water' },
+    water: { name: 'מים', icon: 'fa-faucet', color: '#5ac8fa', type: 'water' },
     radio: { name: 'מוזיקה ופלייליסטים', icon: 'fa-music', color: '#e91e63', type: 'radio' },
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
 };
@@ -370,10 +367,6 @@ let savedStations = JSON.parse(localStorage.getItem('userStations'));
 let userStations = savedStations && savedStations.length > 0 ? savedStations : DEFAULT_STATIONS;
 const STEPS_PER_KM = 1312;
 let selectedGymExercise = null;
-
-// חישובי מים (מ"ל ללגימה לפי גיל)
-const SIP_SIZES = { 0: 25, 1: 20, 2: 20, 3: 10 }; // 0=Man, 1=Woman, 2=Teen, 3=Child
-const CUP_SIZE = 240;
 
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
@@ -418,10 +411,12 @@ function setWaterUnit(unit) {
     appSettings.waterUnit = unit;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
     
-    // UI Update
     const unitMap = { 'cup': 0, 'ml': 1, 'sip': 2 };
-    const idx = unitMap[unit];
-    document.getElementById('water-unit-bg').className = `segment-bg pos-${idx}`;
+    const idx = unitMap[unit] !== undefined ? unitMap[unit] : 0;
+    
+    const bg = document.getElementById('water-unit-bg');
+    if(bg) bg.className = `segment-bg pos-${idx}`;
+    
     document.querySelectorAll('#water-settings-container .seg-3 .segment-btn').forEach((btn, i) => btn.classList.toggle('active', i === idx));
     
     renderForm(CONFIG.water);
@@ -432,12 +427,14 @@ function setWaterWho(whoIdx) {
     appSettings.waterType = whoIdx;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
     
-    document.getElementById('water-who-bg').className = `segment-bg pos-${whoIdx}`;
+    const bg = document.getElementById('water-who-bg');
+    if(bg) bg.className = `segment-bg pos-${whoIdx}`;
+    
     document.querySelectorAll('#water-settings-container .seg-4 .segment-btn').forEach((btn, i) => btn.classList.toggle('active', i === whoIdx));
 }
 
 function showWaterInfo() {
-    const type = appSettings.waterType || 0; // 0=Man
+    const type = appSettings.waterType || 0; 
     let rec = "";
     if(type === 0) rec = "גברים: כ-3 ליטרים (3,000 מ\"ל) ביום.";
     if(type === 1) rec = "נשים: כ-2.2 ליטרים (2,200 מ\"ל) ביום.";
@@ -460,20 +457,65 @@ function showWaterInfo() {
     });
 }
 
-// --- כושר, הליכה ורדיו (פונקציות קודמות) ---
+// --- פונקציות תצוגה כלליות ---
+function openMetric(key) {
+    currentMetric = key; 
+    const c = CONFIG[key];
+    document.getElementById('metric-header').style.backgroundColor = c.color;
+    document.getElementById('header-title').innerText = c.name;
+    document.getElementById('btn-show-graph').style.display = (c.type==='meds')?'none':'block';
+    
+    // מנגנון הגנה: איפוס רק אם האלמנטים קיימים
+    const idsToHide = ['walk-goal-container','walk-type-container','gym-type-container','gym-selection-area','btn-gym-info','water-settings-container','btn-water-info'];
+    idsToHide.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.add('d-none');
+    });
+
+    if(key==='walk') {
+        document.getElementById('walk-goal-container').classList.remove('d-none');
+        document.getElementById('walk-type-container').classList.remove('d-none');
+        toggleWalkUnit(appSettings.walkUnit||'km', true);
+        setWalkType(appSettings.walkType||0);
+        document.getElementById('monthly-goal-input').value = appSettings.walkGoal||'';
+        calcGoalStatus();
+    } else if(key==='gym') {
+        document.getElementById('gym-type-container').classList.remove('d-none');
+        document.getElementById('gym-selection-area').classList.remove('d-none');
+        setGymType(appSettings.gymType||0);
+    } else if(key==='water') {
+        const wCont = document.getElementById('water-settings-container');
+        const wBtn = document.getElementById('btn-water-info');
+        if(wCont) wCont.classList.remove('d-none');
+        if(wBtn) wBtn.classList.remove('d-none');
+        
+        setWaterUnit(appSettings.waterUnit||'cup');
+        setWaterWho(appSettings.waterType||0);
+    }
+
+    renderForm(c); 
+    resetForm(); 
+    renderFilters('filter-container-list', false); 
+    renderHistory(); 
+    showPage('metric-page');
+}
+
 function setGymType(typeIdx) {
     appSettings.gymType = typeIdx;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
     document.querySelectorAll('#gym-type-container .segment-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === typeIdx));
-    document.getElementById('gym-bg').className = `segment-bg pos-${typeIdx}`;
+    const bg = document.getElementById('gym-bg');
+    if(bg) bg.className = `segment-bg pos-${typeIdx}`;
     selectedGymExercise = null;
     document.getElementById('selected-gym-exercise').value = '';
-    document.getElementById('btn-gym-info').classList.add('d-none');
+    const infoBtn = document.getElementById('btn-gym-info');
+    if(infoBtn) infoBtn.classList.add('d-none');
     renderGymGrid(); renderGymInputs();
 }
 
 function renderGymGrid() {
     const grid = document.getElementById('gym-grid');
+    if(!grid) return;
     const exercises = GYM_EXERCISES[appSettings.gymType || 0];
     const db = JSON.parse(localStorage.getItem('healthDB') || '[]');
     const counts = {};
@@ -485,7 +527,8 @@ function renderGymGrid() {
 function selectExercise(id) {
     selectedGymExercise = id;
     document.getElementById('selected-gym-exercise').value = id;
-    document.getElementById('btn-gym-info').classList.remove('d-none');
+    const infoBtn = document.getElementById('btn-gym-info');
+    if(infoBtn) infoBtn.classList.remove('d-none');
     renderGymGrid(); renderGymInputs();
 }
 
@@ -507,65 +550,22 @@ function renderGymInputs() {
     }
 }
 
-// שאר פונקציות רדיו (זהות)
-let currentAudio = document.getElementById('radio-player'); let playingUrl = null; let isLoading = false;
-function renderRadioList() {
-    const list = document.getElementById('radio-list'); list.innerHTML = '';
-    const favorites = userStations.filter(s => s.isFavorite && !s.isSeparator);
-    const others = userStations.filter(s => !s.isFavorite);
-    if(favorites.length) { favorites.forEach(s => list.appendChild(createRadioRow(s))); list.appendChild(createSep('מועדפים')); }
-    others.forEach(s => { if(s.isSeparator) list.appendChild(createSep(s.label)); else list.appendChild(createRadioRow(s)); });
-}
-function createSep(txt) { const d = document.createElement('div'); d.className = 'radio-separator'; d.innerHTML = `<span>${txt||'---'}</span>`; return d; }
-function createRadioRow(s) {
-    const isPlaying = (playingUrl === s.url); let btnIcon = isPlaying ? (isLoading ? 'fa-spinner fa-spin' : 'fa-pause') : 'fa-play';
-    const d = document.createElement('div'); d.className = `radio-row ${isPlaying?'radio-playing':''}`;
-    d.innerHTML = `<div class="d-flex align-items-center w-100"><button class="btn-star ${s.isFavorite?'active':''}" onclick="toggleFavorite('${s.name}')"><i class="${s.isFavorite?'fas':'far'} fa-star"></i></button><div class="radio-logo ms-2">${s.logo}</div><div class="radio-info ms-2"><span class="radio-name">${s.name}</span></div><div class="d-flex"><button class="btn-radio btn-play ${isPlaying?'playing':''}" onclick="togglePlay('${s.url}','${s.name}')"><i class="fas ${btnIcon}"></i></button></div></div>`;
-    return d;
-}
-function toggleFavorite(n) { const i = userStations.findIndex(s => s.name === n); if(i!==-1) { userStations[i].isFavorite = !userStations[i].isFavorite; localStorage.setItem('userStations', JSON.stringify(userStations)); renderRadioList(); } }
-function togglePlay(u, n) { if(playingUrl===u) stopRadio(); else { stopRadio(); playingUrl=u; isLoading=true; renderRadioList(); currentAudio.src=u; currentAudio.play().catch(()=>{isLoading=false;playingUrl=null;renderRadioList();Swal.fire('שגיאה','לא מנגן','error')}); currentAudio.onplaying=()=>{isLoading=false;document.getElementById('now-playing-bar').classList.remove('d-none');document.getElementById('np-name').innerText=n;renderRadioList()}; } }
-function stopRadio() { currentAudio.pause(); currentAudio.src=""; playingUrl=null; isLoading=false; document.getElementById('now-playing-bar').classList.add('d-none'); renderRadioList(); }
-
-function openMetric(key) {
-    currentMetric = key; const c = CONFIG[key];
-    document.getElementById('metric-header').style.backgroundColor = c.color;
-    document.getElementById('header-title').innerText = c.name;
-    document.getElementById('btn-show-graph').style.display = (c.type==='meds')?'none':'block';
-    
-    // איפוס תצוגה
-    ['walk-goal-container','walk-type-container','gym-type-container','gym-selection-area','btn-gym-info','water-settings-container','btn-water-info'].forEach(id=>document.getElementById(id).classList.add('d-none'));
-
-    if(key==='walk') {
-        document.getElementById('walk-goal-container').classList.remove('d-none');
-        document.getElementById('walk-type-container').classList.remove('d-none');
-        toggleWalkUnit(appSettings.walkUnit||'km', true);
-        setWalkType(appSettings.walkType||0);
-        document.getElementById('monthly-goal-input').value = appSettings.walkGoal||'';
-        calcGoalStatus();
-    } else if(key==='gym') {
-        document.getElementById('gym-type-container').classList.remove('d-none');
-        document.getElementById('gym-selection-area').classList.remove('d-none');
-        setGymType(appSettings.gymType||0);
-    } else if(key==='water') {
-        document.getElementById('water-settings-container').classList.remove('d-none');
-        document.getElementById('btn-water-info').classList.remove('d-none');
-        setWaterUnit(appSettings.waterUnit||'cup');
-        setWaterWho(appSettings.waterType||0);
-    }
-
-    renderForm(c); resetForm(); renderFilters('filter-container-list', false); renderHistory(); showPage('metric-page');
+function setWalkType(i) { 
+    appSettings.walkType=i; localStorage.setItem('appSettings',JSON.stringify(appSettings)); 
+    document.querySelectorAll('#walk-type-container .segment-btn').forEach((b,x)=>b.classList.toggle('active',x===i)); 
+    const bg = document.getElementById('type-bg');
+    if(bg) bg.className=`segment-bg pos-${i}`; 
 }
 
-// שאר הפונקציות (walk, save, history...) זהות לגרסה קודמת
-function setWalkType(i) { appSettings.walkType=i; localStorage.setItem('appSettings',JSON.stringify(appSettings)); document.querySelectorAll('#walk-type-container .segment-btn').forEach((b,x)=>b.classList.toggle('active',x===i)); document.getElementById('type-bg').className=`segment-bg pos-${i}`; }
 function toggleWalkUnit(u, skip) { 
     appSettings.walkUnit=u; localStorage.setItem('appSettings',JSON.stringify(appSettings));
     const bg=document.getElementById('seg-bg'), k=document.getElementById('btn-km'), s=document.getElementById('btn-steps');
-    if(u==='steps') { bg.classList.remove('segment-left'); bg.classList.add('segment-right'); s.classList.add('active'); k.classList.remove('active'); }
-    else { bg.classList.remove('segment-right'); bg.classList.add('segment-left'); k.classList.add('active'); s.classList.remove('active'); }
+    if(bg && k && s) {
+        if(u==='steps') { bg.classList.remove('segment-left'); bg.classList.add('segment-right'); s.classList.add('active'); k.classList.remove('active'); }
+        else { bg.classList.remove('segment-right'); bg.classList.add('segment-left'); k.classList.add('active'); s.classList.remove('active'); }
+    }
     const inp = document.getElementById('monthly-goal-input');
-    if(!skip && inp.value) inp.value = u==='steps' ? Math.round(inp.value*STEPS_PER_KM) : (inp.value/STEPS_PER_KM).toFixed(2);
+    if(!skip && inp && inp.value) inp.value = u==='steps' ? Math.round(inp.value*STEPS_PER_KM) : (inp.value/STEPS_PER_KM).toFixed(2);
     if(currentMetric==='walk') { renderForm(CONFIG.walk); calcGoalStatus(); }
 }
 
@@ -612,6 +612,18 @@ function saveEntry() {
         const v = document.getElementById('gym-val').value;
         if(!selectedGymExercise || !v) valid=false;
         entry.exId = selectedGymExercise; entry.val = v; entry.info = document.getElementById('gym-info').value;
+        
+        // City bike validation
+        const type = appSettings.gymType || 0;
+        const ex = GYM_EXERCISES[type].find(e => e.id === selectedGymExercise);
+        if (ex && ex.inputType === 'bike') {
+            const level = parseFloat(entry.info);
+            if(isNaN(level) || level < 1 || level > 10) {
+                valid = false;
+                document.getElementById('gym-info').classList.add('bg-danger-custom');
+                return Swal.fire('שגיאה','דרגת קושי 1-10','error');
+            }
+        }
     }
     else if(currentMetric==='meds') {
         entry.med = document.getElementById('inp-med').value; entry.mg = document.getElementById('inp-mg').value; entry.takeTime = document.getElementById('inp-time').value;
@@ -622,11 +634,12 @@ function saveEntry() {
             const el = document.getElementById(`inp-${f.id}`);
             const v = parseFloat(el.value);
             if(isNaN(v)) valid=false;
+            if(v < f.min || v > f.max) { valid=false; return Swal.fire('חריגה',`ערך ${f.label} לא תקין`,'error'); }
             entry[f.id] = v;
         });
     }
     
-    if(!valid) return Swal.fire('שגיאה','נא למלא נתונים','error');
+    if(!valid && currentMetric !== 'gym') return Swal.fire('שגיאה','נא למלא נתונים','error');
     
     const idx = db.findIndex(e=>e.id==id);
     if(idx!==-1) db[idx]=entry; else db.unshift(entry);
@@ -649,7 +662,6 @@ function renderHistory() {
     if(currentMetric==='walk') filtered = filtered.filter(e=>e.unit===appSettings.walkUnit);
     if(currentMetric==='gym') filtered = filtered.filter(e=>{ const l=GYM_EXERCISES[appSettings.gymType].map(x=>x.id); return l.includes(e.exId); });
     
-    // Filter by days
     const days = currentFilterDays || 7;
     const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-days);
     filtered = filtered.filter(e=>new Date(e.date)>=cutoff);
@@ -666,7 +678,7 @@ function renderHistory() {
         if(currentMetric==='water') {
             let icon = item.unit==='sip' ? '<i class="fas fa-lips"></i>' : (item.unit==='cup' ? '<i class="fas fa-glass-water"></i>' : 'ml');
             let unitName = item.unit==='sip'?'לגימות':(item.unit==='cup'?'כוסות':'מ"ל');
-            content = `<span class="fw-bold fs-5">${item.val} ${unitName} ${icon}</span>`;
+            content = `<span class="fw-bold fs-5">${item.val} ${unitName}</span>`;
         }
         else if(currentMetric==='walk') {
             let u = item.unit==='km'?'km':'';
@@ -682,7 +694,12 @@ function renderHistory() {
             content = `${item.med} ${item.mg} (${item.takeTime})`;
         }
         else {
-            content = CONFIG[currentMetric].fields.map(f => `<span class="me-2"><i class="fas ${f.icon} small text-secondary"></i> ${item[f.id]}</span>`).join('');
+            content = CONFIG[currentMetric].fields.map(f => {
+                let iconClass = '';
+                if (f.icon === 'fa-arrow-up') iconClass = 'text-danger small';
+                if (f.icon === 'fa-arrow-down') iconClass = 'text-primary small';
+                return `<span class="me-2"><i class="fas ${f.icon} ${iconClass}"></i> ${item[f.id]}</span>`
+            }).join('');
         }
         
         const row = document.createElement('div');
@@ -706,7 +723,116 @@ function validateInput(el, min, max) {
 }
 
 // שאר הפונקציות זהות (deleteEntry, exportTopicExcel, openGraphView, updateChart...)
-// קיצרתי מעט כדי לחסוך מקום, הלוגיקה זהה לגרסה 23.0
+function deleteEntry(id) {
+    Swal.fire({ title: 'למחוק?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'כן', cancelButtonText: 'לא' }).then(r=>{
+        if(r.isConfirmed) {
+            let db = JSON.parse(localStorage.getItem('healthDB')||'[]');
+            localStorage.setItem('healthDB', JSON.stringify(db.filter(e=>e.id!==id)));
+            renderHistory();
+            if(currentMetric==='walk') calcGoalStatus();
+        }
+    });
+}
+
+function openGraphView() {
+    const c = CONFIG[currentMetric];
+    document.getElementById('graph-header').style.backgroundColor = c.color;
+    showPage('graph-page');
+    renderFilters('filter-container-graph', true);
+    setTimeout(updateChart, 100);
+}
+
+function updateChart() {
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+    const rawData = getFilteredData();
+    rawData.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+    const labels = rawData.map(i => `${new Date(i.date).getDate()}/${new Date(i.date).getMonth()+1}`);
+    const c = CONFIG[currentMetric];
+    let datasets = [];
+    
+    if (currentMetric === 'bp') {
+        datasets = [
+            { label: 'גבוה', data: rawData.map(i => i.sys), backgroundColor: '#ff3b30', borderRadius: 4 },
+            { label: 'נמוך', data: rawData.map(i => i.dia), backgroundColor: '#007aff', borderRadius: 4 },
+            { label: 'דופק', data: rawData.map(i => i.pulse), backgroundColor: '#34c759', borderRadius: 4, type: 'line', tension: 0.4 }
+        ];
+    } else if (currentMetric === 'walk') {
+         datasets = [{ label: appSettings.walkUnit, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
+    } else if (currentMetric === 'gym') {
+         datasets = [{ label: 'כמות', data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
+    } else if (currentMetric === 'water') {
+         datasets = [{ label: 'כמות', data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
+    } else {
+        const field = c.fields[0];
+        datasets = [{ label: field.label, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
+    }
+    
+    chartInstance = new Chart(ctx, { 
+        type: 'bar', 
+        data: { labels, datasets }, 
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: false } } } 
+    });
+}
+
+function exportTopicExcel() {
+    let filtered = getFilteredData();
+    if (!filtered.length) return Swal.fire('אין נתונים', '', 'info');
+    let csv = "\uFEFFתאריך,שעה,נושא,מידע\n";
+    const c = CONFIG[currentMetric];
+    filtered.forEach(i => {
+        let val = '';
+        if(c.type==='meds') val = `${i.med} ${i.mg} (${i.takeTime})`;
+        else if(c.type==='walk') val = `${i.val} ${i.unit}`;
+        else if(c.type==='gym') val = `${i.exId}: ${i.val} (${i.info||''})`;
+        else if(c.type==='water') val = `${i.val} ${i.unit}`;
+        else val = c.fields.map(f=>`${f.label}:${i[f.id]}`).join(' ');
+        csv += `${i.date},${i.time},${c.name},"${val}"\n`;
+    });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+    a.download = `${c.name}.csv`; a.click();
+}
+
+let currentAudio = document.getElementById('radio-player'); let playingUrl = null; let isLoading = false;
+function renderRadioList() {
+    const list = document.getElementById('radio-list'); list.innerHTML = '';
+    const favorites = userStations.filter(s => s.isFavorite && !s.isSeparator);
+    const others = userStations.filter(s => !s.isFavorite);
+    if(favorites.length) { favorites.forEach(s => list.appendChild(createRadioRow(s))); list.appendChild(createSep('מועדפים')); }
+    others.forEach(s => { if(s.isSeparator) list.appendChild(createSep(s.label)); else list.appendChild(createRadioRow(s)); });
+}
+function createSep(txt) { const d = document.createElement('div'); d.className = 'radio-separator'; d.innerHTML = `<span>${txt||'---'}</span>`; return d; }
+function createRadioRow(s) {
+    const isPlaying = (playingUrl === s.url); let btnIcon = isPlaying ? (isLoading ? 'fa-spinner fa-spin' : 'fa-pause') : 'fa-play';
+    const d = document.createElement('div'); d.className = `radio-row ${isPlaying?'radio-playing':''}`;
+    d.innerHTML = `<div class="d-flex align-items-center w-100"><button class="btn-star ${s.isFavorite?'active':''}" onclick="toggleFavorite('${s.name}')"><i class="${s.isFavorite?'fas':'far'} fa-star"></i></button><div class="radio-logo ms-2">${s.logo}</div><div class="radio-info ms-2"><span class="radio-name">${s.name}</span></div><div class="d-flex"><button class="btn-radio btn-play ${isPlaying?'playing':''}" onclick="togglePlay('${s.url}','${s.name}')"><i class="fas ${btnIcon}"></i></button></div></div>`;
+    return d;
+}
+function toggleFavorite(n) { const i = userStations.findIndex(s => s.name === n); if(i!==-1) { userStations[i].isFavorite = !userStations[i].isFavorite; localStorage.setItem('userStations', JSON.stringify(userStations)); renderRadioList(); } }
+function togglePlay(u, n) { if(playingUrl===u) stopRadio(); else { stopRadio(); playingUrl=u; isLoading=true; renderRadioList(); currentAudio.src=u; currentAudio.play().catch(()=>{isLoading=false;playingUrl=null;renderRadioList();Swal.fire('שגיאה','לא מנגן','error')}); currentAudio.onplaying=()=>{isLoading=false;document.getElementById('now-playing-bar').classList.remove('d-none');document.getElementById('np-name').innerText=n;renderRadioList()}; } }
+function stopRadio() { currentAudio.pause(); currentAudio.src=""; playingUrl=null; isLoading=false; document.getElementById('now-playing-bar').classList.add('d-none'); renderRadioList(); }
+
+function toggleSetting(key) {
+    appSettings[key] = document.getElementById(key === 'darkMode' ? 'toggle-dark-mode' : 'toggle-font-size').checked;
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    applySettings();
+}
+function applySettings() {
+    document.body.classList.toggle('dark-mode', appSettings.darkMode);
+    document.body.classList.toggle('font-large', appSettings.largeFont);
+    document.getElementById('toggle-dark-mode').checked = appSettings.darkMode;
+    document.getElementById('toggle-font-size').checked = appSettings.largeFont;
+}
+function saveDocName() { /* Empty */ }
+function handleResetToggle() {
+    if (document.getElementById('toggle-reset-data').checked) {
+        Swal.fire({ title: 'מחיקת הכל?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'כן' }).then(r => {
+            if(r.isConfirmed) { localStorage.removeItem('healthDB'); location.reload(); }
+            else document.getElementById('toggle-reset-data').checked = false;
+        });
+    }
+}
 </script>
 </body>
 </html>
