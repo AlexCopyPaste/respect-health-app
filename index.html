@@ -82,7 +82,7 @@
         
         /* iOS Segments */
         .ios-segment { background-color: var(--ios-gray); border-radius: 9px; padding: 2px; display: flex; position: relative; width: 100%; height: 32px; }
-        .segment-btn { flex: 1; text-align: center; font-size: 0.8rem; font-weight: 500; line-height: 28px; cursor: pointer; z-index: 2; transition: all 0.3s ease; color: var(--text-color); opacity: 0.5; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .segment-btn { flex: 1; text-align: center; font-size: 0.8rem; font-weight: 500; line-height: 28px; cursor: pointer; z-index: 2; transition: all 0.3s ease; color: var(--text-color); opacity: 0.5; }
         .segment-btn.active { opacity: 1; font-weight: 700; }
         .segment-bg { position: absolute; top: 2px; bottom: 2px; background-color: var(--card-bg); border-radius: 7px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); z-index: 1; }
         .seg-2 .segment-bg { width: 50%; }
@@ -108,7 +108,7 @@
         <div class="main-header"><i class="fas fa-heartbeat"></i><h1>חיים רק פעם אחת...</h1></div>
         <div class="dashboard-grid" id="main-grid"></div>
         <div class="text-center mt-5">
-            <p class="text-muted small fw-bold mb-0">גרסה 23.0 (שוחזרה)</p>
+            <p class="text-muted small fw-bold mb-0">גרסה 23.0</p>
             <p class="text-muted small" style="font-size: 0.75rem;">כל הזכויות שמורות ל-Aiex</p>
         </div>
         <a id="wa-link" href="#" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
@@ -278,43 +278,43 @@ const DEFAULT_STATIONS = [
     { name: 'רדיוס פופ', freq: 'Pop', logo: '100', desc: 'להיטים ללא הפסקה', url: 'https://radius.live/radio/radius' }
 ];
 
-// תרגילי כושר - כולל City Bike Pro
+// תרגילי כושר - מורחב משמעותית ע"ב התמונות
 const GYM_EXERCISES = {
     0: [ // בית
         { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying', guide: 'ידיים ברוחב כתפיים.', safety: 'לגיל 60+: ברכיים על הרצפה.' },
-        { id: 'wall_pushups', name: 'שכיבות סמיכה על קיר', icon: 'fa-hand-spock', guide: 'עמידה מול קיר, דחיפה עם הידיים.', safety: 'מצוין למתחילים ולגיל השלישי.' },
+        { id: 'wall_pushups', name: 'שכיבות סמיכה על קיר', icon: 'fa-hand-spock', guide: 'עמידה מול קיר, דחיפה עם הידיים.', safety: 'מצוין למתחילים ולגיל השלישי. פחות עומס.' },
         { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line', guide: 'הרמת שכמות קלה בשכיבה.', safety: 'לא למשוך בצוואר.' },
-        { id: 'squat', name: 'סקוואט', icon: 'fa-person-arrow-down-to-line', guide: 'כמו ישיבה על כיסא דמיוני.', safety: 'גב ישר, ברכיים לא עוברות אצבעות.' },
-        { id: 'lunges', name: 'מכרעים', icon: 'fa-person-walking-arrow-right', guide: 'צעד קדימה וכפיפת ברך אחורית.', safety: 'לשמור על יציבות.' },
-        { id: 'plank', name: 'פלאנק', icon: 'fa-minus', guide: 'הישענות על אמות, גוף ישר.', safety: 'להפסיק אם יש כאב גב.' },
-        { id: 'glute_bridge', name: 'גשר אגן', icon: 'fa-bridge', guide: 'שכיבה על הגב, הרמת אגן מעלה.', safety: 'לכווץ ישבן בעלייה.' },
-        { id: 'jumping_jacks', name: 'קפיצת כוכב', icon: 'fa-child-reaching', guide: 'קפיצה בפישוק ידיים ורגליים.', safety: 'נחיתה רכה.' },
-        { id: 'dumbbells', name: 'משקולות יד', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים.', safety: 'לא לנעול מרפקים.' },
-        { id: 'stretching', name: 'מתיחות', icon: 'fa-person-rays', guide: 'מתיחה עדינה.', safety: 'לא לבצע בתנועות חדות.' }
+        { id: 'squat', name: 'סקוואט (ללא משקל)', icon: 'fa-person-arrow-down-to-line', guide: 'כמו ישיבה על כיסא דמיוני.', safety: 'גב ישר, ברכיים לא עוברות אצבעות.' },
+        { id: 'lunges', name: 'מכרעים (Lunges)', icon: 'fa-person-walking-arrow-right', guide: 'צעד קדימה וכפיפת ברך אחורית.', safety: 'לשמור על יציבות. ברך קדמית לא עוברת אצבעות.' },
+        { id: 'plank', name: 'פלאנק (בטן סטטי)', icon: 'fa-minus', guide: 'הישענות על אמות, גוף ישר.', safety: 'להפסיק אם יש כאב גב.' },
+        { id: 'glute_bridge', name: 'גשר אגן', icon: 'fa-bridge', guide: 'שכיבה על הגב, הרמת אגן מעלה.', safety: 'לכווץ ישבן בעלייה. לא להקשית גב יתר על המידה.' },
+        { id: 'jumping_jacks', name: 'קפיצת כוכב', icon: 'fa-child-reaching', guide: 'קפיצה בפישוק ידיים ורגליים.', safety: 'נחיתה רכה על כריות כף הרגל.' },
+        { id: 'dumbbells', name: 'משקולות יד (בייספס)', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים בעמידה/ישיבה.', safety: 'לא לנעול מרפקים ביישור.' },
+        { id: 'stretching', name: 'מתיחת זרועות/כתפיים', icon: 'fa-person-rays', guide: 'מתיחה עדינה של השרירים.', safety: 'לא לבצע בתנועות חדות. עד תחושת מתח קל.' }
     ],
     1: [ // ציבורי
         { id: 'citybike', name: 'City Bike Pro', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בקצב אחיד.', safety: 'להתחיל בדרגה נמוכה.' },
-        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'הליכה באוויר.', safety: 'לשמור גב זקוף.' },
-        { id: 'skier', name: 'סקי אוויר', icon: 'fa-person-skiing', guide: 'תנועה לצדדים.', safety: 'להחזיק חזק.' },
-        { id: 'glider', name: 'גליידר', icon: 'fa-person-skating', guide: 'תנועה אליפטית.', safety: 'שיווי משקל.' },
-        { id: 'chest_press_out', name: 'לחיצת חזה', icon: 'fa-hands', guide: 'דחיפה קדימה.', safety: 'תנועה איטית.' },
-        { id: 'butterfly', name: 'פרפר', icon: 'fa-crow', guide: 'קירוב מרפקים.', safety: 'לא לפתוח יותר מדי.' },
-        { id: 'rowing_out', name: 'חתירה', icon: 'fa-person-rowing', guide: 'משיכה לבטן.', safety: 'גב ישר.' },
-        { id: 'pullups_pub', name: 'מתח', icon: 'fa-grip-lines', guide: 'משיכה מעלה.', safety: 'זהירות.' },
-        { id: 'dips_pub', name: 'מקבילים', icon: 'fa-equals', guide: 'כפיפת מרפקים.', safety: 'עומס על הכתפיים.' },
-        { id: 'step_up', name: 'עליית מדרגה', icon: 'fa-stairs', guide: 'עלייה וירידה.', safety: 'יציבות.' }
+        { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'הליכה באוויר ללא אימפקט.', safety: 'לשמור גב זקוף, לא להגזים בתנועה.' },
+        { id: 'skier', name: 'סקי אוויר (צדדים)', icon: 'fa-person-skiing', guide: 'תנועת גלישה לצדדים.', safety: 'לאחוז חזק בידיות.' },
+        { id: 'chest_press_out', name: 'לחיצת חזה בישיבה', icon: 'fa-hands', guide: 'דחיפת הידיות קדימה.', safety: 'תנועה איטית ומבוקרת בחזרה.' },
+        { id: 'butterfly', name: 'פרפר (קירוב)', icon: 'fa-crow', guide: 'קירוב הידיות זו לזו.', safety: 'לא לפתוח את הידיים יותר מדי לאחור.' },
+        { id: 'rowing_out', name: 'חתירה בישיבה', icon: 'fa-person-rowing', guide: 'משיכת הידיות אל הבטן.', safety: 'לשמור על גב ישר, לחזה החוצה.' },
+        { id: 'pullups_pub', name: 'מתח (רגיל/נמוך)', icon: 'fa-grip-lines', guide: 'משיכת הגוף מעלה אל המוט.', safety: 'למתקדמים. זהירות בירידה.' },
+        { id: 'dips_pub', name: 'מקבילים (Dips)', icon: 'fa-equals', guide: 'כפיפת ויישור מרפקים בין מוטות.', safety: 'עומס גבוה על הכתפיים. לא לרדת נמוך מדי.' },
+        { id: 'step_up', name: 'עליית מדרגה (Step-up)', icon: 'fa-stairs', guide: 'עלייה וירידה מספסל/מדרגה.', safety: 'לוודא שהמדרגה יציבה. להחליף רגליים.' },
+        { id: 'incline_situp', name: 'כפיפות בטן בשיפוע', icon: 'fa-angle-up', guide: 'כפיפות בטן על ספסל משופע.', safety: 'למתקדמים. עלול ליצור עומס על הגב.' }
     ],
     2: [ // חדר כושר
-        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה/ריצה.', safety: 'תפס ביטחון.' },
-        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית.', safety: 'עקבים צמודים.' },
-        { id: 'citybike_gym', name: 'אופני כושר', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בישיבה.', safety: 'גובה מושב תקין.' },
-        { id: 'deadlift', name: 'דדליפט', icon: 'fa-weight-hanging', guide: 'הרמה מהרצפה.', safety: 'גב ישר חובה! להתחיל משקל נמוך.' },
-        { id: 'barbell_squat', name: 'סקוואט מוט', icon: 'fa-dumbbell', guide: 'סקוואט עם מוט.', safety: 'גב זקוף.' },
-        { id: 'bench_press', name: 'לחיצת חזה', icon: 'fa-dumbbell', guide: 'דחיקה בשכיבה.', safety: 'עזרה במשקל כבד.' },
-        { id: 'lat_pulldown', name: 'פולי עליון', icon: 'fa-arrow-down-long', guide: 'משיכה לחזה.', safety: 'לא לעורף.' },
-        { id: 'seated_cable_row', name: 'חתירה כבל', icon: 'fa-anchor', guide: 'משיכה לבטן.', safety: 'גב ישר.' },
-        { id: 'shoulder_press_seated', name: 'לחיצת כתפיים', icon: 'fa-hands-holding', guide: 'דחיקה מעלה.', safety: 'לא להקשית גב.' },
-        { id: 'leg_extension', name: 'פשיטת ברכיים', icon: 'fa-chair', guide: 'יישור ברכיים.', safety: 'תנועה מבוקרת.' }
+        { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה או ריצה.', safety: 'להשתמש בתפס ביטחון. להתחיל לאט.' },
+        { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית חלקה.', safety: 'לשמור על עקבים צמודים למשטח.' },
+        { id: 'citybike_gym', name: 'אופני כושר', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בישיבה.', safety: 'לכוון את גובה המושב לגובה האגן.' },
+        { id: 'deadlift', name: 'דדליפט (Deadlift)', icon: 'fa-weight-hanging', guide: 'הרמת מוט מהרצפה בגב ישר.', safety: 'קריטי: טכניקה נכונה! עדיף להתחיל עם מדריך/משקל נמוך.' },
+        { id: 'barbell_squat', name: 'סקוואט עם מוט', icon: 'fa-dumbbell', guide: 'סקוואט עם מוט על הכתפיים.', safety: 'לשמור על גב זקוף ומבט קדימה.' },
+        { id: 'bench_press', name: 'לחיצת חזה (מוט/משקולות)', icon: 'fa-dumbbell', guide: 'דחיקת משקל בשכיבה על ספסל.', safety: 'במשקלים כבדים חובה להיעזר במשגיח (ספוטר).' },
+        { id: 'lat_pulldown', name: 'פולי עליון (גב)', icon: 'fa-arrow-down-long', guide: 'משיכת מוט כלפי מטה אל החזה העליון.', safety: 'לא למשוך אל מאחורי העורף.' },
+        { id: 'seated_cable_row', name: 'חתירה בכבל בישיבה', icon: 'fa-anchor', guide: 'משיכת ידית אל הבטן בישיבה.', safety: 'גב ישר, לא להישען אחורה מדי.' },
+        { id: 'shoulder_press_seated', name: 'לחיצת כתפיים בישיבה', icon: 'fa-hands-holding', guide: 'דחיקת משקולות כלפי מעלה מעל הראש.', safety: 'לא להקשית את הגב התחתון.' },
+        { id: 'leg_extension', name: 'פשיטת ברכיים במכונה', icon: 'fa-chair', guide: 'יישור הברכיים כנגד התנגדות.', safety: 'תנועה מבוקרת, לא "לזרוק" את המשקל.' }
     ]
 };
 
@@ -348,7 +348,6 @@ let userStations = savedStations && savedStations.length > 0 ? savedStations : D
 const STEPS_PER_KM = 1312;
 let selectedGymExercise = null;
 
-// --- איתחול ---
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
     applySettings();
@@ -385,42 +384,6 @@ function showPage(id, isRadio) {
     document.getElementById('wa-link').style.display = (id === 'home-page') ? 'flex' : 'none';
     if(isRadio) renderRadioList();
     window.scrollTo(0,0);
-}
-
-// --- פתיחת נושא ---
-function openMetric(key) {
-    currentMetric = key; 
-    const c = CONFIG[key];
-    document.getElementById('metric-header').style.backgroundColor = c.color;
-    document.getElementById('header-title').innerText = c.name;
-    document.getElementById('btn-show-graph').style.display = (c.type==='meds')?'none':'block';
-    
-    // איפוס תצוגה
-    document.getElementById('walk-goal-container').classList.add('d-none');
-    document.getElementById('walk-type-container').classList.add('d-none');
-    document.getElementById('gym-type-container').classList.add('d-none');
-    document.getElementById('gym-selection-area').classList.add('d-none');
-    document.getElementById('btn-gym-info').classList.add('d-none');
-
-    // לוגיקה לפי סוג
-    if(key === 'walk') {
-        document.getElementById('walk-goal-container').classList.remove('d-none');
-        document.getElementById('walk-type-container').classList.remove('d-none');
-        toggleWalkUnit(appSettings.walkUnit || 'km', true);
-        setWalkType(appSettings.walkType || 0);
-        document.getElementById('monthly-goal-input').value = appSettings.walkGoal || '';
-        calcGoalStatus();
-    } else if(key === 'gym') {
-        document.getElementById('gym-type-container').classList.remove('d-none');
-        document.getElementById('gym-selection-area').classList.remove('d-none');
-        setGymType(appSettings.gymType || 0);
-    }
-
-    renderForm(c);
-    resetForm();
-    renderFilters('filter-container-list', false);
-    renderHistory();
-    showPage('metric-page');
 }
 
 // --- כושר חכם ---
@@ -520,7 +483,105 @@ function renderGymInputs() {
     }
 }
 
-// --- הליכה ---
+// (המשך קוד זהה...)
+let currentAudio = document.getElementById('radio-player');
+let playingUrl = null;
+let isLoading = false;
+
+function renderRadioList() {
+    const list = document.getElementById('radio-list');
+    list.innerHTML = '';
+    const favorites = userStations.filter(s => s.isFavorite && !s.isSeparator);
+    const others = userStations.filter(s => !s.isFavorite);
+    if(favorites.length > 0) {
+        favorites.forEach((s) => list.appendChild(createRadioRow(s)));
+        const sep = document.createElement('div');
+        sep.className = 'radio-separator'; sep.innerHTML = '<span>מועדפים</span>';
+        list.appendChild(sep);
+    }
+    others.forEach((s) => {
+        if(s.isSeparator) {
+            const sep = document.createElement('div');
+            sep.className = 'radio-separator'; sep.innerHTML = `<span>${s.label || '---'}</span>`;
+            list.appendChild(sep);
+        } else {
+            list.appendChild(createRadioRow(s));
+        }
+    });
+}
+
+function createRadioRow(s) {
+    const isPlaying = (playingUrl === s.url);
+    const row = document.createElement('div');
+    row.className = `radio-row ${isPlaying ? 'radio-playing' : ''}`;
+    let btnIcon = 'fa-play';
+    if (isPlaying) btnIcon = isLoading ? 'fa-spinner fa-spin' : 'fa-pause';
+    const starIcon = s.isFavorite ? 'fas fa-star' : 'far fa-star';
+    const starClass = s.isFavorite ? 'active' : '';
+    row.innerHTML = `
+        <div class="d-flex align-items-center" style="width:100%">
+            <button class="btn-star ${starClass}" onclick="toggleFavorite('${s.name}')"><i class="${starIcon}"></i></button>
+            <div class="radio-logo ms-2">${s.logo}</div>
+            <div class="radio-info ms-2">
+                <span class="radio-name">${s.name}</span>
+                <span class="radio-freq">(${s.freq})</span>
+            </div>
+            <div class="d-flex">
+                <button class="btn-radio btn-play ${isPlaying ? 'playing' : ''}" onclick="togglePlay('${s.url}', '${s.name}')"><i class="fas ${btnIcon}"></i></button>
+            </div>
+        </div>`;
+    return row;
+}
+
+function toggleFavorite(stationName) {
+    const idx = userStations.findIndex(s => s.name === stationName);
+    if(idx !== -1) {
+        userStations[idx].isFavorite = !userStations[idx].isFavorite;
+        localStorage.setItem('userStations', JSON.stringify(userStations));
+        renderRadioList();
+    }
+}
+
+function togglePlay(url, name) {
+    if (playingUrl === url) { stopRadio(); } 
+    else { stopRadio(); playingUrl = url; isLoading = true; renderRadioList(); currentAudio.src = url; currentAudio.play().catch(e => { isLoading = false; playingUrl = null; Swal.fire('שגיאה', 'לא ניתן לנגן', 'error'); renderRadioList(); }); currentAudio.onplaying = () => { isLoading = false; document.getElementById('now-playing-bar').classList.remove('d-none'); document.getElementById('np-name').innerText = name; renderRadioList(); }; currentAudio.onwaiting = () => { isLoading = true; renderRadioList(); }; }
+}
+
+function stopRadio() { currentAudio.pause(); currentAudio.src = ""; playingUrl = null; isLoading = false; document.getElementById('now-playing-bar').classList.add('d-none'); renderRadioList(); }
+
+function openMetric(key) {
+    currentMetric = key;
+    const c = CONFIG[key];
+    document.getElementById('metric-header').style.backgroundColor = c.color;
+    document.getElementById('header-title').innerText = c.name;
+    document.getElementById('btn-show-graph').style.display = (c.type === 'meds') ? 'none' : 'block';
+
+    document.getElementById('walk-goal-container').classList.add('d-none');
+    document.getElementById('walk-type-container').classList.add('d-none');
+    document.getElementById('gym-type-container').classList.add('d-none');
+    document.getElementById('gym-selection-area').classList.add('d-none');
+    document.getElementById('btn-gym-info').classList.add('d-none');
+
+    if (key === 'walk') {
+        document.getElementById('walk-goal-container').classList.remove('d-none');
+        document.getElementById('walk-type-container').classList.remove('d-none');
+        toggleWalkUnit(appSettings.walkUnit || 'km', true);
+        setWalkType(appSettings.walkType || 0);
+        document.getElementById('monthly-goal-input').value = appSettings.walkGoal || '';
+        calcGoalStatus();
+    } else if (key === 'gym') {
+        document.getElementById('gym-type-container').classList.remove('d-none');
+        document.getElementById('gym-selection-area').classList.remove('d-none');
+        setGymType(appSettings.gymType || 0);
+    }
+
+    renderForm(c);
+    resetForm();
+    renderFilters('filter-container-list', false);
+    renderHistory();
+    showPage('metric-page');
+}
+
 function setWalkType(typeIdx) {
     appSettings.walkType = typeIdx;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
@@ -532,29 +593,362 @@ function toggleWalkUnit(unit, skipConversion) {
     const prevUnit = appSettings.walkUnit;
     appSettings.walkUnit = unit;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
-    
-    const bg = document.getElementById('seg-bg');
-    const btnKm = document.getElementById('btn-km');
-    const btnSteps = document.getElementById('btn-steps');
-    
-    if (unit === 'steps') {
-        bg.classList.remove('segment-left'); bg.classList.add('segment-right');
-        btnSteps.classList.add('active'); btnKm.classList.remove('active');
-    } else {
-        bg.classList.remove('segment-right'); bg.classList.add('segment-left');
-        btnKm.classList.add('active'); btnSteps.classList.remove('active');
-    }
+    const bg = document.getElementById('seg-bg'); const btnKm = document.getElementById('btn-km'); const btnSteps = document.getElementById('btn-steps');
+    if (unit === 'steps') { bg.classList.remove('segment-left'); bg.classList.add('segment-right'); btnSteps.classList.add('active'); btnKm.classList.remove('active'); } 
+    else { bg.classList.remove('segment-right'); bg.classList.add('segment-left'); btnKm.classList.add('active'); btnSteps.classList.remove('active'); }
     
     const input = document.getElementById('monthly-goal-input');
     let val = parseFloat(input.value);
-    
     if (!skipConversion && val > 0) {
         if (prevUnit === 'km' && unit === 'steps') input.value = Math.round(val * STEPS_PER_KM);
         else if (prevUnit === 'steps' && unit === 'km') input.value = (val / STEPS_PER_KM).toFixed(2);
     }
+    if(currentMetric === 'walk') { renderForm(CONFIG.walk); calcGoalStatus(); }
+}
+
+function renderForm(c) {
+    const div = document.getElementById('dynamic-fields');
+    div.innerHTML = '';
+    const dateArea = document.getElementById('date-time-area');
+    dateArea.innerHTML = '';
+
+    if (c.type === 'bp') {
+        dateArea.innerHTML = `<div class="row g-2 mb-2 align-items-end"><div class="col-8"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center"></div><div class="col-4"><label class="lbl-center">שעה</label><input type="time" id="f-time" class="form-control form-control-sm text-center"></div></div>`;
+    } else if (c.type === 'walk') {
+        dateArea.innerHTML = `<div class="row g-1 mb-2 align-items-end"><div class="col-5"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center px-0"></div><div class="col-3"><label class="lbl-center">התחלה</label><input type="time" id="f-time" class="form-control form-control-sm text-center px-0"></div><div class="col-4"><label class="lbl-center">סיום</label><input type="time" id="f-end-time" class="form-control form-control-sm text-center px-0"></div></div>`;
+    } else {
+        dateArea.innerHTML = `<div class="row g-2 mb-2 align-items-end"><div class="col-6"><label class="lbl-center">תאריך</label><input type="date" id="f-date" class="form-control form-control-sm text-center"></div><div class="col-6"><label class="lbl-center">שעה</label><input type="time" id="f-time" class="form-control form-control-sm text-center"></div></div>`;
+    }
     
-    if(currentMetric === 'walk') {
-        renderForm(CONFIG.walk);
-        calcGoalStatus();
+    if (c.type === 'meds') {
+        div.innerHTML = `<div class="col-12"><input type="text" id="inp-med" class="form-control text-end" placeholder="שם התרופה"></div><div class="col-6"><input type="number" id="inp-mg" class="form-control text-end" placeholder='מ"ג'></div><div class="col-6"><select id="inp-time" class="form-select text-end"><option>בוקר</option><option>צהריים</option><option>ערב</option><option>לילה</option></select></div>`;
+    } else if (c.type === 'walk') {
+        const isSteps = appSettings.walkUnit === 'steps';
+        div.innerHTML = `<div class="col-12"><input type="number" id="walk-val" class="form-control text-center" placeholder="${isSteps?'הזן צעדים':'הזן מרחק'}"></div>`;
+    } else if (c.type === 'gym') {
+        renderGymInputs();
+    } else {
+        c.fields.forEach(f => {
+            div.innerHTML += `<div class="col-12"><label class="lbl-center">${f.label}</label><input type="number" id="inp-${f.id}" class="form-control form-control-lg text-end" placeholder="${f.min}-${f.max}" oninput="validateInput(this, ${f.min}, ${f.max}, '${currentMetric}', '${f.id}')"></div>`;
+        });
+    }
+    setDateTimeNow();
+}
+
+function calcGoalStatus() {
+    const goal = parseFloat(document.getElementById('monthly-goal-input').value);
+    const statusBox = document.getElementById('goal-status-box');
+    const unit = appSettings.walkUnit; 
+    appSettings.walkGoal = document.getElementById('monthly-goal-input').value;
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    if (!goal || goal <= 0) { statusBox.classList.add('d-none'); return; }
+    const db = JSON.parse(localStorage.getItem('healthDB') || '[]');
+    const now = new Date();
+    const monthWalks = db.filter(e => e.metric === 'walk' && e.unit === unit && new Date(e.date).getMonth() === now.getMonth());
+    const total = monthWalks.reduce((sum, e) => sum + (parseFloat(e.val) || 0), 0);
+    const remaining = goal - total;
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const daysLeft = daysInMonth - now.getDate() + 1;
+    statusBox.classList.remove('d-none');
+    const uLabel = unit === 'km' ? 'ק"מ' : 'צעדים';
+    if (remaining <= 0) statusBox.innerHTML = `<i class="fas fa-trophy text-warning"></i> <strong>כל הכבוד!</strong> עמדת ביעד החודשי`;
+    else statusBox.innerHTML = `<div>עברת: <strong>${total.toLocaleString()}</strong> מתוך <strong>${goal.toLocaleString()}</strong></div><div class="mt-1 text-danger fw-bold">יעד יומי: ${(remaining/daysLeft).toFixed(0)} ${uLabel}</div>`;
+}
+
+function saveEntry() {
+    let db = [];
+    try { const stored = localStorage.getItem('healthDB'); if (stored) db = JSON.parse(stored); } catch(e) { db = []; }
+
+    const entry = { id: document.getElementById('edit-id').value || Date.now(), metric: currentMetric, date: document.getElementById('f-date').value, time: document.getElementById('f-time').value };
+    const c = CONFIG[currentMetric];
+    let isValid = true;
+    let errorMessage = "יש למלא את השדות";
+
+    if (c.type === 'meds') {
+        entry.med = document.getElementById('inp-med').value; entry.mg = document.getElementById('inp-mg').value; entry.takeTime = document.getElementById('inp-time').value;
+        if (!entry.med) isValid = false;
+    } else if (c.type === 'walk') {
+        const val = document.getElementById('walk-val').value;
+        const endTime = document.getElementById('f-end-time').value;
+        if (!val) isValid = false;
+        entry.val = parseFloat(val); entry.unit = appSettings.walkUnit; entry.walkType = appSettings.walkType; entry.endTime = endTime; 
+    } else if (c.type === 'gym') {
+        const val = document.getElementById('gym-val').value;
+        if (!selectedGymExercise || !val) isValid = false;
+        entry.exId = selectedGymExercise;
+        entry.val = val;
+        entry.info = document.getElementById('gym-info').value;
+        
+        const type = appSettings.gymType || 0;
+        const ex = GYM_EXERCISES[type].find(e => e.id === selectedGymExercise);
+        if (ex && ex.inputType === 'bike') {
+            const level = parseFloat(entry.info);
+            if(isNaN(level) || level < 1 || level > 10) {
+                isValid = false;
+                errorMessage = "דרגת קושי חייבת להיות בין 1 ל-10";
+                document.getElementById('gym-info').classList.add('bg-danger-custom');
+            }
+        }
+    } else {
+        c.fields.forEach(f => {
+            const el = document.getElementById(`inp-${f.id}`);
+            const val = parseFloat(el.value);
+            if (isNaN(val) || val === '') { isValid = false; errorMessage = "מספר לא תקין"; }
+            if (val < f.min || val > f.max) { isValid = false; errorMessage = `חריגה בערך ${f.label}`; }
+            entry[f.id] = val;
+        });
+    }
+
+    if (!isValid) return Swal.fire('שגיאה', errorMessage, 'error');
+    
+    const existingIdx = db.findIndex(e => e.id == entry.id);
+    if (existingIdx !== -1) db[existingIdx] = entry; else db.unshift(entry);
+    localStorage.setItem('healthDB', JSON.stringify(db));
+    
+    if(c.type === 'walk') setTimeout(calcGoalStatus, 500);
+    Swal.fire({ icon: 'success', title: 'נשמר!', timer: 800, showConfirmButton: false });
+    resetForm(); renderHistory();
+}
+
+function renderFilters(containerId, isGraph) {
+    const div = document.getElementById(containerId);
+    div.innerHTML = FILTERS.map(f => `<button class="btn btn-tool ${currentFilterDays === f.d ? 'active' : ''}" style="flex:1" onclick="setFilter(${f.d}, '${containerId}', ${isGraph})">${f.l}</button>`).join('');
+}
+
+function setFilter(days, containerId, isGraph) {
+    currentFilterDays = days;
+    renderFilters(containerId, isGraph); 
+    if (isGraph) updateChart(); else renderHistory();
+}
+
+function getFilteredData() {
+    let db = JSON.parse(localStorage.getItem('healthDB') || '[]');
+    let filtered = db.filter(e => e.metric === currentMetric);
+    if (filtered.length === 0) return [];
+    if (currentMetric === 'walk') filtered = filtered.filter(e => e.unit === appSettings.walkUnit);
+    if (currentMetric === 'gym') filtered = filtered.filter(e => {
+        const exList = GYM_EXERCISES[appSettings.gymType].map(ex => ex.id);
+        return exList.includes(e.exId);
+    });
+    const days = currentFilterDays || 7;
+    const dates = filtered.map(e => new Date(e.date).getTime());
+    const lastDate = new Date(Math.max.apply(null, dates));
+    const cutoff = new Date(lastDate);
+    cutoff.setDate(lastDate.getDate() - days);
+    return filtered.filter(item => new Date(item.date) >= cutoff);
+}
+
+function renderHistory() {
+    let filtered = getFilteredData();
+    filtered.sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
+    const list = document.getElementById('history-list');
+    if (!filtered.length) { list.innerHTML = '<div class="text-center text-muted mt-4 small">אין נתונים</div>'; return; }
+    
+    list.innerHTML = filtered.map(item => {
+        const c = CONFIG[item.metric];
+        const dObj = new Date(item.date);
+        const dateStr = `${String(dObj.getDate()).padStart(2,'0')}/${String(dObj.getMonth()+1).padStart(2,'0')}`;
+        let contentStr = '', rowColor = '';
+        
+        if (c.type === 'meds') {
+            contentStr = `<div class="d-flex align-items-center gap-2"><i class="fas fa-pills small"></i><span>${item.med} ${item.mg?item.mg:''} (${item.takeTime})</span></div>`;
+        } else if (c.type === 'walk') {
+            const unitLabel = item.unit === 'km' ? 'km' : '';
+            const icon = item.unit === 'km' ? '' : '<i class="fas fa-shoe-prints"></i>';
+            return `
+            <div class="history-row" style="border-right-color: ${c.color}">
+                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${item.time}</div></div>
+                <div class="h-walk-container">
+                     <span class="h-walk-val">${item.val} ${unitLabel} ${icon}</span>
+                </div>
+                <div class="h-actions ms-2 d-flex">
+                    <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
+                </div>
+            </div>`;
+        } else if (c.type === 'gym') {
+            let exName = item.exId;
+            let icon = 'fa-dumbbell';
+            Object.values(GYM_EXERCISES).flat().forEach(ex => { if(ex.id === item.exId) { exName = ex.name; icon = ex.icon; } });
+            return `
+            <div class="history-row" style="border-right-color: ${c.color}">
+                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${item.time}</div></div>
+                <div class="h-data justify-content-start ps-2">
+                     <i class="fas ${icon} text-secondary"></i>
+                     <span>${exName}: ${item.val}</span>
+                     ${item.info ? '<span class="text-muted ms-2 small">('+item.info+')</span>' : ''}
+                </div>
+                <div class="h-actions d-flex">
+                    <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
+                </div>
+            </div>`;
+        } else {
+            contentStr = c.fields.map(f => {
+                const val = item[f.id];
+                if ((f.id === 'sys' || f.id === 'val') && f.ranges) { 
+                     if (val > f.ranges.extreme || val < f.ranges.low) rowColor = 'bg-danger-custom'; 
+                }
+                let iconClass = '';
+                if (f.icon === 'fa-arrow-up') iconClass = 'text-danger small';
+                if (f.icon === 'fa-arrow-down') iconClass = 'text-primary small';
+                if (f.icon === 'fa-heart') iconClass = 'text-danger small';
+                return `<span class="text-nowrap" style="font-size:0.9rem"><i class="fas ${f.icon} ${iconClass}"></i> ${val}</span>`;
+            }).join(' <span class="text-muted mx-1">|</span> ');
+            
+             return `
+            <div class="history-row ${rowColor}" style="border-right-color: ${c.color}">
+                <div class="h-meta text-center"><div>${dateStr}</div><div class="small">${item.time}</div></div>
+                <div class="h-data">${contentStr}</div>
+                <div class="h-actions">
+                    <i class="fas fa-pencil-alt text-warning p-1 small" onclick='editEntry(${JSON.stringify(item)})'></i>
+                    <i class="fas fa-trash text-secondary p-1 small" onclick="deleteEntry(${item.id})"></i>
+                </div>
+            </div>`;
+        }
+    }).join('');
+}
+
+function editEntry(item) {
+    document.getElementById('edit-id').value = item.id;
+    document.getElementById('f-date').value = item.date;
+    document.getElementById('f-time').value = item.time;
+    if(item.endTime) document.getElementById('f-end-time').value = item.endTime;
+    const c = CONFIG[item.metric];
+    if (c.type === 'meds') {
+        document.getElementById('inp-med').value = item.med;
+        document.getElementById('inp-mg').value = item.mg;
+        document.getElementById('inp-time').value = item.takeTime;
+    } else if (c.type === 'walk') {
+        document.getElementById('walk-val').value = item.val;
+    } else if (c.type === 'gym') {
+        selectExercise(item.exId);
+        document.getElementById('gym-val').value = item.val;
+        document.getElementById('gym-info').value = item.info;
+    } else {
+        c.fields.forEach(f => {
+            const el = document.getElementById(`inp-${f.id}`);
+            el.value = item[f.id];
+            validateInput(el, f.min, f.max, item.metric, f.id);
+        });
+    }
+    document.getElementById('cancel-edit-btn').classList.remove('d-none');
+    window.scrollTo(0,0);
+}
+
+function deleteEntry(id) {
+    Swal.fire({ title: 'למחוק?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'כן', cancelButtonText: 'לא' }).then(r=>{
+        if(r.isConfirmed) {
+            let db = JSON.parse(localStorage.getItem('healthDB')||'[]');
+            localStorage.setItem('healthDB', JSON.stringify(db.filter(e=>e.id!==id)));
+            renderHistory();
+            if(currentMetric==='walk') calcGoalStatus();
+        }
+    });
+}
+
+function resetForm() {
+    document.getElementById('entry-form').reset();
+    document.getElementById('edit-id').value = '';
+    setDateTimeNow();
+    document.getElementById('cancel-edit-btn').classList.add('d-none');
+    selectedGymExercise = null;
+    if(currentMetric === 'gym') {
+        document.getElementById('selected-gym-exercise').value = '';
+        renderGymGrid();
+        renderGymInputs();
     }
 }
+
+function validateInput(el, min, max, metricKey, fieldId) {
+    let val = parseFloat(el.value);
+    el.className = 'form-control form-control-lg text-end'; 
+    if (isNaN(val)) return;
+    const ranges = CONFIG[metricKey].fields.find(f => f.id === fieldId).ranges;
+    if (ranges) {
+        if (val < ranges.low || val > ranges.extreme) el.classList.add('bg-danger-custom'); 
+        else if (val <= ranges.high) el.classList.add('bg-norm');
+        else el.classList.add('bg-high'); 
+    }
+}
+
+function openGraphView() {
+    const c = CONFIG[currentMetric];
+    document.getElementById('graph-header').style.backgroundColor = c.color;
+    showPage('graph-page');
+    renderFilters('filter-container-graph', true);
+    setTimeout(updateChart, 100);
+}
+
+function updateChart() {
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+    const rawData = getFilteredData();
+    rawData.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+    const labels = rawData.map(i => `${new Date(i.date).getDate()}/${new Date(i.date).getMonth()+1}`);
+    const c = CONFIG[currentMetric];
+    let datasets = [];
+    
+    if (currentMetric === 'bp') {
+        datasets = [
+            { label: 'גבוה', data: rawData.map(i => i.sys), backgroundColor: '#ff3b30', borderRadius: 4 },
+            { label: 'נמוך', data: rawData.map(i => i.dia), backgroundColor: '#007aff', borderRadius: 4 },
+            { label: 'דופק', data: rawData.map(i => i.pulse), backgroundColor: '#34c759', borderRadius: 4, type: 'line', tension: 0.4 }
+        ];
+    } else if (currentMetric === 'walk') {
+         datasets = [{ label: appSettings.walkUnit, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
+    } else if (currentMetric === 'gym') {
+         datasets = [{ label: 'כמות', data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
+    } else {
+        const field = c.fields[0];
+        datasets = [{ label: field.label, data: rawData.map(i => i.val), backgroundColor: c.color, borderRadius: 6 }];
+    }
+    
+    chartInstance = new Chart(ctx, { 
+        type: 'bar', 
+        data: { labels, datasets }, 
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: false } } } 
+    });
+}
+
+function exportTopicExcel() {
+    let filtered = getFilteredData();
+    if (!filtered.length) return Swal.fire('אין נתונים', '', 'info');
+    let csv = "\uFEFFתאריך,שעה,נושא,מידע\n";
+    const c = CONFIG[currentMetric];
+    filtered.forEach(i => {
+        let val = '';
+        if(c.type==='meds') val = `${i.med} ${i.mg} (${i.takeTime})`;
+        else if(c.type==='walk') val = `${i.val} ${i.unit}`;
+        else if(c.type==='gym') val = `${i.exId}: ${i.val} (${i.info||''})`;
+        else val = c.fields.map(f=>`${f.label}:${i[f.id]}`).join(' ');
+        csv += `${i.date},${i.time},${c.name},"${val}"\n`;
+    });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+    a.download = `${c.name}.csv`; a.click();
+}
+
+function toggleSetting(key) {
+    appSettings[key] = document.getElementById(key === 'darkMode' ? 'toggle-dark-mode' : 'toggle-font-size').checked;
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    applySettings();
+}
+function applySettings() {
+    document.body.classList.toggle('dark-mode', appSettings.darkMode);
+    document.body.classList.toggle('font-large', appSettings.largeFont);
+    document.getElementById('toggle-dark-mode').checked = appSettings.darkMode;
+    document.getElementById('toggle-font-size').checked = appSettings.largeFont;
+}
+function saveDocName() { /* Empty */ }
+function handleResetToggle() {
+    if (document.getElementById('toggle-reset-data').checked) {
+        Swal.fire({ title: 'מחיקת הכל?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'כן' }).then(r => {
+            if(r.isConfirmed) { localStorage.removeItem('healthDB'); location.reload(); }
+            else document.getElementById('toggle-reset-data').checked = false;
+        });
+    }
+}
+</script>
+</body>
+</html>
