@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- הגדרות עיצוב --- */
+        /* --- משתנים ועיצוב בסיסי --- */
         :root {
             --main-bg: #f2f2f7; 
             --card-bg: #ffffff; 
@@ -34,6 +34,7 @@
         }
 
         body.font-large { font-size: 115%; }
+        
         body { 
             background-color: var(--main-bg); 
             color: var(--text-color); 
@@ -62,15 +63,8 @@
         .metric-card i { font-size: 2rem; margin-bottom: 8px; }
         .metric-card .title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
 
-        /* כושר - גריד */
-        .gym-grid { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 10px; 
-            margin-top: 15px; 
-            max-height: 300px; 
-            overflow-y: auto; 
-        }
+        /* גריד מכשירי כושר */
+        .gym-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; max-height: 300px; overflow-y: auto; }
         .gym-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: var(--main-bg); border-radius: 12px; padding: 10px 5px; cursor: pointer;
@@ -94,7 +88,7 @@
         .h-walk-val { font-weight: bold; font-size: 1rem; }
         .bg-danger-custom { background-color: var(--c-danger) !important; color: #ff3b30 !important; font-weight: bold; }
         
-        /* בוררים (Segments) */
+        /* iOS Segments */
         .ios-segment { background-color: var(--ios-gray); border-radius: 9px; padding: 2px; display: flex; position: relative; width: 100%; height: 32px; }
         .segment-btn { flex: 1; text-align: center; font-size: 0.8rem; font-weight: 500; line-height: 28px; cursor: pointer; z-index: 2; transition: all 0.3s ease; color: var(--text-color); opacity: 0.5; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .segment-btn.active { opacity: 1; font-weight: 700; }
@@ -113,10 +107,12 @@
         .seg-4 .pos-2 { transform: translateX(-200%); }
         .seg-4 .pos-3 { transform: translateX(-300%); }
         
+        /* מתג הגדרות */
         .form-switch .form-check-input { width: 3.2em; height: 1.8em; flex-shrink: 0; cursor: pointer; background-color: #e9e9ea; border: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e"); }
         .form-switch .form-check-input:checked { background-color: #34c759; }
 
         .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; background: #25d366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
+        
         .lbl-center { text-align: center; font-size: 0.8rem; font-weight: 700; color: #666; margin-bottom: 2px; display: block; }
     </style>
 </head>
@@ -285,21 +281,23 @@
 </div>
 
 <script>
-// --- תרגילים ---
+// --- נתונים ומידע בריאותי ---
+
+// תרגילי כושר - כולל City Bike Pro
 const GYM_EXERCISES = {
-    0: [ 
+    0: [ // בית
         { id: 'pushups', name: 'שכיבות סמיכה', icon: 'fa-person-praying', guide: 'ידיים ברוחב כתפיים.', safety: 'לגיל 60+: ברכיים על הרצפה.' },
         { id: 'wall_pushups', name: 'שכיבות סמיכה על קיר', icon: 'fa-hand-spock', guide: 'עמידה מול קיר, דחיפה עם הידיים.', safety: 'מצוין למתחילים ולגיל השלישי.' },
         { id: 'situps', name: 'כפיפות בטן', icon: 'fa-person-arrow-up-from-line', guide: 'הרמת שכמות קלה בשכיבה.', safety: 'לא למשוך בצוואר.' },
         { id: 'squat', name: 'סקוואט', icon: 'fa-person-arrow-down-to-line', guide: 'כמו ישיבה על כיסא דמיוני.', safety: 'גב ישר, ברכיים לא עוברות אצבעות.' },
-        { id: 'lunges', name: 'מכרעים', icon: 'fa-person-walking-arrow-right', guide: 'צעד קדימה וכפיפת ברך אחורית.', safety: 'לשמור על יציבות.' },
+        { id: 'lunges', name: 'מכרעים (Lunges)', icon: 'fa-person-walking-arrow-right', guide: 'צעד קדימה וכפיפת ברך אחורית.', safety: 'לשמור על יציבות.' },
         { id: 'plank', name: 'פלאנק', icon: 'fa-minus', guide: 'הישענות על אמות, גוף ישר.', safety: 'להפסיק אם יש כאב גב.' },
         { id: 'glute_bridge', name: 'גשר אגן', icon: 'fa-bridge', guide: 'שכיבה על הגב, הרמת אגן מעלה.', safety: 'לכווץ ישבן בעלייה.' },
         { id: 'jumping_jacks', name: 'קפיצת כוכב', icon: 'fa-child-reaching', guide: 'קפיצה בפישוק ידיים ורגליים.', safety: 'נחיתה רכה.' },
-        { id: 'dumbbells', name: 'משקולות יד', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים.', safety: 'לא לנעול מרפקים.' },
+        { id: 'dumbbells', name: 'משקולות יד (בייספס)', icon: 'fa-dumbbell', guide: 'כפיפת מרפקים בעמידה/ישיבה.', safety: 'לא לנעול מרפקים ביישור.' },
         { id: 'stretching', name: 'מתיחות', icon: 'fa-person-rays', guide: 'מתיחה עדינה.', safety: 'לא לבצע בתנועות חדות.' }
     ],
-    1: [ 
+    1: [ // ציבורי
         { id: 'citybike', name: 'City Bike Pro', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בקצב אחיד.', safety: 'להתחיל בדרגה נמוכה.' },
         { id: 'walker', name: 'הליכון אוויר', icon: 'fa-person-walking', guide: 'הליכה באוויר.', safety: 'לשמור גב זקוף.' },
         { id: 'skier', name: 'סקי אוויר', icon: 'fa-person-skiing', guide: 'תנועה לצדדים.', safety: 'להחזיק חזק.' },
@@ -309,14 +307,15 @@ const GYM_EXERCISES = {
         { id: 'rowing_out', name: 'חתירה', icon: 'fa-person-rowing', guide: 'משיכה לבטן.', safety: 'גב ישר.' },
         { id: 'pullups_pub', name: 'מתח', icon: 'fa-grip-lines', guide: 'משיכה מעלה.', safety: 'זהירות.' },
         { id: 'dips_pub', name: 'מקבילים', icon: 'fa-equals', guide: 'כפיפת מרפקים.', safety: 'עומס על הכתפיים.' },
-        { id: 'step_up', name: 'עליית מדרגה', icon: 'fa-stairs', guide: 'עלייה וירידה.', safety: 'יציבות.' }
+        { id: 'step_up', name: 'עליית מדרגה', icon: 'fa-stairs', guide: 'עלייה וירידה.', safety: 'יציבות.' },
+        { id: 'incline_situp', name: 'כפיפות בטן בשיפוע', icon: 'fa-angle-up', guide: 'כפיפות בטן על ספסל משופע.', safety: 'זהירות על הגב התחתון.' }
     ],
-    2: [ 
+    2: [ // חדר כושר
         { id: 'treadmill', name: 'הליכון', icon: 'fa-person-running', guide: 'הליכה/ריצה.', safety: 'תפס ביטחון.' },
         { id: 'elliptical', name: 'אליפטיקל', icon: 'fa-person-skiing-nordic', guide: 'תנועה אליפטית.', safety: 'עקבים צמודים.' },
         { id: 'citybike_gym', name: 'אופני כושר', icon: 'fa-bicycle', inputType: 'bike', guide: 'רכיבה בישיבה.', safety: 'גובה מושב תקין.' },
-        { id: 'deadlift', name: 'דדליפט', icon: 'fa-weight-hanging', guide: 'הרמה מהרצפה.', safety: 'גב ישר חובה!' },
-        { id: 'barbell_squat', name: 'סקוואט מוט', icon: 'fa-dumbbell', guide: 'סקוואט עם מוט.', safety: 'גב זקוף.' },
+        { id: 'deadlift', name: 'דדליפט', icon: 'fa-weight-hanging', guide: 'הרמה מהרצפה.', safety: 'גב ישר חובה! להתחיל משקל נמוך.' },
+        { id: 'barbell_squat', name: 'סקוואט מוט', icon: 'fa-dumbbell', guide: 'סקוואט עם מוט.', safety: 'גב זקוף, מבט קדימה.' },
         { id: 'bench_press', name: 'לחיצת חזה', icon: 'fa-dumbbell', guide: 'דחיקה בשכיבה.', safety: 'עזרה במשקל כבד.' },
         { id: 'lat_pulldown', name: 'פולי עליון', icon: 'fa-arrow-down-long', guide: 'משיכה לחזה.', safety: 'לא לעורף.' },
         { id: 'seated_cable_row', name: 'חתירה כבל', icon: 'fa-anchor', guide: 'משיכה לבטן.', safety: 'גב ישר.' },
@@ -326,11 +325,18 @@ const GYM_EXERCISES = {
 };
 
 const CONFIG = {
-    bp: { name: 'לחץ דם ודופק', icon: 'fa-heart-pulse', color: '#ff3b30', fields: [{id:'sys',label:'גבוה'},{id:'dia',label:'נמוך'},{id:'pulse',label:'דופק'}]},
+    bp: { name: 'לחץ דם ודופק', icon: 'fa-heart-pulse', color: '#ff3b30', 
+          fields: [
+            { id: 'sys', label: 'גבוה (סיסטולי)', min: 60, max: 250, ranges: { low: 90, high: 120, border: 140, extreme: 180 }, icon: 'fa-arrow-up' },
+            { id: 'dia', label: 'נמוך (דיאסטולי)', min: 30, max: 150, ranges: { low: 60, high: 80, border: 90, extreme: 110 }, icon: 'fa-arrow-down' },
+            { id: 'pulse', label: 'דופק', min: 30, max: 220, ranges: { low: 50, high: 100, border: 120, extreme: 150 }, icon: 'fa-heart' }
+          ]},
     walk: { name: 'הליכה', icon: 'fa-person-walking', color: '#5856d6', type: 'walk' },
     gym: { name: 'כושר', icon: 'fa-dumbbell', color: '#af52de', type: 'gym' },
-    sugar: { name: 'סוכר', icon: 'fa-cubes', color: '#ff9500', fields: [{id:'val',label:'ערך'}]},
-    weight: { name: 'משקל', icon: 'fa-weight-scale', color: '#007aff', fields: [{id:'val',label:'ק"ג'}]},
+    sugar: { name: 'סוכר', icon: 'fa-cubes', color: '#ff9500', 
+             fields: [{ id: 'val', label: 'ערך', min: 20, max: 800, ranges: { low: 70, high: 140, border: 200, extreme: 300 }, icon: 'fa-droplet' }]},
+    weight: { name: 'משקל', icon: 'fa-weight-scale', color: '#007aff', 
+              fields: [{ id: 'val', label: 'ק"ג', min: 30, max: 300, ranges: { low: 50, high: 100, border: 150, extreme: 200 }, icon: 'fa-weight-scale' }]},
     pills: { name: 'תרופות', icon: 'fa-pills', color: '#34c759', type: 'meds' },
     water: { name: 'מים', icon: 'fa-faucet-drip', color: '#5ac8fa', type: 'water' },
     settings: { name: 'הגדרות', icon: 'fa-gear', color: '#8e8e93', isSettings: true }
@@ -386,19 +392,27 @@ function showPage(id) {
 function setWaterUnit(unit) {
     appSettings.waterUnit = unit;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    
+    // UI Update
     const unitMap = { 'cup': 0, 'ml': 1, 'sip': 2 };
     const idx = unitMap[unit] !== undefined ? unitMap[unit] : 0;
+    
     const bg = document.getElementById('water-unit-bg');
     if(bg) bg.className = `segment-bg pos-${idx}`;
+    
     document.querySelectorAll('#water-settings-container .seg-3 .segment-btn').forEach((btn, i) => btn.classList.toggle('active', i === idx));
-    renderForm(CONFIG.water); renderHistory();
+    
+    renderForm(CONFIG.water);
+    renderHistory();
 }
 
 function setWaterWho(whoIdx) {
     appSettings.waterType = whoIdx;
     localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    
     const bg = document.getElementById('water-who-bg');
     if(bg) bg.className = `segment-bg pos-${whoIdx}`;
+    
     document.querySelectorAll('#water-settings-container .seg-4 .segment-btn').forEach((btn, i) => btn.classList.toggle('active', i === whoIdx));
 }
 
@@ -412,7 +426,16 @@ function showWaterInfo() {
 
     Swal.fire({
         title: 'כמה מים לשתות?',
-        html: `<div class="text-start"><p><strong>המלצה עבורך:</strong><br>${rec}</p><hr><small class="text-muted">לגימה מחושבת לפי: מבוגר=25 מ"ל, אישה/נוער=20 מ"ל, ילד=10 מ"ל.</small></div>`,
+        html: `
+            <div class="text-start">
+                <p><strong>המלצה עבורך:</strong><br>${rec}</p>
+                <hr>
+                <small class="text-muted">
+                    המלצה כללית: 30-35 מ"ל לק"ג גוף.<br>
+                    לגימה מחושבת לפי: מבוגר=25 מ"ל, אישה/נוער=20 מ"ל, ילד=10 מ"ל.
+                </small>
+            </div>
+        `,
         icon: 'info'
     });
 }
@@ -425,12 +448,14 @@ function openMetric(key) {
     document.getElementById('header-title').innerText = c.name;
     document.getElementById('btn-show-graph').style.display = (c.type==='meds')?'none':'block';
     
+    // מנגנון הגנה: איפוס רק אם האלמנטים קיימים
     const idsToHide = ['walk-goal-container','walk-type-container','gym-type-container','gym-selection-area','btn-gym-info','water-settings-container','btn-water-info'];
     idsToHide.forEach(id => {
         const el = document.getElementById(id);
         if(el) el.classList.add('d-none');
     });
 
+    // טיפול פרטני
     if(key==='walk') {
         document.getElementById('walk-goal-container').classList.remove('d-none');
         document.getElementById('walk-type-container').classList.remove('d-none');
@@ -447,6 +472,8 @@ function openMetric(key) {
         const wBtn = document.getElementById('btn-water-info');
         if(wCont) wCont.classList.remove('d-none');
         if(wBtn) wBtn.classList.remove('d-none');
+        
+        // אתחול מים
         setWaterUnit(appSettings.waterUnit||'cup');
         setWaterWho(appSettings.waterType||0);
     }
